@@ -1,0 +1,43 @@
+<div class="bf-fixed-overlay bf-fixed-overlay__modal">
+    <div class="bf-modal">
+        <div class="bf-modal_container">
+            <a href="javascript:;" class="bf-modal-close" title="Закрыть"></a>
+            <div class="bf-content">
+                <div class="bf-header">
+                    Форма отправки сообщения!
+                </div>
+                <form data-bf-config="" action="" method="post">
+                    <div class="bf-row">
+                        <label>Имя:</label>
+                        <input class="bf-form-control" required="required" name="name" placeholder="Обязательное поле" type="text" value="" />
+                    </div>
+                    <div class="bf-row">
+                        <label>Телефон:</label>
+                        <input class="bf-form-control" required="required" name="phone" placeholder="Обязательное поле" type="text" value="" />
+                    </div>
+                    <div class="bf-row">
+                        <label>Email:</label>
+                        <input class="bf-form-control" required="required" name="email" placeholder="Обязательное поле" type="email" value="" />
+                    </div>
+                    <div class="bf-row">
+                        <label>Комментарий:</label>
+                        <textarea class="bf-form-control" cols="40" rows="5" name="comment"></textarea>
+                    </div>
+                    <div class="bf-row">
+                        <label>Прикрепить файлы:</label>
+                        <input class="bf-form-control" multiple="multiple" name="upload_file[]" type="file" />
+                    </div>
+                    <div class="bf-row">
+                        <div class="bf-info-img">
+                            <img width="110" height="60" title="Обновить картинку" class="bf-img-capcha" src="/rockform/bfcaptcha.php" alt="" />
+                        </div>
+                        <input class="capcha bf-form-control" name="capcha" placeholder="Код с картинки" type="text" value="" />
+                    </div>
+                    <div class="bf-row">
+                        <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

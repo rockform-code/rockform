@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Демонстрация работы</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <!-- Rockform -->
+    <link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
+    <script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
+    <!-- // Rockform -->
+</head>
+
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>Rockform</h1>
+            <p class="lead">Документация и демонстрация работы.</p>
+        </div>
+ <h3>test</h3>
+        <p>
+            <a class="btn btn-lg btn-default" data-bf-config="test" href="#">Запустить пример</a>
+        </p>
+
+        <h3>Простое модальное окно</h3>
+        <p>
+            <a class="btn btn-lg btn-default" data-bf-config="" href="#">Запустить пример</a>
+        </p>
+     
+        <hr>
+        <h3>Встроенная форма</h3>
+        <br />
+        <div class="bf-content">
+            <div class="bf-header">
+                Форма отправки сообщения!
+            </div>
+            <form data-bf-config="" action="" method="post">
+                <div class="bf-row">
+                    <label>Имя:</label>
+                    <input class="bf-form-control" required="required" name="name" placeholder="Обязательное поле" type="text" value="" />
+                </div>
+                <div class="bf-row">
+                    <label>Телефон:</label>
+                    <input class="bf-form-control" required="required" name="phone" placeholder="Обязательное поле" type="text" value="" />
+                </div>
+                <div class="bf-row">
+                    <label>Email:</label>
+                    <input class="bf-form-control" required="required" name="email" placeholder="Обязательное поле" type="email" value="" />
+                </div>
+                <div class="bf-row">
+                    <label>Комментарий:</label>
+                    <textarea class="bf-form-control" cols="40" rows="5" name="comment"></textarea>
+                </div>
+                <div class="bf-row">
+                    <label>Прикрепить файлы:</label>
+                    <input class="bf-form-control" multiple="multiple" name="upload_file[]" type="file" />
+                </div>
+                <div class="bf-row">
+                    <div class="bf-info-img">
+                        <img width="110" height="60" title="Обновить картинку" class="bf-img-capcha" src="../init.php?type=capcha" alt="" />
+                    </div>
+                    <input class="capcha bf-form-control" name="capcha" placeholder="Код с картинки" type="text" value="" />
+                </div>
+                <div class="bf-row">
+                    <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
+                </div>
+            </form>
+        </div>
+ 
+      <hr style="clear:both;">
+        <h2>Документация</h2>
+        
+       
+       
+
+        <h3>Как подключить</h3>
+
+        <h4>  1. Подключить скрипты в указанной последовательности</h4>
+        <pre><code>&lt;!-- Rockform --&gt;
+    &lt;link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
+    &lt;script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"&gt;&lt;/script&gt;
+&lt;!-- // Rockform --&gt;
+</code></pre>
+
+
+        <h4> 2. Вызов для встроенной формы на странице</h4>
+        <p>Для подключения достаточно навесить на форму атрибут <strong>data-bf-config=""</strong> и передать ему название конфигурации.</p>
+        <p>По умолчанию, при пустом вызове конфигурации, она будет браться из папки <strong>/configs/default</strong>. Можно создать сколько угодно конфигураций, просто копируя папку <strong>default</strong> с другим названием. </p>
+        <p>Поддерживается наследование. Например в новой конфигурации можно не указывать почту получателя, она возьмётся из папки - <strong>default</strong>.</p>
+        <h4>3. Вызов всплывающего окна</h4>
+
+        <p>Нужно добавить атрибут <strong>data-bf-config=""</strong> на любой тег, кроме формы, по нажатию на который ожидается вызов всплывающего окна.</p>
+        <p>В всплывающую форму можно передать параметры через data-атрибуты, например: </p>
+        <pre><code>data-bf-field-title="Параметр title"</code></pre>
+        <p>В шаблоне отправки на почту можно будет добавить переменную <strong>{{bf_field_title}}</strong>, в которой будет передаваемое содержимое. Стоит учесть, что здесь используется нижнее подчёркивание.</p>
+
+        <p>В шаблоне формы будет доступен класс <strong>.bf-field-title</strong>, в который будет передаваться значение заданной переменной.</p>
+
+        <p>Пример:</p>
+        <pre><code>&lt;p class="bf-field-title"&gt;Тут будет значение.&lt;/p&gt;
+</code></pre>
+        <p>Где <strong>title</strong> можно заменить на своё название.</p>
+        <p>Также доступны два системных класса:</p>
+        <pre><code>.bf-page-link - адрес страницы оформления формы
+.bf-page-h1 - тег H1 страницы оформления формы
+</code></pre>
+
+
+ <p>На почте они доступны, как: {{bf_page_link}} и {{bf_page_h1}} соответственно.</p>
+ 
+        <h4>4. Что внутри</h4>
+        <ul>
+            <li>config.php - конфигурационный файл. Внутри него комментарии для настройки.</li>
+            <li>/templates/report.html - шаблон отправки на почту. В качестве шаблона для полей используется конструкция <strong>{{название_поля}}</strong>. Поддерживает работу с шаблонизатором Twig.</li>
+            <li>/templates/form.html - форма для всплывающего окна.</li>
+            <li>/model/events.class.php - php-класс, расширяющий функционал формы.</li>
+        </ul>
+
+
+           
+ <h3> Системные требования</h3>
+        <ul>
+            <li>PHP5 &gt;= 5.2.0</li>
+         
+        </ul>
+
+
+
+            <br /> <br />  
+    </div>
+    <!-- /container -->
+</body>
+
+</html>

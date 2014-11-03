@@ -1,0 +1,13 @@
+{
+    "name": "rockncoding/rockform",
+    "description": "Simple ajax contact form",
+    "license": "Apache 2.0",
+    "authors": [
+        {
+            "name": "BaryshevRS"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.17"
+    }
+}
