@@ -4,6 +4,9 @@ class Rockform extends Events  {
 
 	protected $config, $lang, $field; 
 
+	var $tmp_form_popup = 'form_popup.html';
+	var $tmp_report_on_mail = 'report_on_mail.html';
+
 	function __construct($config = array(), $lang = array()) {
 		$this->config = $this->set_default_config($config, $lang);
 		$this->lang = $lang;
@@ -38,7 +41,6 @@ class Rockform extends Events  {
  			return $this->set_capcha();
 
 			case 'form':
-			
     		 	$out = $this->set_base_form();
     		break; 
 
@@ -70,7 +72,7 @@ class Rockform extends Events  {
 
 		$out = array();
  		$field = array();
- 		
+ 		 
 		foreach ($_POST as $key => $value) {
 			if(is_array($value)) {
 				$field[$key] = implode(', ',$value);
@@ -119,11 +121,17 @@ class Rockform extends Events  {
 		Twig_Autoloader::register(true);
 		$loader = new Twig_Loader_Filesystem('configs/'.$this->config['name'].'/templates/');
 		$twig = new Twig_Environment($loader);
-		return $twig->render('report.html', $this->field);
+		return $twig->render($this->tmp_reporn_on_mail, $this->field);
+
 	}
 
 	private function set_base_form() {
- 		return file_get_contents('configs/'.$this->config['name'].'/templates/form.html');
+ 
+		Twig_Autoloader::register(true);
+		$loader = new Twig_Loader_Filesystem('configs/'.$this->config['name'].'/templates/');
+		$twig = new Twig_Environment($loader);
+		return $twig->render($this->tmp_form_popup, $_POST['attributes']);
+ 
 	}
 
 	private function set_form_data_status($status = 0, $value = '') {
