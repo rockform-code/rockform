@@ -16,7 +16,7 @@ subject =
 ; spam - защита от спама, csrf;
 ; Пример: 'capcha,spam,required_field'.
 
-error_type = spam,required_field
+error_type = spam,required_field,capcha
 
 ;Поля обязательные для заполнения.
 ;Где, например, phone — это значение атрибута 'name' тега <input>.
@@ -41,4 +41,9 @@ used_lang = ru
 
 mail_send = 1
 
+[smtp]
 
+smtp_mode = disabled
+smtp_host =
+smtp_port =
+smtp_username =

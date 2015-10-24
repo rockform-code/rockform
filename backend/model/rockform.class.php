@@ -121,7 +121,7 @@ class Rockform extends Events  {
 		Twig_Autoloader::register(true);
 		$loader = new Twig_Loader_Filesystem('configs/'.$this->config['name'].'/templates/');
 		$twig = new Twig_Environment($loader);
-		return $twig->render($this->tmp_reporn_on_mail, $this->field);
+		return $twig->render($this->tmp_report_on_mail, $this->field);
 
 	}
 
@@ -264,7 +264,6 @@ class Rockform extends Events  {
 		}
 
  		$to = $this->config['to'];
-
 		if(!is_array($to)) {
 			$to = explode(',', $to);
 		} 
@@ -273,6 +272,19 @@ class Rockform extends Events  {
 			//Recipients will know all of the addresses that have received a letter
 			$mail->addAddress($email, '');
 		}
+
+		//smtp
+ //$mail->SMTPDebug = 3;  
+$mail->isSMTP();                                      // Set mailer to use SMTP
+$mail->Host = 'smtp.yandex.ru';  // Specify main and backup SMTP servers
+$mail->SMTPAuth = true;                               // Enable SMTP authentication
+$mail->Username = '';                 // SMTP username
+
+$mail->Password = '';                           // SMTP password
+$mail->SMTPSecure = "ssl"; 
+//$mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+$mail->Port = 465;                                    // TCP port to connect to
+		 
 	
 		return $mail->send();
 	}

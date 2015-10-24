@@ -19,7 +19,7 @@
     (function($) {
         "use strict";
 
-        var bf_path = '/rockform';
+        var bf_path = '/rockform/init.php';
 
         var bf = {
             init: function() {
@@ -29,23 +29,35 @@
                 bf.init_form();
 
             },
+            set_background_popup: function() {
+
+                var bg = '<div class="bf-fixed-overlay bf-fixed-overlay__modal"> \
+                            <div class="bf-modal"> \
+                                <div class="bf-modal_container"> \
+                                    <a href="javascript:;" class="bf-modal-close" title="Закрыть"></a> \
+                                </div> \
+                            </div> \
+                        </div>';
+                $('body').append(bg);
+            },
             bind_event_popup: function() {
                 $('[data-bf-config]').on("click", function(e) {
                     e.preventDefault();
 
                     var config = $(this).data("bf-config");
-
                     if (typeof config == 'undefined' || config.length < 1) {
-                        config = 'default';
+                        config = '';
                     }
 
                     var button = $(this);
+                    var attributes = bf.get_custom_popup_attributes(button);
 
                     $.ajax({
-                        url: bf_path + '/init.php',
+                        url: bf_path,
                         data: {
                             'bf-config': config,
-                            'type': "form"
+                            'attributes': attributes,
+                            'type': 'form'
                         },
                         method: "post",
                         dataType: "html",
@@ -54,46 +66,30 @@
                         },
                         success: function(xhr) {
 
-                            $('body').append(xhr);
+                            bf.set_background_popup();
+                            bf.bind_close_popup();
+
+                            $('.bf-modal, .bf-fixed-overlay').css('opacity', '0');
+
+                            $('.bf-modal_container a').after(xhr);
                             $('.bf-loading').remove();
-                            $('.bf-fixed-overlay').show();
 
-                            //set custom param in form
-                            var attributes = bf.bind_custom_popup_params(button);
-
-                            if (typeof attributes == 'undefined' || attributes.length < 1) {
-
-                            } else {
-                                $.each(attributes, function(i, val) {
-                                    $('.' + i).html(val);
-                                });
-                            }
-
-                            //set add param
-                            var field_h1 = $('h1').html();
-
-                            if (typeof field_h1 == 'undefined' || field_h1.length < 1) {
-
-                            } else {
-                                $('.bf-page-h1').html(field_h1);
-                            }
-                            $('.bf-page-link').html(document.location.href);
+                            $('.bf-modal, .bf-fixed-overlay').animate({'opacity': "1"}, 400);
 
                             $(".bf-img-capcha").off();
                             bf.bind_event_capcha(); //set refresh for click image
                             bf.update_capcha();
 
                             $("form[data-bf-config]").off();
-
                             bf.init_form(config, attributes);
-                            bf.bind_close_popup();
+
                         }
                     })
                 });
 
                 $('form[data-bf-config]').off();
             },
-            bind_custom_popup_params: function(button) {
+            get_custom_popup_attributes: function(button) {
 
                 var attributes = {};
                 var attr_el = '';
@@ -101,12 +97,16 @@
                 if (button.length) {
                     $.each(button[0].attributes, function(index, attr) {
                         attr_el = attr.name;
-                        if (/data\-bf\-field/.test(attr_el)) {
-                            attr_el = attr_el.replace('data-', '');
+                        if (/data\-bf-field/.test(attr_el)) {
+                            attr_el = attr_el.replace('data-bf-', '');
                             attributes[attr_el] = attr.value;
                         }
                     });
                 }
+
+                attributes['field_page_h1'] = $('h1').html();
+                attributes['field_page_link'] = document.location.href;
+
                 return attributes;
 
             },
@@ -120,12 +120,12 @@
                 });
             },
             bind_event_capcha: function() {
-                $("[src*='bfcaptcha.php']").on("click", function() {
+                $("[src*='" + bf_path + "?type=capcha']").on("click", function() {
                     bf.update_capcha();
                 });
             },
             update_capcha: function() {
-                $("[src*='bfcaptcha.php']").attr('src', bf_path + '/bfcaptcha.php?' + Math.random())
+                $("[src*='" + bf_path + "?type=capcha']").attr('src', bf_path + '?type=capcha&u=' + Math.random())
             },
             init_form: function(config_popup, attributes) {
 
@@ -133,8 +133,8 @@
                     e.preventDefault();
 
                     var options = {
-                        success: bf.showResponse, // post-submit callback
-                        url: bf_path + '/init.php',
+                        success: bf.show_response,
+                        url: bf_path,
                         type: 'post',
                         dataType: 'json'
                     };
@@ -142,17 +142,16 @@
                     var form = $(this);
 
                     var config = form.data("bf-config");
-
                     if (typeof config_popup == 'undefined' || config_popup.length < 1) {
                         if (typeof config == 'undefined' || config.length < 1) {
-                            config = 'default';
+                            config = '';
                         }
                     } else {
                         config = config_popup;
                     }
 
                     $.post(
-                        bf_path + "/init.php", {
+                        bf_path, {
                             'type': 'token',
                             'bf-config': config
                         },
@@ -160,38 +159,23 @@
                             $('[name="bf-config"]').remove();
                             $('[name="bf-token"]').remove();
 
-                            //add custom field
-                            if (typeof attributes == 'undefined' || attributes.length < 1) {
-
-                            } else {
-                                $.each(attributes, function(i, val) {
-                                    i = i.replace(/\-/g, '_');
-                                    form.append('<input name="' + i + '" type="hidden" value="' + val + '" />');
-                                });
-                            }
-
                             //add page info
                             var field_h1 = $('h1').html();
-                            if (typeof field_h1 == 'undefined' || field_h1.length < 1) {
-
-                            } else {
-                                form.append('<input name="bf_page_h1" type="hidden" value="' + field_h1 + '" />');
+                            if (typeof field_h1 !== 'undefined' || field_h1.length > 0) {
+                                form.append('<input name="field_page_h1" type="hidden" value="' + field_h1 + '" />');
                             }
-                            form.append('<input name="bf_page_link" type="hidden" value="' + document.location.href + '" />');
-
-                            //set config
+                            form.append('<input name="field_page_link" type="hidden" value="' + document.location.href + '" />');
                             form.append('<input name="bf-config" type="hidden" value="' + config + '" />');
-                            //set spam protection
                             form.append('<input name="bf-token" type="hidden" value="' + data['token'] + '" />');
-                            //set submit form
-                            form.ajaxSubmit(options);
+
+                            form.ajaxSubmit(options); //set submit form
                         }
                     );
                 });
             },
-            showResponse: function(responseText, statusText, xhr, $form) {
+            show_response: function(responseText, statusText, xhr, $form) {
 
-                $('.bf-status ').remove();
+                $('.bf-status').remove();
                 $form.before('<div class="bf-status bf-status-' + responseText['status'] + '">' + responseText['value'] + '</div>');
 
                 if (responseText['status'] > 0) {
