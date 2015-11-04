@@ -5,6 +5,6 @@ requirejs.config({
 // Start the main app logic.
 requirejs(['jquery', 'jquery.form.min', 'rockform'],
     function($, form, rockform) {
-         
+
     }
 );

@@ -8,12 +8,14 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="robots" content="noindex, nofollow" />
     <title>Демонстрация работы</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
     <!-- Rockform -->
     <link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
     <script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
     <!-- // Rockform -->
+     
 </head>
 
 <body>
@@ -22,16 +24,21 @@
             <h1>Rockform</h1>
             <p class="lead">Документация и демонстрация работы.</p>
         </div>
- <h3>test</h3>
-        <p>
-            <a class="btn btn-lg btn-default" data-bf-field_title="test" data-bf-config="test" href="#">Запустить пример</a>
-        </p>
-
+        <div style="display: none;">
+            <h3>test</h3>
+            <p>
+                <a class="btn btn-lg btn-default" data-bf-field_title="test" data-bf-config="test" href="#">Запустить пример</a>
+            </p>
+        </div>
         <h3>Простое модальное окно</h3>
         <p>
             <a class="btn btn-lg btn-default" data-bf-config="" href="#">Запустить пример</a>
         </p>
-     
+        <hr>
+        <h3>Модальное окно с параметром</h3>
+        <p>
+            <a class="btn btn-lg btn-default" data-bf-field_title="Переданный параметр" data-bf-config="" href="#">Запустить пример</a>
+        </p>
         <hr>
         <h3>Встроенная форма</h3>
         <br />
@@ -50,7 +57,7 @@
                 </div>
                 <div class="bf-row">
                     <label>Email:</label>
-                    <input class="bf-form-control" required="required" name="email" placeholder="Обязательное поле" type="email" value="" />
+                    <input class="bf-form-control" name="email" type="email" value="" />
                 </div>
                 <div class="bf-row">
                     <label>Комментарий:</label>
@@ -71,16 +78,34 @@
                 </div>
             </form>
         </div>
- 
-      <hr style="clear:both;">
+        <hr style="clear:both;">
         <h2>Документация</h2>
+        <ul class="list-unstyled">
+            <li><a href="#d1">1. Описание</a></li>
+            <li><a href="#d2">2. Как подключить скрипт</a></li>
+            <li><a href="#d3">3. Где хранятся настройки</a></li>
+            <li><a href="#d4">4. Вызов для встроенной формы на странице</a></li>
+            <li><a href="#d5">5. Вызов для всплывающего окна</a></li>
+            <li><a href="#d6">6. Шаблон отправки на почту</a></li>
+            <li><a href="#d7">7. Пользовательский класс расширения функциональности</a></li>
+            <li><a href="#d8">8. Системные требования</a></li>
+            <li><a href="#d9">9. Отправка через SMTP</a></li>
+
+        </ul>
+
+ <h3 id="d1">1. Описание</h3>
         
-       
-       
+        <p>Основные характеристики формы:</p>
+        <ul>
+            <li>Поддержка неорганиченного числа форм на одной странице.</li>
+            <li>Подключение практически любой формы на сайте.</li>
+            <li>Поддержка модального окна.</li>
+            <li>Поддержка капчи и защита от CSRF.</li>
+            <li>Работа через SMTP.</li>
+        </ul>
 
-        <h3>Как подключить</h3>
-
-        <h4>  1. Подключить скрипты в указанной последовательности</h4>
+        <h3 id="d2">2. Как подключить скрипт</h3>
+        <p>Подключить скрипты в указанной последовательности</p>
         <pre><code>&lt;!-- Rockform --&gt;
     &lt;link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
     &lt;script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"&gt;&lt;/script&gt;
@@ -88,51 +113,88 @@
 </code></pre>
 
 
-        <h4> 2. Вызов для встроенной формы на странице</h4>
-        <p>Для подключения достаточно навесить на форму атрибут <strong>data-bf-config=""</strong> и передать ему название конфигурации.</p>
-        <p>По умолчанию, при пустом вызове конфигурации, она будет браться из папки <strong>/configs/default</strong>. Можно создать сколько угодно конфигураций, просто копируя папку <strong>default</strong> с другим названием. </p>
-        <p>Поддерживается наследование. Например в новой конфигурации можно не указывать почту получателя, она возьмётся из папки - <strong>default</strong>.</p>
-        <h4>3. Вызов всплывающего окна</h4>
 
-        <p>Нужно добавить атрибут <strong>data-bf-config=""</strong> на любой тег, кроме формы, по нажатию на который ожидается вызов всплывающего окна.</p>
-        <p>В всплывающую форму можно передать параметры через data-атрибуты, например: </p>
-        <pre><code>data-bf-field-title="Параметр title"</code></pre>
-        <p>В шаблоне отправки на почту можно будет добавить переменную <strong>{{bf_field_title}}</strong>, в которой будет передаваемое содержимое. Стоит учесть, что здесь используется нижнее подчёркивание.</p>
+       <h3 id="d3">3. Где хранятся настройки</h3>
+            <p>Настройки хранятся в <a href="https://ru.wikipedia.org/wiki/.ini">.ini</a> формате и находятся в файле <strong>config.php</strong>.</p>
+    
+        <p>Для подключения формы на странице достаточно навесить на неё атрибут: <strong>data-bf-config=""</strong> и передать ему название конфигурации.</p>
 
-        <p>В шаблоне формы будет доступен класс <strong>.bf-field-title</strong>, в который будет передаваться значение заданной переменной.</p>
+         <p class="text-muted">Пример</p>
 
-        <p>Пример:</p>
-        <pre><code>&lt;p class="bf-field-title"&gt;Тут будет значение.&lt;/p&gt;
-</code></pre>
-        <p>Где <strong>title</strong> можно заменить на своё название.</p>
-        <p>Также доступны два системных класса:</p>
-        <pre><code>.bf-page-link - адрес страницы оформления формы
-.bf-page-h1 - тег H1 страницы оформления формы
-</code></pre>
+         <pre><code>data-bf-config="Название_конфигурации"</code></pre>
+       
+        <p>Название конфигурации совпадает с именем папки в директории <strong>/configs</strong>. По умолчанию, при пустом вызове, настройки берутся из <strong>/configs/default/</strong>. Можно создать сколько угодно конфигураций, просто копируя папку <strong>default</strong> с другим названием и меняя параметры на свои. </p>
 
-
- <p>На почте они доступны, как: {{bf_page_link}} и {{bf_page_h1}} соответственно.</p>
+        <p>Важной характеристикой является поддержка наследования. Например, в новой конфигурации можно не указывать почту получателя, она возьмётся из папки по умолчанию: <strong>/configs/default</strong>.</p>
  
-        <h4>4. Что внутри</h4>
-        <ul>
-            <li>config.php - конфигурационный файл. Внутри него комментарии для настройки.</li>
-            <li>/templates/report.html - шаблон отправки на почту. В качестве шаблона для полей используется конструкция <strong>{{название_поля}}</strong>. Поддерживает работу с шаблонизатором Twig.</li>
-            <li>/templates/form.html - форма для всплывающего окна.</li>
-            <li>/model/events.class.php - php-класс, расширяющий функционал формы.</li>
+
+        <h3 id="d4"> 4. Вызов для встроенной формы на странице</h3>
+
+        <p>Для подключения существующей формы на странице достаточно тегу <strong>form</strong> добавить атрибут с названием конфигурации: <strong>data-bf-config=""</strong>. Можно оставить пустым, тогда конфиграции возьмётся из папки по умолчанию: <strong>/configs/default</strong>. </p>
+
+
+
+        <h3 id="d5">5. Вызов для всплывающего окна</h3>
+
+        <p>Шаблон всплывающего окна хранится в папке <strong>/templates/form_popup.html</strong>. В нём можно передать любой html код с формой, он подхватится автоматически. Также есть поддержка шаблонизатора Twig.</p>
+
+        <p>Для вызова всплывающего окна нужно добавить атрибут <strong>data-bf-config=""</strong> на любой тег, кроме формы.</p>
+
+        <p>В всплывающую форму можно передать параметры через data-атрибуты, например: </p>
+
+        <pre><code>data-bf-field_title="Переданный параметр"</code></pre>
+
+        <p>Где <strong>title</strong> можно заменить на своё название.</p>
+
+        <p>Стоит учесть, что здесь обязательно нужно использовать нижнее подчёркивание.</p>
+
+        <p>Переданная переменная будет доступна как: <strong>{{field_title}}</strong> во всех шаблонах, таких как отправка на почту и всплывающей формы.</p>
+
+
+        <h3 id="d6">6. Шаблон отправки на почту</h3>
+        <p>Шаблон лежит в папке <strong>/templates/report_on_mail.html</strong> выбранной конфигурации.</p>
+        <p>В качестве шаблона для полей используется конструкция <strong>{{название_поля}}</strong>. Поддерживает работу с шаблонизатором Twig.</p>
+
+        <p>Также доступны две системные перенные: адрес страницы оформления формы - <strong>{{bf_page_link}}</strong> и тег <strong>h1</strong> страницы оформления формы - <strong>{{bf_page_h1}}</strong> .</p>
+
+        <h3 id="d7">7. Пользовательский класс расширения функциональности</h3>
+            <p>Для расширения фунциональности, например, для записи данных из формы в базу данных существует класс расширения.</p>
+            <p>Класс находится по пути <strong>/model/events.class.php</strong></p> 
         </ul>
 
-
-           
- <h3> Системные требования</h3>
+        <h3 id="d8">8. Системные требования</h3>
         <ul>
             <li>PHP5 &gt;= 5.2.0</li>
-         
         </ul>
 
-smtp
+        <h3 id="d9">9. Отправка через SMTP</h3>
+ 
+       <p>Рассмотрим передачу параметров для Yandex. Остальные можно настроить по аналогии.</p>
+        
 
+        <pre><code>; Почта, которая будет указана в качестве адреса отправителя. Совпадает с пользователем SMTP.
+from_email = your_mail@yandex.ru
 
-            <br /> <br />  
+;Адрес SMTP сервера
+Host = smtp.yandex.ru  
+
+;Включение SMTP авторизации
+SMTPAuth = true 
+
+;SMTP пользователь  
+Username = your_mail@yandex.ru
+
+; SMTP пароль 
+Password =  
+
+; Включение шифрования TLS, также доступен `ssl`
+SMTPSecure = ssl
+
+; TCP порт
+Port = 465;</code></pre>
+
+        <br />
+        <br />
     </div>
     <!-- /container -->
 </body>

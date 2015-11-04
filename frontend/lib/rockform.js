@@ -15,9 +15,9 @@
         }
     }
 
-
     (function($) {
         "use strict";
+
 
         var bf_path = '/rockform/init.php';
 
@@ -74,20 +74,20 @@
                             $('.bf-modal_container a').after(xhr);
                             $('.bf-loading').remove();
 
-                            $('.bf-modal, .bf-fixed-overlay').animate({'opacity': "1"}, 400);
+                            $('.bf-modal, .bf-fixed-overlay').animate({
+                                'opacity': "1"
+                            }, 400);
 
-                            $(".bf-img-capcha").off();
                             bf.bind_event_capcha(); //set refresh for click image
                             bf.update_capcha();
+                            $("form[data-bf-config]").off(); //destruct form
 
-                            $("form[data-bf-config]").off();
                             bf.init_form(config, attributes);
 
                         }
                     })
                 });
-
-                $('form[data-bf-config]').off();
+                $("form[data-bf-config]").off(); //reset event popup for form
             },
             get_custom_popup_attributes: function(button) {
 
@@ -97,7 +97,7 @@
                 if (button.length) {
                     $.each(button[0].attributes, function(index, attr) {
                         attr_el = attr.name;
-                        if (/data\-bf-field/.test(attr_el)) {
+                        if (/data\-bf\-field/.test(attr_el)) {
                             attr_el = attr_el.replace('data-bf-', '');
                             attributes[attr_el] = attr.value;
                         }
@@ -113,6 +113,9 @@
             bind_close_popup: function() {
                 $(".bf-modal-close, .bf-fixed-overlay").on("click", function() {
                     $(".bf-fixed-overlay").remove();
+
+                    $("form[data-bf-config]").off(); //destruct form
+                    bf.init_form();
                 });
 
                 $(".bf-modal").on("click", function(e) {
@@ -120,7 +123,9 @@
                 });
             },
             bind_event_capcha: function() {
-                $("[src*='" + bf_path + "?type=capcha']").on("click", function() {
+                var capcha = $("[src*='" + bf_path + "?type=capcha']");
+                capcha.off();
+                capcha.on("click", function() {
                     bf.update_capcha();
                 });
             },
@@ -129,7 +134,7 @@
             },
             init_form: function(config_popup, attributes) {
 
-                $('form[data-bf-config]').on('submit', function(e) {
+                $('form[data-bf-config], .bf-modal form').on('submit', function(e) {
                     e.preventDefault();
 
                     var options = {
@@ -150,28 +155,93 @@
                         config = config_popup;
                     }
 
-                    $.post(
-                        bf_path, {
-                            'type': 'token',
-                            'bf-config': config
-                        },
-                        function(data) {
-                            $('[name="bf-config"]').remove();
-                            $('[name="bf-token"]').remove();
+                    //validation
 
-                            //add page info
-                            var field_h1 = $('h1').html();
-                            if (typeof field_h1 !== 'undefined' || field_h1.length > 0) {
-                                form.append('<input name="field_page_h1" type="hidden" value="' + field_h1 + '" />');
+                    var validation = bf.validation(form);
+
+                    if (validation) {
+                        $.post(
+                            bf_path, {
+                                'type': 'validation',
+                                'bf-config': config
+                            },
+                            function(data) {
+                                $('[name="bf-config"]').remove();
+                                $('[name="bf-token"]').remove();
+
+                                if (typeof attributes == 'undefined' || attributes.length < 1) {
+                                    var attributes = [];
+                                }
+
+                                $.each(attributes, function(index, attr) {
+                                    form.prepend('<input name="' + index + '" type="hidden" value="' + attr + '" />');
+                                });
+
+                                form.prepend('<input name="bf-config" type="hidden" value="' + config + '" />');
+                                form.prepend('<input name="bf-token" type="hidden" value="' + data['token'] + '" />');
+
+                                form.ajaxSubmit(options); //set submit form
                             }
-                            form.append('<input name="field_page_link" type="hidden" value="' + document.location.href + '" />');
-                            form.append('<input name="bf-config" type="hidden" value="' + config + '" />');
-                            form.append('<input name="bf-token" type="hidden" value="' + data['token'] + '" />');
-
-                            form.ajaxSubmit(options); //set submit form
-                        }
-                    );
+                        );
+                    }
                 });
+            },
+            tooltip: function(el) {
+                /*
+               // var p = el.position();
+                var o =  el.offset();
+
+               // console.log(p);
+                console.log(o);
+                var style = 'style="position: absolute; left: '+o['left']+'; right: '+o['top']+';"'
+                form.append('<div '+style+' class="tooltip">test</div>');
+                */
+            },
+            validation: function(form) {
+
+                return true;
+                /*
+                var valid = false;
+
+                $.each($('input, select, textarea', form), function(element) {
+
+                    var value = $(this).val();
+                    var pattern = $(this).data('bf-valid-pattern');
+                    var required = $(this).data('bf-valid-required');
+
+                    var err_msg = $(this).data('bf-valid-error-msg');
+                    if (typeof err_msg == 'undefined' || err_msg.length < 1) {
+                        err_msg = 'Пожалуйста, введите верное значение!';
+                    }
+
+                    if (value.length > 0) {
+                        if (typeof pattern == 'undefined' || pattern.length < 1) {
+
+                        } else {
+                              console.log($(this).val());
+                            console.log($(this).data('bf-valid-pattern'));
+
+                            var pattern = new RegExp(pattern, 'gi');
+
+                            if (pattern.test(value)) {
+                                console.log('Валидно');
+                                bf.tooltip($(this));
+                            } else {
+                                console.log(err_msg);
+                            }
+                        }
+                    } else {
+
+                        var err_msg_required = 'Пожалуйста, заполните это поле.';
+
+                        if (parseInt(required) > 0) {
+                            console.log(err_msg_required);
+                        }
+                    }
+                });
+
+                return valid;
+                */
             },
             show_response: function(responseText, statusText, xhr, $form) {
 
@@ -180,6 +250,7 @@
 
                 if (responseText['status'] > 0) {
                     $form.hide();
+
                     bf.update_capcha();
 
                     setTimeout(

@@ -44,8 +44,8 @@ class Rockform extends Events  {
     		 	$out = $this->set_base_form();
     		break; 
 
-    		case 'token':
-    			$out = $this->set_json_encode($this->set_token());
+    		case 'validation':
+    			$out = $this->set_json_encode($this->validation());
     		break;
 			
 			default:  
@@ -60,6 +60,10 @@ class Rockform extends Events  {
 
 		$captcha = new KCAPTCHA();
 		$_SESSION['captcha_keystring'] = $captcha->getKeyString();
+	}
+
+	private function validation() {
+		return $this->set_token();
 	}
  
 	private function set_token() {
@@ -88,9 +92,8 @@ class Rockform extends Events  {
 			$this->before_success_send_form($field);
 
 			$to = $this->config['to'];
-			$mail_send = $this->config['mail_send'];
 
-			if(!empty($mail_send)) {
+			if($this->config['mail_send'] > 0) {
 				if(!empty($to)) {
 					$body = $this->set_report_form();
 
@@ -273,19 +276,18 @@ class Rockform extends Events  {
 			$mail->addAddress($email, '');
 		}
 
-		//smtp
- //$mail->SMTPDebug = 3;  
-$mail->isSMTP();                                      // Set mailer to use SMTP
-$mail->Host = 'smtp.yandex.ru';  // Specify main and backup SMTP servers
-$mail->SMTPAuth = true;                               // Enable SMTP authentication
-$mail->Username = '';                 // SMTP username
+		if($this->config['SMTPAuth']) {
+ 			//$mail->SMTPDebug = 3;
 
-$mail->Password = '';                           // SMTP password
-$mail->SMTPSecure = "ssl"; 
-//$mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-$mail->Port = 465;                                    // TCP port to connect to
-		 
-	
+			$mail->isSMTP(); // Set mailer to use SMTP
+			$mail->Host = $this->config['Host'];  // Specify main and backup SMTP servers
+			$mail->SMTPAuth = $this->config['SMTPAuth']; // Enable SMTP authentication
+			$mail->Username = $this->config['Username']; // SMTP username
+			$mail->Password = $this->config['Password']; // SMTP password
+			$mail->SMTPSecure = $this->config['SMTPSecure']; // Enable TLS encryption, `ssl` also accepted                           
+			$mail->Port = $this->config['Port']; // TCP port to connect to
+		}
+
 		return $mail->send();
 	}
 

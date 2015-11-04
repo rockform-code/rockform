@@ -1,7 +1,4 @@
-/*
- * Rockform v.3 
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
+
 .bf-content {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -456,3 +453,7 @@ textarea.bf-form-control {
     padding: 2%;
   }
 }
+
+
+
+ 

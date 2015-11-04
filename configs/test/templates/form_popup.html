@@ -2,18 +2,37 @@
     <div class="bf-header">
         Форма отправки сообщения! {{field_title}}
     </div>
-    <form data-bf-config="" action="" method="post">
+    <form action="" method="post">
         <div class="bf-row">
             <label>Имя:</label>
-            <input class="bf-form-control" name="name" placeholder="Обязательное поле" type="text" value="" />
+            <input title="This will be the tooltip text." data-bf-valid-pattern="[а-я ]+{5,}" data-bf-valid-error-msg="Введите буквы" data-bf-valid-required="1" class="bf-form-control" name="name" placeholder="Иванов Иван" type="text" value="" />
+        </div>
+        <div class="bf-row">
+            <label>да:</label>
+            <input data-bf-valid-pattern="[А-Яа-яЁё ]+" data-bf-valid-error-msg="Введите буквы" data-bf-valid-required="1" class="bf-form-control" name="type" placeholder="Иванов Иван" type="checkbox" value="" />
+        </div>
+        
+        <div class="bf-row">
+            <label>нет:</label>
+            <input data-bf-valid-pattern="[А-Яа-яЁё ]+" data-bf-valid-error-msg="Введите буквы" data-bf-valid-required="1" class="bf-form-control" name="type" placeholder="Иванов Иван" type="checkbox" value="" />
+        </div>
+ 
+
+        <div class="bf-row">
+            <label>Выберите услугу:</label>
+            <select name="" id="">
+             <option value=""></option>
+                <option value="1">Москва</option>
+                 <option value="2">Москва</option>
+            </select>
         </div>
         <div class="bf-row">
             <label>Телефон:</label>
-            <input class="bf-form-control" name="phone" placeholder="Обязательное поле" type="text" value="" />
+            <input  data-bf-valid-pattern="[0-9 ]{5,}" data-bf-valid-error-msg="Введите цифры"   class="bf-form-control" name="phone" placeholder=""   type="text" value="" />
         </div>
         <div class="bf-row">
             <label>Комментарий:</label>
-            <textarea class="bf-form-control" cols="40" rows="5" name="comment"></textarea>
+            <textarea class="bf-form-control" cols="40" rows="5" name=""></textarea>
         </div>
         <div class="bf-row">
             <label>Прикрепить файлы:</label>
