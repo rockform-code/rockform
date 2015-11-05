@@ -187,7 +187,7 @@
                 });
             },
             tooltip: function(el) {
-                /*
+             
                // var p = el.position();
                 var o =  el.offset();
 
@@ -195,12 +195,12 @@
                 console.log(o);
                 var style = 'style="position: absolute; left: '+o['left']+'; right: '+o['top']+';"'
                 form.append('<div '+style+' class="tooltip">test</div>');
-                */
+                
             },
             validation: function(form) {
 
                 return true;
-                /*
+                
                 var valid = false;
 
                 $.each($('input, select, textarea', form), function(element) {
@@ -241,7 +241,7 @@
                 });
 
                 return valid;
-                */
+                
             },
             show_response: function(responseText, statusText, xhr, $form) {
 

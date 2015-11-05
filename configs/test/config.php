@@ -43,7 +43,32 @@ mail_send = 1
 
 [smtp]
 
-smtp_mode = disabled
-smtp_host =
-smtp_port =
-smtp_username =
+;Specify main and backup SMTP servers
+;Адрес SMTP сервера
+
+Host =
+
+;Enable SMTP authentication
+;Включение SMTP авторизации
+
+SMTPAuth =
+
+;SMTP username
+;SMTP пользователь
+
+Username =
+
+; SMTP password
+; SMTP пароль
+
+Password =
+
+; Enable TLS encryption, `ssl` also accepted
+; Включение шифрования TLS, также доступен `ssl`
+
+SMTPSecure = ssl
+
+; TCP port to connect to
+; TCP порт
+
+Port = 465;

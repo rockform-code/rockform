@@ -159,6 +159,10 @@ class Rockform extends Events  {
 
 				switch ($type) {
 
+					case 'required_field':
+						$err = $this->check_required_field();
+					break; 
+
 					case 'capcha':
     					$err = $this->check_capcha();
     				break;
