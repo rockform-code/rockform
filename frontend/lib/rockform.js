@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.0
+ * @version 3.2
  */
 
 // AMD support
@@ -43,6 +43,8 @@
             bind_event_popup: function() {
                 $('[data-bf-config]').on("click", function(e) {
                     e.preventDefault();
+
+                    $('.bf-tooltip').remove();
 
                     var config = $(this).data("bf-config");
                     if (typeof config == 'undefined' || config.length < 1) {
@@ -186,62 +188,118 @@
                     }
                 });
             },
-            tooltip: function(el) {
-             
-               // var p = el.position();
-                var o =  el.offset();
+            tooltip: function(el, form, err_msg) {
 
-               // console.log(p);
-                console.log(o);
-                var style = 'style="position: absolute; left: '+o['left']+'; right: '+o['top']+';"'
-                form.append('<div '+style+' class="tooltip">test</div>');
-                
+                if (err_msg.length > 0) {
+
+                    bf.set_tooltip(el, form, err_msg);
+
+                    $(window).resize(function() {
+                        bf.set_tooltip(el, form, err_msg);
+                    });
+                } else {
+                    var id = el.attr('name').replace('[', '').replace(']', '');
+                    $('.bf-tooltip-' + id).remove();
+                }
+            },
+            set_tooltip: function(el, form, err_msg) {
+
+                var min_dist = 20;
+
+                var id = el.attr('name').replace('[', '').replace(']', '');
+                $('.bf-tooltip-' + id).remove();
+
+                var o = el.offset();
+                var h = el.outerHeight();
+                var w = el.outerWidth();
+
+                el.after(
+                    '<div class="bf-tooltip bf-tooltip-' + id + '"><div class="bf-arrow"></div>' + err_msg + '</div>'
+                );
+
+                var popup_el = $('.bf-tooltip-' + id);
+                var w_tooltip = popup_el.outerWidth();
+                var default_position =  o['left'] + w / 4 * 3;
+
+                var pos = default_position + w_tooltip + min_dist;
+                var pos_min = $(window).outerWidth() - min_dist - w_tooltip;
+
+                if(pos > $(window).outerWidth()) {
+                    default_position = pos_min;
+                }
+
+                if(pos_min <= o['left']) {
+                    default_position = o['left'];
+                    popup_el.width(w - min_dist);
+                }
+
+                //console.log(($(window).width() - min_dist) +', '+ w  );
+
+                popup_el.offset({
+                    top: o['top']  + h  ,
+                    left: default_position
+                });
+
             },
             validation: function(form) {
 
-                return true;
-                
-                var valid = false;
+                var valid = 0;
+                var err_msg_required = 'Пожалуйста, заполните это поле.';
+                var el;
+                var err_msg, err_msg_pattern;
+                var required, pattern, value;
 
                 $.each($('input, select, textarea', form), function(element) {
+                    el = $(this);
+                    err_msg = '';
 
-                    var value = $(this).val();
-                    var pattern = $(this).data('bf-valid-pattern');
-                    var required = $(this).data('bf-valid-required');
+                    value = el.val();
+                    pattern = el.data('bf-valid-pattern');
+                    required = el.data('bf-valid-required');
 
-                    var err_msg = $(this).data('bf-valid-error-msg');
-                    if (typeof err_msg == 'undefined' || err_msg.length < 1) {
-                        err_msg = 'Пожалуйста, введите верное значение!';
+                    //set default error message
+                    err_msg_pattern = el.data('bf-valid-error-msg');
+                    if (typeof err_msg_pattern == 'undefined' || err_msg_pattern.length < 1) {
+                        err_msg_pattern = 'Пожалуйста, введите верное значение!';
                     }
 
                     if (value.length > 0) {
-                        if (typeof pattern == 'undefined' || pattern.length < 1) {
+                        if (typeof pattern == 'undefined') {
 
                         } else {
-                              console.log($(this).val());
-                            console.log($(this).data('bf-valid-pattern'));
+                           // console.log(el.val());
+                            //console.log(el.data('bf-valid-pattern'));
 
-                            var pattern = new RegExp(pattern, 'gi');
-
+                            var pattern = new RegExp(pattern, 'g');
                             if (pattern.test(value)) {
-                                console.log('Валидно');
-                                bf.tooltip($(this));
+
                             } else {
-                                console.log(err_msg);
+                                err_msg = err_msg_pattern;
                             }
                         }
                     } else {
 
-                        var err_msg_required = 'Пожалуйста, заполните это поле.';
+                        if (typeof required == 'undefined') {
 
-                        if (parseInt(required) > 0) {
-                            console.log(err_msg_required);
+                        } else {
+                            if (parseInt(required) > 0) {
+                                err_msg = err_msg_required;
+                            }
                         }
                     }
+
+                    bf.tooltip(el, form, err_msg);
+                    if (err_msg.length > 0) {
+                        valid = valid + 1;
+                    }
+
                 });
 
-                return valid;
-                
+                if (parseInt(valid) > 0) {
+                    return false;
+                } else {
+                    return true;
+                }
             },
             show_response: function(responseText, statusText, xhr, $form) {
 

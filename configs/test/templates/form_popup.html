@@ -5,22 +5,27 @@
     <form action="" method="post">
         <div class="bf-row">
             <label>Имя:</label>
-            <input title="This will be the tooltip text." data-bf-valid-pattern="[а-я ]+{5,}" data-bf-valid-error-msg="Введите буквы" data-bf-valid-required="1" class="bf-form-control" name="name" placeholder="Иванов Иван" type="text" value="" />
+            <input title="" data-bf-valid-pattern="[а-я ]{5,}" data-bf-valid-error-msg="Пожалуйста, введите не менее 5 букв!" data-bf-valid-required="1" class="bf-form-control" name="name" placeholder="Обязательное поле" type="text" value="" />
         </div>
         <div class="bf-row">
             <label>да:</label>
-            <input data-bf-valid-pattern="[А-Яа-яЁё ]+" data-bf-valid-error-msg="Введите буквы" data-bf-valid-required="1" class="bf-form-control" name="type" placeholder="Иванов Иван" type="checkbox" value="" />
+            <input data-bf-valid-required="1" class="bf-form-control" name="type" placeholder="Иванов Иван" type="checkbox" value="" />
         </div>
         
         <div class="bf-row">
             <label>нет:</label>
-            <input data-bf-valid-pattern="[А-Яа-яЁё ]+" data-bf-valid-error-msg="Введите буквы" data-bf-valid-required="1" class="bf-form-control" name="type" placeholder="Иванов Иван" type="checkbox" value="" />
+            <input data-bf-valid-required="1" class="bf-form-control" name="type" placeholder="Иванов Иван" type="checkbox" value="" />
+        </div>
+
+        <div class="bf-row">
+            <label>нет:</label>
+            <input class="bf-form-control" name="email" placeholder=" " type="email" value="" />
         </div>
  
 
         <div class="bf-row">
             <label>Выберите услугу:</label>
-            <select name="" id="">
+            <select data-bf-valid-required="1" name="serv" id="">
              <option value=""></option>
                 <option value="1">Москва</option>
                  <option value="2">Москва</option>
@@ -28,7 +33,7 @@
         </div>
         <div class="bf-row">
             <label>Телефон:</label>
-            <input  data-bf-valid-pattern="[0-9 ]{5,}" data-bf-valid-error-msg="Введите цифры"   class="bf-form-control" name="phone" placeholder=""   type="text" value="" />
+            <input  data-bf-valid-pattern="[0-9 ]{5,}" data-bf-valid-error-msg="Введите 10 цифр"   class="bf-form-control" name="phone" placeholder=""   type="text" value="" />
         </div>
         <div class="bf-row">
             <label>Комментарий:</label>
@@ -36,7 +41,7 @@
         </div>
         <div class="bf-row">
             <label>Прикрепить файлы:</label>
-            <input class="bf-form-control" multiple="multiple" name="upload_file[]" type="file" />
+            <input data-bf-valid-pattern="[jpg]" data-bf-valid-error-msg="Только картинки" class="bf-form-control" multiple="multiple" name="upload_file[]" type="file" />
         </div>
         <div class="bf-row">
             <div class="bf-info-img">
