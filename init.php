@@ -2,7 +2,7 @@
 
 /**
 * Rockform - Simple, flexible ajax webform.
-* @version 3.2
+* @version 3.3
 */
 
 $debug = 1;
@@ -84,7 +84,7 @@ require_once BASE_FORM_PATH.'backend/lib/PHPMailer/PHPMailerAutoload.php';
 session_start();
 
 $config = array();
-$lang = array();
+$lexicon = array();
 
 $default_config_name = 'default';
 
@@ -122,11 +122,21 @@ if(!file_exists(BASE_FORM_PATH.'configs/'.$config_name.'/model/events.class.php'
 	require_once(BASE_FORM_PATH.'configs/'.$config_name.'/model/events.class.php');
 }
 
-if(!empty($config['used_lang'])) {
-	require_once(BASE_FORM_PATH.'backend/lexicon/'.$config['used_lang'].'.php');
+$config['used_lexicon'] = 'default';
+if(!empty($config['used_lexicon'])) {
+    $config_ini = file_get_contents(BASE_FORM_PATH.'backend/lexicon/'.$config['used_lexicon'].'.ini');
+    $config_ini = parse_ini_string($config_ini);
+
+    foreach ($config_ini as $key => $value) {
+        if(!empty($value)) {
+            $lexicon[$key] = $value;
+        }
+    }
 }
+
+
 
 require_once BASE_FORM_PATH.'backend/model/rockform.class.php';
 
-$roсkform = new rockform($config, $lang);
+$roсkform = new rockform($config, $lexicon);
 echo $roсkform->init();

@@ -2,30 +2,32 @@
 
 class Rockform extends Events  {
 
-	protected $config, $lang, $field; 
+	protected $config, $lexicon, $field; 
 
 	var $tmp_form_popup = 'form_popup.html';
 	var $tmp_report_on_mail = 'report_on_mail.html';
+	var $tmp_report_after_send_form = 'report_after_send_form.html';
 
-	function __construct($config = array(), $lang = array()) {
-		$this->config = $this->set_default_config($config, $lang);
-		$this->lang = $lang;
+	function __construct($config = array(), $lexicon = array()) {
+		$this->config = $this->set_default_config($config, $lexicon);
+		$this->lexicon = $lexicon;
 	}
 
-	private function set_default_config($config, $lang) {
+	private function set_default_config($config, $lexicon) {
 
- 		if(empty($config['subject'])) {
- 			$config['subject'] = $lang['main']['subject'];
- 		}
+ 		$config['subject'] = empty($config['subject']) ? $lexicon['subject'] : $config['subject'];
+ 		$config['from_email'] = empty($config['from_email']) ? $lexicon['from_email'] : $config['from_email'];
+ 		$config['from_name'] = empty($config['from_name']) ? $lexicon['from_name'] : $config['from_name'];
+ 		$config['used_lexicon'] = empty($config['used_lexicon']) ? 'default' : $config['used_lexicon'];
+ 		$config['disable_mail_send'] = empty($config['disable_mail_send']) ? '' : $config['disable_mail_send'];
 
- 		if(empty($config['from_email'])) {
- 			$config['from_email'] = $lang['main']['from_email'];
- 		}
-
- 		if(empty($config['from_name'])) {
- 			$config['from_name'] = $lang['main']['from_name'];
- 		}
-
+ 		$config['SMTPHost'] = empty($config['SMTPHost']) ? '' : $config['SMTPHost'];
+ 		$config['SMTPAuth'] = empty($config['SMTPAuth']) ? '' : $config['SMTPAuth'];
+ 		$config['SMTPUsername'] = empty($config['SMTPUsername']) ? '' : $config['SMTPUsername'];
+ 		$config['SMTPPassword'] = empty($config['SMTPPassword']) ? '' : $config['SMTPPassword'];
+ 	 	$config['SMTPSecure'] = empty($config['SMTPSecure']) ? 'ssl' : $config['SMTPSecure'];	
+		$config['SMTPPort'] = empty($config['SMTPPort']) ? 465 : $config['SMTPPort'];	
+ 
 		return $config;
 	}
 
@@ -37,7 +39,6 @@ class Rockform extends Events  {
 
  		switch ($type) {
  			case 'capcha':
-
  			return $this->set_capcha();
 
 			case 'form':
@@ -75,8 +76,8 @@ class Rockform extends Events  {
 	private function set_form_data() {
 
 		$out = array();
+
  		$field = array();
- 		 
 		foreach ($_POST as $key => $value) {
 			if(is_array($value)) {
 				$field[$key] = implode(', ',$value);
@@ -84,6 +85,7 @@ class Rockform extends Events  {
 				$field[$key] = $value;
 			}
 		}
+
 		$this->field = $field;
 
 		$error = $this->check_error();
@@ -92,22 +94,23 @@ class Rockform extends Events  {
 			$this->before_success_send_form($field);
 
 			$to = $this->config['to'];
-
-			if($this->config['mail_send'] > 0) {
+			$disable_mail_send = $this->config['disable_mail_send'];
+			
+			if(empty($disable_mail_send)) {
 				if(!empty($to)) {
 					$body = $this->set_report_form();
 
 					if($this->set_mail($body)) {
-						$out = $this->set_form_data_status(1, $this->lang['main']['success_email_send']);
+						$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
 					} else {
-						$out = $this->set_form_data_status(0, $this->lang['err']['email_send']);
+						$out = $this->set_form_data_status(0, $this->lexicon['email_send']);
 					}
 
 				} else {
-					$out = $this->set_form_data_status(0, $this->lang['err']['not_email']);
+					$out = $this->set_form_data_status(0, $this->lexicon['not_email']);
 				}
 			} else {
-				$out = $this->set_form_data_status(1, $this->lang['main']['success_email_send']);
+				$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
 			}
 
 			$this->after_success_send_form();
@@ -117,6 +120,12 @@ class Rockform extends Events  {
  		}
 
 		return $out;
+	}
+
+	private function set_server_name($tpl = '') {
+ 
+		return str_replace('{{SERVER_NAME}}', $_SERVER['SERVER_NAME'], $tpl);
+
 	}
 
 	private function set_report_form() {
@@ -129,11 +138,13 @@ class Rockform extends Events  {
 	}
 
 	private function set_base_form() {
- 
+
+		$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array();
+
 		Twig_Autoloader::register(true);
 		$loader = new Twig_Loader_Filesystem('configs/'.$this->config['name'].'/templates/');
 		$twig = new Twig_Environment($loader);
-		return $twig->render($this->tmp_form_popup, $_POST['attributes']);
+		return $twig->render($this->tmp_form_popup, $attributes);
  
 	}
 
@@ -142,48 +153,17 @@ class Rockform extends Events  {
 	}
 
 	private function check_error() {
+		$capcha = $this->config['capcha'];
 
-		$out = '';
-
-		$error_types = $this->config['error_type'];
-
-		if(!empty($error_types)) {
-
-			$error_types = explode(',',$error_types);
-
-			foreach ($error_types as $type) {
-
-				$type = trim($type);
-
-				$err = '';
-
-				switch ($type) {
-
-					case 'required_field':
-						$err = $this->check_required_field();
-					break; 
-
-					case 'capcha':
-    					$err = $this->check_capcha();
-    				break;
-
-					case 'spam':
-    					$err = $this->check_spam(); 
-    				break; 
-
-					default: break;
-				} 
-
-				if(!empty($err)) {
-					$out = $err;
-					break;
-				}
-			}
+		if($capcha > 0) {
+			$err = $this->check_capcha();
 		}
 
-		return $out;
-	}
+		$err = $this->check_spam(); 
 
+		return $err;
+	}
+ 
 	private function check_capcha() {
 		$out = '';
 
@@ -192,7 +172,7 @@ class Rockform extends Events  {
 		if(strcmp($_SESSION['captcha_keystring'], $this->field['capcha']) == 0){
 			
 		} else {
-			 $out = $this->set_form_data_status(0, $this->lang['err']['capcha']);
+			 $out = $this->set_form_data_status(0, $this->lexicon['capcha']);
 		}
 		return $out;
 	}
@@ -200,9 +180,9 @@ class Rockform extends Events  {
 	private function check_spam() {
 		$out = '';
 
-		if($this->checked_ajax()) { 
+		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') { 
 		} else {
-			$out = $this->set_form_data_status(0, $this->lang['err']['spam']);
+			$out = $this->set_form_data_status(0, $this->lexicon['spam']);
 		}
 
 		$token = isset($_POST['bf-token']) ? $_POST['bf-token'] : '';
@@ -211,41 +191,20 @@ class Rockform extends Events  {
 		if(!empty($token) && (strcmp($_SESSION['bf-token'], $token) == 0)) {
 			
 		} else {
-			$out = $this->set_form_data_status(0, $this->lang['err']['spam']);
+			$out = $this->set_form_data_status(0, $this->lexicon['spam']);
 		}
 
 		return $out;
 	}
-
-	private function checked_ajax() {
-  		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-  		 strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-	}
-
-	private function check_required_field() {
-		$out = '';
-
-		if(!empty($this->config['required_field'])) {
-			$this->config['required_field'] = explode(',', $this->config['required_field']);
-
-			foreach ($this->config['required_field'] as $value) {
-				$current = isset($_POST[trim($value)]) ? trim($_POST[trim($value)]) : '';
-				if(!isset($_POST[trim($value)]) || empty($current)) {
-					$out = $this->set_form_data_status(0, $this->lang['err']['required_field']);
-				}
-			} 
-		}
-		return $out;
-	}
-
+ 
 	protected function set_mail($body = '') {
 
 		$mail = new PHPMailer();
 
 		$mail->CharSet = 'utf-8';
 
-		$mail->From = $this->config['from_email'];
-		$mail->FromName = $this->config['from_name'];
+		$mail->From = $this->set_server_name($this->config['from_email']);
+		$mail->FromName = $this->set_server_name($this->config['from_name']);
 
 		$mail->isHTML(true);  
 		$mail->Subject = $this->config['subject'];
@@ -284,12 +243,12 @@ class Rockform extends Events  {
  			//$mail->SMTPDebug = 3;
 
 			$mail->isSMTP(); // Set mailer to use SMTP
-			$mail->Host = $this->config['Host'];  // Specify main and backup SMTP servers
+			$mail->Host = $this->config['SMTPHost'];  // Specify main and backup SMTP servers
 			$mail->SMTPAuth = $this->config['SMTPAuth']; // Enable SMTP authentication
-			$mail->Username = $this->config['Username']; // SMTP username
-			$mail->Password = $this->config['Password']; // SMTP password
+			$mail->Username = $this->config['SMTPUsername']; // SMTP username
+			$mail->Password = $this->config['SMTPPassword']; // SMTP password
 			$mail->SMTPSecure = $this->config['SMTPSecure']; // Enable TLS encryption, `ssl` also accepted                           
-			$mail->Port = $this->config['Port']; // TCP port to connect to
+			$mail->Port = $this->config['SMTPPort']; // TCP port to connect to
 		}
 
 		return $mail->send();
