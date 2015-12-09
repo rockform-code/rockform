@@ -89,6 +89,7 @@ class Rockform extends Events  {
 		$this->field = $field;
 
 		$error = $this->check_error();
+
 		if(empty($error)) {
 
 			$this->before_success_send_form($field);
@@ -153,13 +154,17 @@ class Rockform extends Events  {
 	}
 
 	private function check_error() {
+		$err = '';
+
 		$capcha = $this->config['capcha'];
 
 		if($capcha > 0) {
-			$err = $this->check_capcha();
+			$err = $this->check_capcha(); 
 		}
 
-		$err = $this->check_spam(); 
+		if(empty($err)) {
+			$err = $this->check_spam(); 
+		}
 
 		return $err;
 	}
@@ -169,11 +174,9 @@ class Rockform extends Events  {
 
 		$_SESSION['captcha_keystring'] = isset($_SESSION['captcha_keystring']) ? $_SESSION['captcha_keystring'] : '';
 		
-		if(strcmp($_SESSION['captcha_keystring'], $this->field['capcha']) == 0){
-			
-		} else {
-			 $out = $this->set_form_data_status(0, $this->lexicon['capcha']);
-		}
+		if(strcmp($_SESSION['captcha_keystring'], $this->field['capcha']) !== 0){
+			$out = $this->set_form_data_status(0, $this->lexicon['capcha']);
+		} 
 		return $out;
 	}
 
@@ -188,9 +191,7 @@ class Rockform extends Events  {
 		$token = isset($_POST['bf-token']) ? $_POST['bf-token'] : '';
 		$_SESSION['bf-token'] = isset($_SESSION['bf-token']) ? $_SESSION['bf-token'] : 0;
 
-		if(!empty($token) && (strcmp($_SESSION['bf-token'], $token) == 0)) {
-			
-		} else {
+		if(!empty($token) && (strcmp($_SESSION['bf-token'], $token) !== 0)) {
 			$out = $this->set_form_data_status(0, $this->lexicon['spam']);
 		}
 
