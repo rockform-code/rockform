@@ -2,7 +2,7 @@
 
 /**
 * Rockform - Simple, flexible ajax webform.
-* @version 3.3
+* @version 3.4
 */
 
 $debug = 1;
@@ -12,67 +12,105 @@ if($debug > 0) {
 	ini_set ('display_errors', 1);
 }
 
-define("BASE_FORM_PATH", $_SERVER['DOCUMENT_ROOT'].'/rockform/');
+if(!function_exists('parse_ini_string')){
+	function parse_ini_string($str = '', $flag = false) {
 
-require_once BASE_FORM_PATH.'backend/lib/Twig-1.18.1/lib/Twig/Autoloader.php';
-require_once BASE_FORM_PATH.'backend/lib/PHPMailer/PHPMailerAutoload.php';
+			if(empty($str)) return false;
 
-session_start();
+			$lines = explode("\n", $str);
+			$ret = Array();
+			$inside_section = false;
 
-$config = array();
-$lexicon = array();
+			foreach($lines as $line) {
 
-$default_config_name = 'default';
+					$line = trim($line);
 
-//get default params
-$config_ini = file_get_contents(BASE_FORM_PATH.'configs/'.$default_config_name.'/config.php');
-$config_ini = explode('?>', $config_ini);
-$config = parse_ini_string($config_ini[1]);
+					if(!$line || $line[0] == "#" || $line[0] == ";") continue;
 
-$config_name = isset($_REQUEST['bf-config']) ? preg_replace ("/[^a-zA-Z0-9_\-]/","", $_REQUEST['bf-config']) : '';
+					if($line[0] == "[" && $endIdx = strpos($line, "]")){
+							$inside_section = substr($line, 1, $endIdx-1);
+							continue;
+					}
 
-if(
-	!file_exists(BASE_FORM_PATH.'configs/'.$config_name.'/') ||
- 	empty($config_name)
-) {
-	$config_name = $default_config_name;
-} else {
-	$config_ini = file_get_contents(BASE_FORM_PATH.'configs/'.$config_name.'/config.php');
-	$config_ini = explode('?>',$config_ini);
-	$config_ini = parse_ini_string($config_ini[1]);
+					if(!strpos($line, '=')) continue;
 
-	foreach ($config_ini as $key => $value) {
-		if(!empty($value)) {
-			$config[$key] = $value;
-		}
+					$tmp = explode("=", $line, 2);
+
+					if($inside_section) {
+
+							$key = rtrim($tmp[0]);
+							$value = ltrim($tmp[1]);
+
+							if(preg_match("/^\".*\"$/", $value) || preg_match("/^'.*'$/", $value)) {
+									$value = mb_substr($value, 1, mb_strlen($value) - 2);
+							}
+
+							$t = preg_match("^\[(.*?)\]^", $key, $matches);
+							if(!empty($matches) && isset($matches[0])) {
+
+									$arr_name = preg_replace('#\[(.*?)\]#is', '', $key);
+
+									if(
+										!isset($ret[$inside_section][$arr_name]) ||
+									 	!is_array($ret[$inside_section][$arr_name])
+									 ) {
+											$ret[$inside_section][$arr_name] = array();
+									}
+
+									if(isset($matches[1]) && !empty($matches[1])) {
+											$ret[$inside_section][$arr_name][$matches[1]] = $value;
+									} else {
+											$ret[$inside_section][$arr_name][] = $value;
+									}
+
+							} else {
+									$ret[$inside_section][trim($tmp[0])] = $value;
+							}
+
+					} else {
+
+							$ret[trim($tmp[0])] = ltrim($tmp[1]);
+
+					}
+			}
+
+			if($flag === false) {
+					$temp_ret = array();
+					foreach ($ret as $ret_block) {
+						foreach ($ret_block as $ret_item_key => $ret_item) {
+							$temp_ret[$ret_item_key] = $ret_item;
+						}
+					}
+					$ret = $temp_ret;
+			}
+
+			return $ret;
 	}
 }
 
-$config['name'] = $config_name;
-
-//add custom user php class
-
-if(!file_exists(BASE_FORM_PATH.'configs/'.$config_name.'/model/events.class.php')) {
-	require_once(BASE_FORM_PATH.'configs/'.$default_config_name.'/model/events.class.php');
-} else {
-	require_once(BASE_FORM_PATH.'configs/'.$config_name.'/model/events.class.php');
+if(!function_exists('hash')){
+	function hash ($algo = '', $data = '') {
+		return md5($data);
+	}
 }
 
-$config['used_lexicon'] = 'default';
-if(!empty($config['used_lexicon'])) {
-    $config_ini = file_get_contents(BASE_FORM_PATH.'backend/lexicon/'.$config['used_lexicon'].'.ini');
-    $config_ini = parse_ini_string($config_ini);
-
-    foreach ($config_ini as $key => $value) {
-        if(!empty($value)) {
-            $lexicon[$key] = $value;
-        }
-    }
+if(!function_exists('ctype_alpha')){
+	function ctype_alpha() {
+		return true;
+	}
 }
 
+if(!function_exists('json_encode')){
+	function json_encode($data) {
+		require_once BASE_FORM_PATH.'backend/lib/Services_JSON-1.0.3/JSON.php';
+		$json = new Services_JSON();
+		return $json->encode($data);
+	}
+}
 
+define("BASE_FORM_PATH", $_SERVER['DOCUMENT_ROOT'].'/rockform/');
+session_start();
 
 require_once BASE_FORM_PATH.'backend/model/rockform.class.php';
-
-$roсkform = new rockform($config, $lexicon);
-echo $roсkform->init();
+$rockform = new rockform();
+echo $rockform->init();

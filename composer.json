@@ -2,12 +2,17 @@
     "name": "rockncoding/rockform",
     "description": "Simple ajax contact form",
     "license": "Apache 2.0",
+    "config": {
+       "vendor-dir": "backend/lib"
+    },
     "authors": [
         {
             "name": "BaryshevRS"
         }
     ],
     "require": {
-        "php": ">=5.2.17"
+        "php": ">=5.2.17",
+        "phpmailer/phpmailer": "^5.2",
+        "twig/twig": "^1.23"
     }
 }

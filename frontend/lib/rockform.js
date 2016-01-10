@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.3
+ * @version 3.4
  */
 
 // AMD support

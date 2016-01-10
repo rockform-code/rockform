@@ -1,19 +1,66 @@
 <?php
 
-class Rockform extends Events  {
+class Rockform {
 
-	protected $config, $lexicon, $field; 
+	protected $config, $lexicon, $field;
 
 	var $tmp_form_popup = 'form_popup.html';
 	var $tmp_report_on_mail = 'report_on_mail.html';
 	var $tmp_report_after_send_form = 'report_after_send_form.html';
 
-	function __construct($config = array(), $lexicon = array()) {
-		$this->config = $this->set_default_config($config, $lexicon);
-		$this->lexicon = $lexicon;
+	function __construct() {
+		$this->set_default_config();
+		//require_once BASE_FORM_PATH.'vendor/autoload.php';
+
+		require_once BASE_FORM_PATH.'backend/lib/twig/twig/lib/Twig/Autoloader.php';
+		require_once BASE_FORM_PATH.'backend/lib/phpmailer/phpmailer/PHPMailerAutoload.php';
+
+		if(
+			!file_exists(BASE_FORM_PATH.'configs/'.$this->config['name'].'/events.php')
+		) {
+			require_once BASE_FORM_PATH.'configs/default/events.php';
+		} else {
+			require_once BASE_FORM_PATH.'configs/'.$this->config['name'].'/events.php';
+		}
+
 	}
 
-	private function set_default_config($config, $lexicon) {
+	private function set_default_config() {
+
+		$config = array();
+		$lexicon = array();
+
+		$config_name = $this->get_config_name();
+		$config = $this->parse_config_ini_file($config_name);
+		$config['name'] = $config_name;
+
+		if(!preg_match('~^default$~', $config['name'])) {
+			$config_custom = $this->parse_config_ini_file($config['name']);
+			if(!empty($config_custom) && is_array($config_custom)) {
+				//replace default value
+				foreach ($config_custom as $key => $value) {
+					if(!empty($value)) {
+						$config[$key] = $value;
+					}
+				}
+			}
+		}
+
+		//set lexicon
+
+		if(empty($config['used_lexicon'])) {
+			$config['used_lexicon'] = 'default';
+		}
+
+		$config_ini = parse_ini_file(BASE_FORM_PATH.'backend/lexicon/'.$config['used_lexicon'].'.ini');
+
+		foreach ($config_ini as $key => $value) {
+					if(!empty($value)) {
+							$lexicon[$key] = $value;
+					}
+		}
+
+		$this->lexicon = $lexicon;
 
  		$config['subject'] = empty($config['subject']) ? $lexicon['subject'] : $config['subject'];
  		$config['from_email'] = empty($config['from_email']) ? $lexicon['from_email'] : $config['from_email'];
@@ -22,20 +69,46 @@ class Rockform extends Events  {
  		$config['disable_mail_send'] = empty($config['disable_mail_send']) ? '' : $config['disable_mail_send'];
 
  		$config['SMTPHost'] = empty($config['SMTPHost']) ? '' : $config['SMTPHost'];
- 		$config['SMTPAuth'] = empty($config['SMTPAuth']) ? '' : $config['SMTPAuth'];
+ 		$config['SMTPAuth'] = empty($config['SMTPAuth']) ?  '' : $config['SMTPAuth'];
  		$config['SMTPUsername'] = empty($config['SMTPUsername']) ? '' : $config['SMTPUsername'];
  		$config['SMTPPassword'] = empty($config['SMTPPassword']) ? '' : $config['SMTPPassword'];
- 	 	$config['SMTPSecure'] = empty($config['SMTPSecure']) ? 'ssl' : $config['SMTPSecure'];	
-		$config['SMTPPort'] = empty($config['SMTPPort']) ? 465 : $config['SMTPPort'];	
- 
-		return $config;
+ 	 	$config['SMTPSecure'] = empty($config['SMTPSecure']) ? 'ssl' : $config['SMTPSecure'];
+		$config['SMTPPort'] = empty($config['SMTPPort']) ? 465 : $config['SMTPPort'];
+
+		$config['capcha'] = empty($config['capcha']) ? 0 : 1;
+
+		$this->config = $config;
+
+	}
+
+	public static function get_config_name() {
+ 		$default_config_name = 'default';
+
+	 	$config_name = $default_config_name;
+		if(isset($_REQUEST['bf-config'])) {
+				$config_name = preg_replace ("/[^a-zA-Z0-9_\-]/","", $_REQUEST['bf-config']);
+		}
+
+		if(
+			!file_exists(BASE_FORM_PATH.'configs/'.$config_name.'/') || empty($config_name)
+		) {
+			$config_name = $default_config_name;
+		}
+
+		return $config_name;
+	}
+
+	private function parse_config_ini_file($config_name = 'default') {
+		$config_ini = file_get_contents(BASE_FORM_PATH.'configs/'.$config_name.'/config.php');
+		$config_ini = explode('?>', $config_ini);
+		return parse_ini_string($config_ini[1]);
 	}
 
 	public function init() {
- 
+
 		$type = isset($_REQUEST['type']) ? preg_replace ("/[^a-z]/i","", $_REQUEST['type']) : 'default';
 
-		$out = array();  
+		$out = array();
 
  		switch ($type) {
  			case 'capcha':
@@ -43,16 +116,16 @@ class Rockform extends Events  {
 
 			case 'form':
     		 	$out = $this->set_base_form();
-    		break; 
+    		break;
 
     		case 'validation':
     			$out = $this->set_json_encode($this->validation());
     		break;
-			
-			default:  
+
+			default:
 				$out = $this->set_json_encode($this->set_form_data());
 			break;
-		} 
+		}
 		return $out;
 	}
 
@@ -66,7 +139,7 @@ class Rockform extends Events  {
 	private function validation() {
 		return $this->set_token();
 	}
- 
+
 	private function set_token() {
 		$bf_token = md5(uniqid());
 		$_SESSION['bf-token'] = $bf_token;
@@ -86,19 +159,15 @@ class Rockform extends Events  {
 			}
 		}
 
+		list($field, $config) = events::before_success_send_form($field, $this->config);
 		$this->field = $field;
+		$this->config = $config;
 
 		$error = $this->check_error();
 
 		if(empty($error)) {
-
-			$this->before_success_send_form($field);
-
-			$to = $this->config['to'];
-			$disable_mail_send = $this->config['disable_mail_send'];
-			
-			if(empty($disable_mail_send)) {
-				if(!empty($to)) {
+			if(empty($config['disable_mail_send'])) {
+				if(!empty($config['to'])) {
 					$body = $this->set_report_form();
 
 					if($this->set_mail($body)) {
@@ -114,7 +183,7 @@ class Rockform extends Events  {
 				$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
 			}
 
-			$this->after_success_send_form();
+			events::after_success_send_form($field, $config);
 
  		} else {
  			$out = $error;
@@ -124,13 +193,13 @@ class Rockform extends Events  {
 	}
 
 	private function set_server_name($tpl = '') {
- 
+
 		return str_replace('{{SERVER_NAME}}', $_SERVER['SERVER_NAME'], $tpl);
 
 	}
 
 	private function set_report_form() {
- 
+
 		Twig_Autoloader::register(true);
 		$loader = new Twig_Loader_Filesystem('configs/'.$this->config['name'].'/templates/');
 		$twig = new Twig_Environment($loader);
@@ -146,7 +215,7 @@ class Rockform extends Events  {
 		$loader = new Twig_Loader_Filesystem('configs/'.$this->config['name'].'/templates/');
 		$twig = new Twig_Environment($loader);
 		return $twig->render($this->tmp_form_popup, $attributes);
- 
+
 	}
 
 	private function set_form_data_status($status = 0, $value = '') {
@@ -159,31 +228,31 @@ class Rockform extends Events  {
 		$capcha = $this->config['capcha'];
 
 		if($capcha > 0) {
-			$err = $this->check_capcha(); 
+			$err = $this->check_capcha();
 		}
 
 		if(empty($err)) {
-			$err = $this->check_spam(); 
+			$err = $this->check_spam();
 		}
 
 		return $err;
 	}
- 
+
 	private function check_capcha() {
 		$out = '';
 
 		$_SESSION['captcha_keystring'] = isset($_SESSION['captcha_keystring']) ? $_SESSION['captcha_keystring'] : '';
-		
+
 		if(strcmp($_SESSION['captcha_keystring'], $this->field['capcha']) !== 0){
 			$out = $this->set_form_data_status(0, $this->lexicon['capcha']);
-		} 
+		}
 		return $out;
 	}
 
 	private function check_spam() {
 		$out = '';
 
-		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') { 
+		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 		} else {
 			$out = $this->set_form_data_status(0, $this->lexicon['spam']);
 		}
@@ -197,7 +266,7 @@ class Rockform extends Events  {
 
 		return $out;
 	}
- 
+
 	protected function set_mail($body = '') {
 
 		$mail = new PHPMailer();
@@ -207,17 +276,17 @@ class Rockform extends Events  {
 		$mail->From = $this->set_server_name($this->config['from_email']);
 		$mail->FromName = $this->set_server_name($this->config['from_name']);
 
-		$mail->isHTML(true);  
+		$mail->isHTML(true);
 		$mail->Subject = $this->config['subject'];
 		$mail->Body    = $body;
 		$mail->AltBody = strip_tags($body);
- 		
+
  		//set files
 
 		foreach ($_FILES as $name_upload_file => $files) {
 			if(isset($_FILES[$name_upload_file]["name"])) {
 				$files_count = sizeof($_FILES[$name_upload_file]["name"]);
-				for ($i = 0; $i <= $files_count - 1; $i++) {	
+				for ($i = 0; $i <= $files_count - 1; $i++) {
 					if (isset($_FILES[$name_upload_file]) && $_FILES[$name_upload_file]['error'][$i] == UPLOAD_ERR_OK) {
     					$mail->AddAttachment(
     						$_FILES[$name_upload_file]['tmp_name'][$i],
@@ -233,7 +302,7 @@ class Rockform extends Events  {
  		$to = $this->config['to'];
 		if(!is_array($to)) {
 			$to = explode(',', $to);
-		} 
+		}
 
 		foreach((array)$to as $email) {
 			//Recipients will know all of the addresses that have received a letter
@@ -241,14 +310,14 @@ class Rockform extends Events  {
 		}
 
 		if($this->config['SMTPAuth']) {
- 			//$mail->SMTPDebug = 3;
+			//$mail->SMTPDebug = 3;
 
 			$mail->isSMTP(); // Set mailer to use SMTP
 			$mail->Host = $this->config['SMTPHost'];  // Specify main and backup SMTP servers
 			$mail->SMTPAuth = $this->config['SMTPAuth']; // Enable SMTP authentication
 			$mail->Username = $this->config['SMTPUsername']; // SMTP username
 			$mail->Password = $this->config['SMTPPassword']; // SMTP password
-			$mail->SMTPSecure = $this->config['SMTPSecure']; // Enable TLS encryption, `ssl` also accepted                           
+			$mail->SMTPSecure = $this->config['SMTPSecure']; // Enable TLS encryption, `ssl` also accepted
 			$mail->Port = $this->config['SMTPPort']; // TCP port to connect to
 		}
 
@@ -257,9 +326,9 @@ class Rockform extends Events  {
 
 	protected function set_json_encode($value) {
 		$out = '';
-		if (function_exists('json_encode')) {  
-			$out = json_encode($value);	
-		} 
+		if (function_exists('json_encode')) {
+			$out = json_encode($value);
+		}
 		header('Content-type: text/json;  charset=utf-8');
 		header('Content-type: application/json');
 		return $out;

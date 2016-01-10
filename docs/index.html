@@ -15,7 +15,7 @@
     <link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
     <script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
     <!-- // Rockform -->
-     
+
 </head>
 
 <body>
@@ -24,7 +24,7 @@
             <h1>Rockform</h1>
             <p class="lead">Документация и демонстрация работы.</p>
         </div>
-      
+
         <h3>Простое модальное окно</h3>
         <p>
             <a class="btn btn-lg btn-default" data-bf-config="" href="#">Запустить пример</a>
@@ -33,13 +33,11 @@
         <h3>Модальное окно с параметром</h3>
         <p>
             <a class="btn btn-lg btn-default" data-bf-field_title="Переданный параметр" data-bf-config="test" href="#">Запустить пример</a>
+        </p>    <hr>
+        <h3>Модальное окно заказа обратного звонка</h3>
+        <p>
+            <a class="btn btn-lg btn-default"  data-bf-config="order_phone" href="#">Заказать звонок</a>
         </p>
- 
-
-
- 
-
-
         <hr>
         <h3>Встроенная форма с клиентской валидацией</h3>
         <br />
@@ -96,7 +94,7 @@
         </ul>
 
  <h3 id="d1">Описание</h3>
-        
+
         <p>Основные характеристики формы:</p>
         <ul>
             <li>Поддержка неорганиченного числа форм на одной странице.</li>
@@ -109,7 +107,7 @@
 
   <p>  Системные требования:</p>
         <ul>
-            <li>PHP5 &gt;= 5.3.0</li>
+            <li>PHP5 &gt;= 5.2.17</li>
         </ul>
 
 
@@ -127,7 +125,7 @@
        <h3 id="d3">Настройки</h3>
 
             <p>Настройки хранятся в <a href="https://ru.wikipedia.org/wiki/.ini">.ini</a> формате и находятся в файле <strong>config.php</strong>.</p>
-    
+
         <p>Для подключения формы на странице достаточно добавить атрибут: </p>
 
        <pre><code>data-bf-config=""</code></pre>
@@ -137,14 +135,14 @@
          <p class="text-muted">Пример</p>
 
          <pre><code>data-bf-config="Название_конфигурации"</code></pre>
-       
+
         <p>Название конфигурации совпадает с именем папки в директории <strong>/configs/</strong>. По умолчанию, при пустом вызове, настройки берутся из <strong>/configs/default/</strong>. Можно создать сколько угодно конфигураций, просто копируя папку <strong>default</strong> с другим названием и меняя параметры на свои.</p>
 
         <p>Важной характеристикой является поддержка наследования. Например, в новой конфигурации можно не указывать почту получателя, она возьмётся из папки по умолчанию: <strong>/configs/default</strong>.</p>
 
 
 <table class="table table-bordered">
- 
+
 <caption>Доступные настройки</caption>
     <tbody>
     <tr>
@@ -169,7 +167,7 @@
      <td></td>
     <td>Заголовок письма.</td>
     <tr>
- 
+
   <tr>
     <td>from_email</td>
     <td>from@{{SERVER_NAME}}</td>
@@ -230,7 +228,7 @@
     <td>
     <span style="display: none;">
         Enable TLS encryption, `ssl` also accepted
-    </span> 
+    </span>
      Включение шифрования TLS, также доступен `ssl`  </td>
     <tr>
       <tr>
@@ -239,11 +237,11 @@
      <td></td>
     <td> <span style="display: none;">TCP port to connect to</span>  TCP порт</td>
     <tr>
- 
- 
+
+
  </table>
 
- 
+
 
         <h3 id="d4">  Вызов для встроенной формы на странице</h3>
 
@@ -284,7 +282,7 @@
         <p>Также доступны две системные перенные:  </p>
         <ul>
     <li><b>{{bf_page_link}}</b> - адрес страницы оформления формы.</li>
-    <li><b><strong>h1</strong></b> - тег <strong>h1</strong> страницы оформления формы.</li> 
+    <li><b><strong>h1</strong></b> - тег <strong>h1</strong> страницы оформления формы.</li>
 </ul>
 
 <h3 id="d7"> Валидация на клиенте</h3>
@@ -296,9 +294,9 @@
     <li><b>data-bf-valid-error-msg=""</b> - сообщение в случае не совпадения с выражением.</li>
     <li><b>data-bf-valid-required="1"</b> - устанавливает, что поле обязательно для заполнения.</li>
 </ul>
- 
+
 <table class="table table-bordered">
- 
+
 <caption>Примеры выражений</caption>
   <tbody><tr>
     <th>Выражение</th>
@@ -383,49 +381,32 @@
         <td>\S+@\S+\.\S+</td>
         <td>Электронная почта.</td>
     </tr>
- 
+
 </table>
 
-  
+
         <h3 id="d10"> Отправка через SMTP</h3>
- 
+
        <p>Рассмотрим передачу параметров для Yandex. Остальные можно настроить по аналогии.</p>
-        
-
-        <pre><code>; Почта, которая будет указана в качестве адреса отправителя. Совпадает с пользователем SMTP.
-from_email = your_mail@yandex.ru
-
-;Адрес SMTP сервера
-Host = smtp.yandex.ru  
-
-;Включение SMTP авторизации
-SMTPAuth = true 
-
-;SMTP пользователь  
-Username = your_mail@yandex.ru
-
-; SMTP пароль 
-Password =  
-
-; Включение шифрования TLS, также доступен `ssl`
-SMTPSecure = ssl
-
-; TCP порт
-Port = 465;</code></pre>
-
-     
 
 
-      <h3 id="d8">  Пользовательский класс расширения функциональности</h3>
-            <p>Для расширения фунциональности, например, для записи данных из формы в базу данных существует класс расширения.</p>
-            <p>Класс находится по пути <strong>/model/events.class.php</strong></p> 
+        <pre><code>
+         from_email = your_mail@yandex.ru>; Почта, которая будет указана в качестве адреса отправителя. Совпадает с пользователем SMTP.
+         SMTPHost =  smtp.yandex.ru ;Адрес SMTP сервера
+         SMTPAuth  = true ;Включение SMTP авторизации
+         SMTPUsername = your_mail@yandex.ru ;SMTP пользователь
+         SMTPPassword =  ; SMTP пароль
+         SMTPSecure = ssl ;Включение шифрования TLS, также доступен `ssl`
+         SMTPPort = 465; TCP порт
+</code></pre>
+
+      <h3 id="d8">  Расширение функциональности</h3>
+            <p>Для расширения фунциональности, например, для записи данных из формы
+               в базу данных существует класс расширения.</p>
+            <p>Класс находится по пути <strong>/configs/default/events.php</strong></p>
+            <p>Для создания специфичной функциональности в своём конфиге нужно скопировать этот файл
+              со своими изменениями.</p>
         </ul>
-
-   
-
-
-
-
 
    <br />
         <br />
