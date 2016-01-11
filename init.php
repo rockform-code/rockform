@@ -2,11 +2,10 @@
 
 /**
 * Rockform - Simple, flexible ajax webform.
-* @version 3.4
+* @version 3.5
 */
 
 $debug = 1;
-
 if($debug > 0) {
 	ini_set('error_reporting', E_ALL);
 	ini_set ('display_errors', 1);
@@ -108,9 +107,14 @@ if(!function_exists('json_encode')){
 	}
 }
 
-define("BASE_FORM_PATH", $_SERVER['DOCUMENT_ROOT'].'/rockform/');
+define("BASE_FORM_NAME", 'rockform');
+define("BASE_FORM_PATH", $_SERVER['DOCUMENT_ROOT'].'/'.BASE_FORM_NAME.'/');
+
 session_start();
 
-require_once BASE_FORM_PATH.'backend/model/rockform.class.php';
-$rockform = new rockform();
-echo $rockform->init();
+require_once BASE_FORM_PATH.'backend/lib/twig/twig/lib/Twig/Autoloader.php';
+require_once BASE_FORM_PATH.'backend/lib/phpmailer/phpmailer/PHPMailerAutoload.php';
+require_once BASE_FORM_PATH.'backend/model/baseform.class.php';
+
+$baseform = new baseform();
+echo $baseform->init();

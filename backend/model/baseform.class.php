@@ -1,6 +1,6 @@
 <?php
 
-class Rockform {
+class Baseform {
 
 	protected $config, $lexicon, $field;
 
@@ -10,10 +10,11 @@ class Rockform {
 
 	function __construct() {
 		$this->set_default_config();
-		//require_once BASE_FORM_PATH.'vendor/autoload.php';
 
-		require_once BASE_FORM_PATH.'backend/lib/twig/twig/lib/Twig/Autoloader.php';
-		require_once BASE_FORM_PATH.'backend/lib/phpmailer/phpmailer/PHPMailerAutoload.php';
+		Twig_Autoloader::register(true);
+		$loader = new Twig_Loader_Filesystem('configs/'.$this->config['name'].'/templates/');
+		$this->twig = new Twig_Environment($loader);
+		$this->twig_string = new Twig_Environment(new Twig_Loader_String());
 
 		if(
 			!file_exists(BASE_FORM_PATH.'configs/'.$this->config['name'].'/events.php')
@@ -192,30 +193,13 @@ class Rockform {
 		return $out;
 	}
 
-	private function set_server_name($tpl = '') {
-
-		return str_replace('{{SERVER_NAME}}', $_SERVER['SERVER_NAME'], $tpl);
-
-	}
-
 	private function set_report_form() {
-
-		Twig_Autoloader::register(true);
-		$loader = new Twig_Loader_Filesystem('configs/'.$this->config['name'].'/templates/');
-		$twig = new Twig_Environment($loader);
-		return $twig->render($this->tmp_report_on_mail, $this->field);
-
+		return $this->twig->render($this->tmp_report_on_mail, $this->field);
 	}
 
 	private function set_base_form() {
-
 		$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array();
-
-		Twig_Autoloader::register(true);
-		$loader = new Twig_Loader_Filesystem('configs/'.$this->config['name'].'/templates/');
-		$twig = new Twig_Environment($loader);
-		return $twig->render($this->tmp_form_popup, $attributes);
-
+		return $this->twig->render($this->tmp_form_popup, $attributes);
 	}
 
 	private function set_form_data_status($status = 0, $value = '') {
@@ -252,7 +236,11 @@ class Rockform {
 	private function check_spam() {
 		$out = '';
 
-		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+		if(
+			isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+			strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
+		) {
+
 		} else {
 			$out = $this->set_form_data_status(0, $this->lexicon['spam']);
 		}
@@ -273,8 +261,8 @@ class Rockform {
 
 		$mail->CharSet = 'utf-8';
 
-		$mail->From = $this->set_server_name($this->config['from_email']);
-		$mail->FromName = $this->set_server_name($this->config['from_name']);
+		$mail->From =  $this->twig_string->render($this->config['from_email'],  $_SERVER);
+		$mail->FromName = $this->twig_string->render($this->config['from_name'],  $_SERVER);
 
 		$mail->isHTML(true);
 		$mail->Subject = $this->config['subject'];
@@ -287,7 +275,10 @@ class Rockform {
 			if(isset($_FILES[$name_upload_file]["name"])) {
 				$files_count = sizeof($_FILES[$name_upload_file]["name"]);
 				for ($i = 0; $i <= $files_count - 1; $i++) {
-					if (isset($_FILES[$name_upload_file]) && $_FILES[$name_upload_file]['error'][$i] == UPLOAD_ERR_OK) {
+					if (
+						isset($_FILES[$name_upload_file]) &&
+						 $_FILES[$name_upload_file]['error'][$i] == UPLOAD_ERR_OK
+					) {
     					$mail->AddAttachment(
     						$_FILES[$name_upload_file]['tmp_name'][$i],
     						$_FILES[$name_upload_file]['name'][$i],
@@ -325,12 +316,8 @@ class Rockform {
 	}
 
 	protected function set_json_encode($value) {
-		$out = '';
-		if (function_exists('json_encode')) {
-			$out = json_encode($value);
-		}
 		header('Content-type: text/json;  charset=utf-8');
 		header('Content-type: application/json');
-		return $out;
+		return  json_encode($value);
 	}
 }

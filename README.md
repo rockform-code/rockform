@@ -1,1 +1,3 @@
-#Rockform 3.0
+#Rockform 3
+
+Документация в папке /docs
