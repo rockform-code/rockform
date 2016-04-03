@@ -1,20 +1,21 @@
 /*
- * Rockform v.3 
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * Rockform v.3
  */
-
+ 
 // Core variables and mixins
 @import "variables.less";
 @import "mixins.less";
+ 
 .bf-content {
     -ms-text-size-adjust: 100%; // 2
     -webkit-text-size-adjust: 100%; // 2
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
-    line-height: 1.42857143;
+    line-height: 1.42857143; 
     color: #333;
     width: 400px;
+
     // Reset and dependencies
     @import "normalize.less";
     @import "buttons.less";
@@ -38,11 +39,6 @@
     input[type="file"] {
         display: block;
     }
-    // Make range inputs behave like textual form controls
-    input[type="range"] {
-        display: block;
-        width: 100%;
-    }
     // Make multiple select elements height not fixed
     select[multiple],
     select[size] {
@@ -56,31 +52,11 @@
     }
 }
 
-// Common form controls
-//
-// Shared size and type resets for form controls. Apply `.form-control` to any
-// of the following form controls:
-//
-// select
-// textarea
-// input[type="text"]
-// input[type="password"]
-// input[type="datetime"]
-// input[type="datetime-local"]
-// input[type="date"]
-// input[type="month"]
-// input[type="time"]
-// input[type="week"]
-// input[type="number"]
-// input[type="email"]
-// input[type="url"]
-// input[type="search"]
-// input[type="tel"]
-// input[type="color"]
+ 
 .bf-form-control {
     float: left;
     width: 258px;
-    .box-sizing(content-box);
+    box-sizing: content-box;
     display: block;
     height: @input-height-base; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
     padding: 4px 10px;
@@ -114,17 +90,15 @@
     textarea& {
         height: auto;
     }
-}
-
+} 
+ 
 .bf-row {
     width: 100%;
     float: left;
     margin: 4px 0;
     .clearfix();
     label {
-        display: inline-block;
-        *display: inline;
-        *zoom: 1;
+        display: inline-block; 
         float: left;
         font-size: 14px;
         padding: 12px 0;
@@ -141,13 +115,11 @@
 }
 
 .bf-right {
-    float: right;
+    float: right; 
 }
 
 .bf-info-img {
-    display: inline-block;
-    *display: inline;
-    *zoom: 1;
+    display: inline-block; 
     float: left;
     padding: 0;
     vertical-align: middle;
@@ -179,23 +151,15 @@
 .bf-status-1 {
     background: green;
 }
-
-.has-success {
-    .form-control-validation(@state-success-text;
-    @state-success-text;
-    @state-success-bg);
-}
-
-.has-error {
-    .form-control-validation(@state-danger-text;
-    @state-danger-text;
-    @state-danger-bg);
-}
-
+ 
 
 /* popup */
 
 @import "popup.less";
+
+/*  tooltip.less */
+
+@import "tooltip.less";
 
 /* mobile */
 

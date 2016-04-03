@@ -2,20 +2,21 @@
 
 class Baseform {
 
-	protected $config, $lexicon, $field;
-
+	protected $config, $lexicon, $field, $valid;
+ 
 	var $tmp_form_popup = 'form_popup.html';
-	var $tmp_report_on_mail = 'report_on_mail.html';
-	var $tmp_report_after_send_form = 'report_after_send_form.html';
+	var $tmp_report_on_mail = 'report_mail.html';
+	var $tmp_report_after_send_form = 'popup_after_send.html'; 
 
 	function __construct() {
+
 		$this->set_default_config();
 
 		Twig_Autoloader::register(true);
-		$loader = new Twig_Loader_Filesystem('configs/'.$this->config['name'].'/templates/');
+		$loader = new Twig_Loader_Filesystem(BASE_FORM_PATH.'configs/'.$this->config['name'].'/templates/');
 		$this->twig = new Twig_Environment($loader);
 		$this->twig_string = new Twig_Environment(new Twig_Loader_String());
-
+ 
 		if(
 			!file_exists(BASE_FORM_PATH.'configs/'.$this->config['name'].'/events.php')
 		) {
@@ -31,49 +32,44 @@ class Baseform {
 		$config = array();
 		$lexicon = array();
 
-		$config = $this->parse_config_ini_file();
+		$params = $this->get_config_file();
+		$this->valid = isset($params['validation']) ? $params['validation'] : array();
+
+		$config = isset($params['config']) ? $params['config'] : array();
 		$config['name'] = $this->get_config_name();
 
 		if(!preg_match('~^default$~', $config['name'])) {
 
 			//delete default validation
-			foreach ($config as $key => $value) {
-				if(preg_match('~^@~', $key)) {
-					unset($config[$key]);
-				}
-			}
+			unset($params['validation']);
+			$this->valid = array();
 
-			$config_custom = $this->parse_config_ini_file($config['name']);
-		//	print_r($config_custom);
-			if(!empty($config_custom) && is_array($config_custom)) {
+			$params_custom = $this->get_config_file($config['name']);
+			if(isset($params_custom['validation'])) {
+		 		$this->valid = $params_custom['validation'];
+		 	}
+
+			if(!empty($params_custom['config']) && is_array($params_custom)) {
 				//replace default value
-				foreach ($config_custom as $k => $value) {
-					//if(!empty($value)) {
+				foreach ($params_custom['config'] as $k => $value) {
+					if(!empty($value)) {
 						$config[$k] = $value;
-					//}
+					}
 				}
 			}
 		}
 
-		//set lexicon
-		if(empty($config['used_lexicon'])) {
-			$config['used_lexicon'] = 'default';
-		}
-		$config_ini = parse_ini_file(BASE_FORM_PATH.'backend/lexicon/'.$config['used_lexicon'].'.ini');
+ 		$config['used_lexicon'] = empty($used_lexicon) ? 'default' : $used_lexicon;
+		$this->set_lexicon($config['used_lexicon']);
 
-		foreach ($config_ini as $key => $value) {
-					if(!empty($value)) {
-							$lexicon[$key] = $value;
-					}
-		}
-		$this->lexicon = $lexicon;
-
-		$config['email_to_send'] = empty($config['email_to_send']) ? '' : $config['email_to_send'];
- 		$config['subject'] = empty($config['subject']) ? $lexicon['subject'] : $config['subject'];
- 		$config['from_email'] = empty($config['from_email']) ? $lexicon['from_email'] : $config['from_email'];
- 		$config['from_name'] = empty($config['from_name']) ? $lexicon['from_name'] : $config['from_name'];
+		$config['mail_to'] = empty($config['mail_to']) ? '' : $config['mail_to'];
+ 		$config['subject'] = empty($config['subject']) ? $this->lexicon['subject'] : $config['subject'];
+ 		$config['from_email'] = empty($config['from_email']) ? $this->lexicon['from_email'] : $config['from_email'];
+ 		$config['from_name'] = empty($config['from_name']) ? $this->lexicon['from_name'] : $config['from_name'];
  		$config['used_lexicon'] = empty($config['used_lexicon']) ? 'default' : $config['used_lexicon'];
  		$config['disable_mail_send'] = empty($config['disable_mail_send']) ? '' : $config['disable_mail_send'];
+
+		$config['charset'] = empty($config['charset']) ? 'utf-8' : $config['charset'];
 
  		$config['SMTPHost'] = empty($config['SMTPHost']) ? '' : $config['SMTPHost'];
  		$config['SMTPAuth'] = empty($config['SMTPAuth']) ?  '' : $config['SMTPAuth'];
@@ -81,36 +77,89 @@ class Baseform {
  		$config['SMTPPassword'] = empty($config['SMTPPassword']) ? '' : $config['SMTPPassword'];
  	 	$config['SMTPSecure'] = empty($config['SMTPSecure']) ? 'ssl' : $config['SMTPSecure'];
 		$config['SMTPPort'] = empty($config['SMTPPort']) ? 465 : $config['SMTPPort'];
-
-		$config['capcha'] = empty($config['capcha']) ? 0 : $config['capcha'];
-
-	 	//print_r($config);
-
-		$this->config = $config;
-
+ 
+		$this->config = $config; 
 	}
 
-	public static function get_config_name() {
+	private function set_lexicon($used_lexicon = '') {
+		$config_ini = parse_ini_file(BASE_FORM_PATH.'backend/lexicon/'.$used_lexicon.'.ini');
+		foreach ($config_ini as $key => $value) {
+					if(!empty($value)) {
+							$lexicon[$key] = $value;
+					}
+		}
+		$this->lexicon = $lexicon;
+	}
+
+	public function get_config_name() {
  		$default_config_name = 'default';
 
 	 	$config_name = $default_config_name;
-		if(isset($_REQUEST['bf-config'])) {
-				$config_name = preg_replace ("/[^a-zA-Z0-9_\-]/","", $_REQUEST['bf-config']);
+		if(isset($_POST['bf-config'])) {
+			$config_name = preg_replace ("/[^a-zA-Z0-9_\-]/","", $_POST['bf-config']);
 		}
-
+ 
 		if(
-			!file_exists(BASE_FORM_PATH.'configs/'.$config_name.'/') || empty($config_name)
+			!file_exists(BASE_FORM_PATH.'configs/'.$config_name.'/config.php') ||
+			empty($config_name)
 		) {
 			$config_name = $default_config_name;
-		}
+		} 
 
 		return $config_name;
 	}
 
-	private function parse_config_ini_file($config_name = 'default') {
+	private function get_config_file($config_name = 'default') {
 		$config_ini = file_get_contents(BASE_FORM_PATH.'configs/'.$config_name.'/config.php');
 		$config_ini = explode('?>', $config_ini);
-		return parse_ini_string($config_ini[1]);
+		return $this->parse_config($config_ini[1], true);
+	}
+
+	private function parse_config($str = '', $flag = false) {
+
+		$inside_section = false;
+		$ret = array();
+
+		if(!empty($str)) {
+			$lines = explode("\n", $str);
+
+			foreach($lines as $line) {
+
+				$line = trim($line);
+
+				if(!$line || $line[0] == "#" || $line[0] == ";") continue;
+
+				if($line[0] == "[" && $endIdx = strpos($line, "]")){
+					if($flag === true) {
+						$inside_section = substr($line, 1, $endIdx-1);
+					}
+					continue;
+				}
+
+				if(!strpos($line, '=')) continue;
+
+				$tmp = explode("=", $line, 2);
+
+				$key = trim($tmp[0]);
+
+				$value = explode(";", $tmp[1]);
+				if(count($value) > 1) {
+					unset($value[count($value) - 1]);
+				}
+				$value = trim(implode(";", $value));
+
+				if(preg_match("/^\".*\"$/", $value) || preg_match("/^'.*'$/", $value)) {
+					$value = mb_substr($value, 1, mb_strlen($value) - 2);
+				}
+
+				if($inside_section) {
+					$ret[$inside_section][$key] = $value;
+				} else {
+					$ret[$key] = $value;
+				}
+			}
+ 		}
+		return $ret;
 	}
 
 	public function init() {
@@ -156,16 +205,17 @@ class Baseform {
 				$field[$key] = $value;
 			}
 		}
-
+ 
 		list($field, $config) = events::before_success_send_form($field, $this->config);
 		$this->field = $field;
 		$this->config = $config;
-
+ 
 		$error_check_spam = $this->check_spam();
 
 		if(empty($error_check_spam)) {
 			if(empty($config['disable_mail_send'])) {
-					if($this->set_mail()) {
+
+					if($this->set_mail($config)) {
 						$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
 					} else {
 						$out = $this->set_form_data_status(0, $this->lexicon['email_send']);
@@ -198,39 +248,36 @@ class Baseform {
 	private function check_validation() {
 
 		$configs = $this->get_validation_configs();
+
+		//print_r($configs);
 		$out = array();
 
 		if(!empty($configs)) {
 			foreach ($configs as $name => $type) {
 				foreach ($type as $type_element) {
 
-					$type_element = explode('[', $type_element);
-					$type_element_name = $type_element[0];
-
-					$type_element_param = '';
-					if(!empty($type_element[1])) {
-						$type_element_param = str_replace(']', '', $type_element[1]);
+					$detail_params = explode('[', $type_element); 
+					$name_params = $detail_params[0]; 
+ 
+					if(!empty($detail_params[1])) {
+						$detail_params = str_replace(']', '', $detail_params[1]);
 					}
 
-					if(preg_match('~^error_message~', 	$type_element_name)) {
+					if(preg_match('~^error_message~', 	$name_params)) {
 
 					} else {
-						$err = $this->set_validation($name, array($type_element_name, $type_element_param));
+						$err = $this->set_validation($name, array($name_params, $detail_params));
 						if(!empty($err)) {
-							$out[$name][$type_element_name] = $err;
+							$out[$name][$name_params] = $err;
 						}
 					}
 				}
 			}
 		}
 
-		if($this->config['capcha'] > 0) {
-			$out['capcha'] = $this->set_validation('capcha', array('capcha', ''));
-		}
-
-		$email_to_send = $this->config['email_to_send'];
-		if(empty($email_to_send)) {
-			$out['email_to_send'] = $this->lexicon['err_isset_email'];
+		$mail_to = $this->config['mail_to'];
+		if(empty($mail_to)) {
+			$out['mail_to'] = $this->lexicon['err_isset_email'];
 		}
 
 		$out['token'] = $this->set_token();
@@ -245,9 +292,8 @@ class Baseform {
 		$fields = isset($_POST['fields']) ? $_POST['fields'] : array();
 		//print_r($name);
 		$field_value = '';
-
-		foreach ($fields as $field) {
-			$field['name'] = str_replace('[]', '', $field['name']);
+ 
+		foreach ($fields as $field) { 
 			if(strcmp($name, $field['name']) == 0) {
 				if(isset($field['value'])) {
 					$field_value = trim($field['value']);
@@ -381,7 +427,8 @@ class Baseform {
 				}
 			break;
 			case 'capcha': //Makes the element required.
-			$_SESSION['captcha_keystring'] = isset($_SESSION['captcha_keystring']) ? $_SESSION['captcha_keystring'] : '';
+				$_SESSION['captcha_keystring'] = isset($_SESSION['captcha_keystring']) ? $_SESSION['captcha_keystring'] : '';
+				//echo $_SESSION['captcha_keystring'].', '.$field_value.'<br />';
 				if(
 					strcmp($_SESSION['captcha_keystring'], $field_value) !== 0
 				){
@@ -401,16 +448,15 @@ class Baseform {
 	}
 	private function get_validation_configs() {
 		$out = array();
-		$configs = $this->config;
+		 
+		$configs = $this->valid;
 		if(!empty($configs)) {
 			foreach ($configs as $key => $value) {
-					if(preg_match('~^@~', $key)) {
-						$key = str_replace('@', '', $key);
-						preg_match_all('~([a-z_]+(\[.*?\])?)~iu', $value, $match);
-						$out[$key] = $match[1];
-					}
+				preg_match_all('~([a-z_]+(\[.*?\])?)~iu', $value, $match);
+				$out[$key] = $match[1];
 			}
 		}
+		 
 		return $out;
 	}
 
@@ -437,48 +483,56 @@ class Baseform {
 	}
 
 	private function set_token() {
-		$_SESSION['bf-token'] = $bf_token = md5(uniqid());
-		return $bf_token;
+		return $_SESSION['bf-token'] = md5(uniqid());
 	}
 
-	protected function set_mail() {
+	protected function set_mail($config = array()) {
 
 		$mail = new PHPMailer();
 
 		$mail->CharSet = 'utf-8';
 
-		$mail->From =  $this->twig_string->render($this->config['from_email'],  $_SERVER);
-		$mail->FromName = $this->twig_string->render($this->config['from_name'],  $_SERVER);
+		$mail->From =  $this->twig_string->render($config['from_email'],  $_SERVER);
+		$mail->FromName = $this->twig_string->render($config['from_name'],  $_SERVER);
 
 		$mail->isHTML(true);
-		$mail->Subject = $this->config['subject'];
-
+		$mail->Subject = $config['subject'];
+ 
 		$body = $this->set_report_form();
+
 		$mail->Body = $body;
 		$mail->AltBody = strip_tags($body);
 
  		//set files
+ 
 		foreach ($_FILES as $name_upload_file => $files) {
 			if(isset($_FILES[$name_upload_file]["name"])) {
-				$files_count = sizeof($_FILES[$name_upload_file]["name"]);
-				for ($i = 0; $i <= $files_count - 1; $i++) {
-					if (
-						isset($_FILES[$name_upload_file]) &&
-						 $_FILES[$name_upload_file]['error'][$i] == UPLOAD_ERR_OK
-					) {
+				if(is_array($_FILES[$name_upload_file]['name'])) {
+					foreach ($_FILES[$name_upload_file]['name'] as $key => $name_file) {
+						if ($_FILES[$name_upload_file]['error'][$key] == UPLOAD_ERR_OK) {
+    						$mail->AddAttachment(
+    							$_FILES[$name_upload_file]['tmp_name'][$key],
+    							$_FILES[$name_upload_file]['name'][$key],
+    							'base64',
+    							$_FILES[$name_upload_file]['type'][$key]
+    						);
+						}
+					}
+				} else {
+					if ($_FILES[$name_upload_file]['error'] == UPLOAD_ERR_OK) {
     					$mail->AddAttachment(
-    						$_FILES[$name_upload_file]['tmp_name'][$i],
-    						$_FILES[$name_upload_file]['name'][$i],
+    						$_FILES[$name_upload_file]['tmp_name'],
+    						$_FILES[$name_upload_file]['name'],
     						'base64',
-    						$_FILES[$name_upload_file]['type'][$i]
+    						$_FILES[$name_upload_file]['type']
     					);
 					}
 				}
 			}
 		}
 
-		$email_to_send = explode(',', $this->config['email_to_send']);
-		foreach($email_to_send as $email) {
+		$mail_to = explode(',', $config['mail_to']);
+		foreach($mail_to as $email) {
 			//Recipients will know all of the addresses that have received a letter
 			$mail->addAddress($email, '');
 		}
@@ -487,12 +541,12 @@ class Baseform {
 			//$mail->SMTPDebug = 3;
 
 			$mail->isSMTP(); // Set mailer to use SMTP
-			$mail->Host = $this->config['SMTPHost'];  // Specify main and backup SMTP servers
-			$mail->SMTPAuth = $this->config['SMTPAuth']; // Enable SMTP authentication
-			$mail->Username = $this->config['SMTPUsername']; // SMTP username
-			$mail->Password = $this->config['SMTPPassword']; // SMTP password
-			$mail->SMTPSecure = $this->config['SMTPSecure']; // Enable TLS encryption, `ssl` also accepted
-			$mail->Port = $this->config['SMTPPort']; // TCP port to connect to
+			$mail->Host = $config['SMTPHost'];  // Specify main and backup SMTP servers
+			$mail->SMTPAuth = $config['SMTPAuth']; // Enable SMTP authentication
+			$mail->Username = $config['SMTPUsername']; // SMTP username
+			$mail->Password = $config['SMTPPassword']; // SMTP password
+			$mail->SMTPSecure = $config['SMTPSecure']; // Enable TLS encryption, `ssl` also accepted
+			$mail->Port = $config['SMTPPort']; // TCP port to connect to
 		}
 
 		return $mail->send();

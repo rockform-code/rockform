@@ -1,11 +1,15 @@
 <?php defined("BASE_FORM_PATH") or die("Access denied"); ?>
-[сonfig]
+[config]
 
 ; Почта получателей. Можно несколько через запятую.
-email_to_send = 
+mail_to =   
 
 ; Заголовок письма.
 subject = 'Сообщение с сайта'
 
-; 0 - для отмены использования капчи
-capcha = 1;
+
+[validation]
+
+bf_capcha = capcha 
+name = 'required,minlength[3],words'
+phone = required

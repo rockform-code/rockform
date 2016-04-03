@@ -1,8 +1,13 @@
 <?php defined("BASE_FORM_PATH") or die("Access denied"); ?>
-[сonfig]
+[config]
+
+; Почта получателей. Можно несколько через запятую.
+mail_to =  
 
 ; Заголовок письма.
 subject = 'Заказ звонка'
 
-; 0 - для отмены использования капчи
-capcha = 0;
+[validation]
+
+ 
+phone = required

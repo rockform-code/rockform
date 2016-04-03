@@ -1,0 +1,40 @@
+html .bf-fixed-overlay {
+    background-image: url('img/overlay.png');
+}
+
+ html   .bf-fixed-overlay__modal {
+    zoom:  expression( this.runtimeStyle.zoom='1', this.appendChild( document.createElement('small')).className='bf-modal-after');
+}
+
+html .bf-fixed-overlay__modal:after,
+html  .bf-modal-after {
+    display: inline;
+    zoom: 1;
+}
+
+html .bf-modal {
+    display: inline;
+    zoom: 1;
+}
+
+html .bf-modal-close {
+    background-image: url('img/close.png');
+}
+
+html .bf-loading { 
+    filter: alpha(opacity=85);
+}
+
+html .bf-tooltip .bf-arrow { 
+	display: none;
+}
+
+html .bf-row label {
+    display: inline;
+    zoom: 1;
+}
+
+html .bf-info-img {
+    display: inline;
+    zoom: 1;
+}

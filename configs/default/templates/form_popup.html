@@ -2,29 +2,30 @@
     <div class="bf-header">
         Форма отправки сообщения!
     </div>
-
-    <form action="" method="post">
+    <form data-bf-popup-pos="" action="" method="post">
         <div class="bf-row">
             <label>Имя:</label>
-            <input placeholder="Обязательное поле" required1="required" class="bf-form-control" name="name" placeholder="" type="text" value="" />
+            <input placeholder="Обязательное поле" class="bf-form-control" name="name" placeholder="" type="text" value="" />
         </div>
         <div class="bf-row">
             <label>Телефон:</label>
-            <input placeholder="Обязательное поле" required1="required" class="bf-form-control" name="phone" placeholder="" type="text" value="" />
+            <input placeholder="Обязательное поле" class="bf-form-control" name="phone" placeholder="" type="text" value="" />
         </div>
         <div class="bf-row">
             <label>Комментарий:</label>
             <textarea class="bf-form-control" cols="40" rows="5" name="comment">{{field_title}}</textarea>
         </div>
+
         <div class="bf-row">
             <label>Прикрепить файлы:</label>
-            <input class="bf-form-control" multiple="multiple" name="upload_file[]" type="file" />
+            <input class="bf-form-control" multiple="multiple" name="upload_file" type="file" />
         </div>
+        
         <div class="bf-row">
             <div class="bf-info-img">
-                <img width="110" height="60" title="Обновить картинку" class="bf-img-capcha" src="/rockform/init.php?type=capcha" alt="" />
+                <img width="110" height="60" title="Обновить картинку" data-bf-capcha="" src="" alt="" />
             </div>
-            <input class="capcha bf-form-control" name="capcha" placeholder="Код с картинки" type="text" value="" />
+            <input class="capcha bf-form-control" name="bf_capcha" placeholder="Код с картинки" type="text" value="" />
         </div>
         <div class="bf-row">
             <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />

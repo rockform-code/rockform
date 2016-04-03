@@ -11,7 +11,13 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>Демонстрация работы</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+
+
     <!-- Rockform -->
+    <!--[if lt IE 8]> 
+      <link href="/rockform/frontend/themes/default/ie.css" type="text/css" rel="stylesheet" />
+    <![endif]--> 
+
     <link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
     <script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
     <!-- // Rockform -->
@@ -39,63 +45,26 @@
             <a class="btn btn-lg btn-default"  data-bf-config="order_phone" href="#">Заказать звонок</a>
         </p>
         <hr>
- 
+
 
         <h3>Встроенная форма с клиентской валидацией</h3>
 
-        <br />
+ 
 
-        <div class="bf-content">
-            <div class="bf-header">
-                Форма отправки сообщения!
-            </div>
-            <form  data-bf-config="123" action="" method="post">
-                <div class="bf-row">
-                    <label>Имя:</label>
-                    <input data-bf-valid-required="1" data-bf-valid-pattern="^[А-Яа-яЁё\s]{5,}$" data-bf-valid-error-msg="Пожалуйста, введите не менее 5 букв!"  class="bf-form-control"  name="name" placeholder="Обязательное поле" type="text" value="" />
-                </div>
-                <div class="bf-row">
-                    <label>Телефон:</label>
-                    <input data-bf-valid-required="1" data-bf-valid-pattern="^\d{11}$" data-bf-valid-error-msg="Пожалуйста, введите 11 цифр!" class="bf-form-control"  name="phone" placeholder="Обязательное поле" type="text" value="" />
-                </div>
-                <div class="bf-row">
-                    <label>Email:</label>
-                    <input class="bf-form-control" data-bf-valid-pattern="\S+@\S+\.\S+" data-bf-valid-error-msg="Пожалуйста, введите  адрес ел. почты!"   name="email" type="email" value="" />
-                </div>
-                <div class="bf-row">
-                    <label>Комментарий:</label>
-                    <textarea   data-bf-valid-required="1" class="bf-form-control" cols="40" rows="5" name="comment"></textarea>
-                </div>
-                <div class="bf-row">
-                    <label>Прикрепить файлы:</label>
-                    <input class="bf-form-control" multiple="multiple" name="upload_file[]" type="file" />
-                </div>
-                <div class="bf-row">
-                    <div class="bf-info-img">
-                        <img width="110" height="60" title="Обновить картинку" class="bf-img-capcha" src="/rockform/init.php?type=capcha" alt="" />
-                    </div>
-                    <input class="capcha bf-form-control" name="capcha" placeholder="Код с картинки" type="text" value="" />
-                </div>
-                <div class="bf-row">
-                    <input class="btn btn-default bf-right"   type="submit" value="Отправить" />
-                </div>
-            </form>
-        </div>
         <hr style="clear:both;">
         <h2>Документация</h2>
         <ul class="list-unstyled">
             <li><a href="#d1"> Описание</a></li>
             <li><a href="#d2"> Как подключить скрипт</a></li>
             <li><a href="#d3"> Где хранятся настройки</a></li>
-            <li><a href="#d4"> Вызов для встроенной формы на странице</a></li>
-            <li><a href="#d5"> Вызов для всплывающего окна</a></li>
             <li><a href="#d6"> Шаблон отправки на почту</a></li>
-            <li><a href="#d71"> Валидация на сервере</a></li>
-            <li><a href="#d7"> Валидация на клиенте</a></li>
-            <li><a href="#d8"> Пользовательский класс расширения функциональности</a></li>
-            <li><a href="#d9"> Системные требования</a></li>
-            <li><a href="#d10"> Отправка через SMTP</a></li>
+            <li><a href="#d71"> Валидация </a></li>
 
+             <li><a href="#d75"> Подключение капчи</a></li>
+
+            
+            <li><a href="#d10"> Отправка через SMTP</a></li>
+           <li><a href="#d8">Расширение функциональности</a></li>
         </ul>
 
  <h3 id="d1">Описание</h3>
@@ -112,12 +81,15 @@
 
   <p>  Системные требования:</p>
         <ul>
-            <li>PHP5 &gt;= 5.2.17</li>
+            <li>Работает с PHP 5.2 и выше</li>
+            <li>Работает в IE8 и выше.</li>
         </ul>
 
 
 
-        <h3 id="d2">Как подключить скрипт</h3>
+<h3 id="d2">Как подключить скрипт</h3>
+
+
         <p>Подключить скрипты в указанной последовательности</p>
         <pre><code>&lt;!-- Rockform --&gt;
     &lt;link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
@@ -125,11 +97,55 @@
 &lt;!-- // Rockform --&gt;
 </code></pre>
 
+<p> Для поддержки всплывающего окна в IE7 надо добавить следующий код:
 
 
+</p>
+
+
+<pre><code>&lt;!--[if lt IE 8]&gt;
+      &lt;link href="/rockform/frontend/themes/default/ie.css" type="text/css" rel="stylesheet" /&gt;
+    &lt;![endif]--&gt;</code></pre>
+        <p>Для подключения существующей формы на странице достаточно тегу <strong>form</strong> добавить атрибут с названием конфигурации: </p>
+
+         <pre><code>data-bf-config=""</code></pre>
+
+
+       <p> Можно оставить пустым, тогда конфигурация возьмётся из папки по умолчанию: <strong>/configs/default</strong>. </p>
+ 
+        <p>Для вызова всплывающего окна надо настроить шаблон, который можно найти в папке <strong>/configs/default/templates/form_popup.html</strong>. В него можно передать любой html-код с формой, он подхватится автоматически. Работает с поддержкой шаблонизатора Twig.</p>
+
+        <p>Для вызова всплывающего окна нужно добавить атрибут:</p>
+
+          <pre><code>data-bf-config=""</code></pre>
+
+         <p>на любой тег, кроме формы.</p>
+
+        <p>В всплывающую форму можно передать параметры через data-атрибуты, например: </p>
+
+        <pre><code>data-bf-field_title="Параметр"</code></pre>
+
+        <p>Где <strong>title</strong> можно заменить на своё название.</p>
+
+        <p>Стоит учесть, что здесь обязательно нужно использовать нижнее подчёркивание.</p>
+
+        <p>Переданная переменная будет доступна как: <strong>{{field_title}}</strong> в шаблонах отправки на почту и в всплывающей форме.</p>
+
+
+        <h3 id="d6"> Шаблон отправки на почту</h3>
+        <p>Шаблон лежит в папке <strong>/templates/report_on_mail.html</strong>.</p>
+        <p>В качестве шаблона для полей используется конструкция <strong>{{название_поля}}</strong>. Поддерживает работу с шаблонизатором Twig.</p>
+
+        <p>Также доступны две системные перенные:  </p>
+        <ul>
+    <li><b>{{field_page_link}}</b> - адрес страницы оформления формы.</li>
+    <li><b>{{field_page_h1}}</b> - тег <strong>h1</strong> страницы оформления формы.</li>
+</ul>
+
+ 
        <h3 id="d3">Настройки</h3>
 
-            <p>Настройки хранятся в <a href="https://ru.wikipedia.org/wiki/.ini">.ini</a> формате и находятся в файле <strong>config.php</strong>.</p>
+      <p>Настройки хранятся в .ini формате и находятся в файле <strong>config.php</strong>.</p>
 
         <p>Для подключения формы на странице достаточно добавить атрибут: </p>
 
@@ -143,7 +159,9 @@
 
         <p>Название конфигурации совпадает с именем папки в директории <strong>/configs/</strong>. По умолчанию, при пустом вызове, настройки берутся из <strong>/configs/default/</strong>. Можно создать сколько угодно конфигураций, просто копируя папку <strong>default</strong> с другим названием и меняя параметры на свои.</p>
 
-        <p>Важной характеристикой является поддержка наследования. Например, в новой конфигурации можно не указывать почту получателя, она возьмётся из папки по умолчанию: <strong>/configs/default</strong>.</p>
+        <p>Важной характеристикой является поддержка наследования. Например, в новой конфигурации можно не указывать почту получателя, она возьмётся из папки по умолчанию: <strong>/configs/default</strong>.
+        Не наследуются только секция валидации.
+        </p>
 
 
 <table class="table table-bordered">
@@ -154,11 +172,12 @@
     <th>Параметр</th>
      <th>Значение по умолчанию</th>
      <th>Обязательное</th>
+
     <th>Описание</th>
   </tr>
 
   <tr>
-    <td>email_to_send</td>
+    <td>mail_to</td>
     <td></td>
      <td>Да</td>
     <td>Почта получателей. Можно несколько через запятую.</td>
@@ -243,56 +262,13 @@
 
 
  </table>
+ 
+<h3 id="d71"> Валидация </h3>
 
+<p>Для включения валидации полей, надо в конфигурационом файле добавить секцию [validation].</p>
+<p>Затем перечислить названия полей и атрибуты валидации к ним.</p>
 
-
-        <h3 id="d4">  Вызов для встроенной формы на странице</h3>
-
-        <p>Для подключения существующей формы на странице достаточно тегу <strong>form</strong> добавить атрибут с названием конфигурации: </p>
-
-         <pre><code>data-bf-config=""</code></pre>
-
-
-       <p> Можно оставить пустым, тогда конфигурация возьмётся из папки по умолчанию: <strong>/configs/default</strong>. </p>
-
-
-
-        <h3 id="d5"> Вызов для всплывающего окна</h3>
-
-        <p>Шаблон всплывающего окна хранится в папке <strong>/templates/form_popup.html</strong>. В него можно передать любой html-код с формой, он подхватится автоматически. Также есть поддержка шаблонизатора Twig.</p>
-
-        <p>Для вызова всплывающего окна нужно добавить атрибут:</p>
-
-          <pre><code>data-bf-config=""</code></pre>
-
-         <p>на любой тег, кроме формы.</p>
-
-        <p>В всплывающую форму можно передать параметры через data-атрибуты, например: </p>
-
-        <pre><code>data-bf-field_title="Параметр"</code></pre>
-
-        <p>Где <strong>title</strong> можно заменить на своё название.</p>
-
-        <p>Стоит учесть, что здесь обязательно нужно использовать нижнее подчёркивание.</p>
-
-        <p>Переданная переменная будет доступна как: <strong>{{field_title}}</strong> в шаблонах отправки на почту и всплывающей формы.</p>
-
-
-        <h3 id="d6"> Шаблон отправки на почту</h3>
-        <p>Шаблон лежит в папке <strong>/templates/report_on_mail.html</strong>.</p>
-        <p>В качестве шаблона для полей используется конструкция <strong>{{название_поля}}</strong>. Поддерживает работу с шаблонизатором Twig.</p>
-
-        <p>Также доступны две системные перенные:  </p>
-        <ul>
-    <li><b>{{field_page_link}}</b> - адрес страницы оформления формы.</li>
-    <li><b>{{field_page_h1}}</b> - тег <strong>h1</strong> страницы оформления формы.</li>
-</ul>
-
-<h3 id="d71"> Валидация на сервере</h3>
-
-<p>Для включения валидации полей, надо в конфигурационом файле добавить название поле с символом - "@" в начале.</p>
-<p>Затем передать ему через запятую аттрибуты валидации.</p>
-<p>Пример: <b>@name = 'required,minlength[3],words'</b>. Это будет означать, что поле с названием - "name"
+<p>Пример: <b>name = 'required,minlength[3],words'</b>. Это будет означать, что атрибут поля <i>name</i> со значением - "name"
   будет обязательно для заполнения, минимальное допустимое число символов 3 и на вход должны быть переданы только слова.</p>
 
 <table class="table table-bordered">
@@ -353,108 +329,14 @@
 
 </table>
 
+<h3 id="d75">Добавление капчи</h3>
 
-<h3 id="d7"> Валидация на клиенте</h3>
+<p>1. Для добавления капчи нужно картинке присвоить аттрибут - <b>data-bf-capcha=""</b>.</p> 
+<p>2. В конфигурационном файле указать в секции <b>[validation]</b> параметр  
 
-<p>Доступны следующие аттрибуты валидации:</p>
+<b>bf_capcha = capcha</b>. Где <b>bf_capcha</b> - значение атрибута <i>name</i> для поля, в который будет вводиться информация с картинки.</p>
 
-<ul>
-    <li><b>data-bf-valid-pattern=""</b> - принимает на вход проверяемое выражение.</li>
-    <li><b>data-bf-valid-error-msg=""</b> - сообщение в случае не совпадения с выражением.</li>
-    <li><b>data-bf-valid-required="1"</b> - устанавливает, что поле обязательно для заполнения.</li>
-</ul>
-
-<table class="table table-bordered">
-
-<caption>Примеры выражений</caption>
-  <tbody><tr>
-    <th>Выражение</th>
-    <th>Описание</th>
-  </tr>
-  <tr>
-    <td>\d или
-      [0-9]</td>
-    <td>Одна цифра от 0 до 9.</td>
-  </tr>
-  <tr>
-    <td>\D или
-    [^0-9]</td>
-    <td>Любой символ кроме цифры.</td>
-  </tr>
-  <tr>
-    <td>\s</td>
-    <td>Пробел.</td>
-  </tr>
-  <tr>
-    <td>[A-Z]</td>
-    <td>Только заглавная латинская буква.</td>
-  </tr>
-  <tr>
-    <td>[A-Za-z]</td>
-    <td>Только латинская буква в любом регистре.</td>
-  </tr>
-  <tr>
-    <td>[А-Яа-яЁё]</td>
-    <td>Только русская буква в любом регистре.</td>
-  </tr>
-  <tr>
-    <td>[A-Za-zА-Яа-яЁё]</td>
-    <td>Любая буква русского и латинского алфавита.</td>
-  </tr>
-  <tr>
-    <td>[0-9]{3}</td>
-    <td>Три цифры.</td>
-  </tr>
-  <tr>
-    <td>[A-Za-z]{6,}</td>
-    <td>Не менее шести латинских букв.</td>
-  </tr>
-  <tr>
-    <td>[0-9]{,3}</td>
-    <td>Не более трёх цифр.</td>
-  </tr>
-  <tr>
-    <td>[0-9]{5,10}</td>
-    <td>От пяти до десяти цифр.</td>
-  </tr>
-  <tr>
-    <td>^[a-zA-Z]+$</td>
-    <td>Любое слово на латинице.</td>
-  </tr>
-  <tr>
-    <td>^[А-Яа-яЁё\s]+$</td>
-    <td>Любое слово на русском включая пробелы.</td>
-  </tr>
-  <tr>
-    <td>^[ 0-9]+$</td>
-    <td>Любое число.</td>
-  </tr>
-  <tr>
-    <td>[0-9]{6}</td>
-    <td>Почтовый индекс.</td>
-  </tr>
-  <tr>
-    <td>\d+(,\d{2})?</td>
-    <td>Число в формате 1,34 (разделитель запятая).</td>
-  </tr>
-  <tr>
-    <td>\d+(\.\d{2})?</td>
-    <td>Число в формате 2.10 (разделитель точка).</td>
-  </tr>
-  <tr>
-    <td>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}</td>
-    <td>IP-адрес</td>
-  </tr>
-
-    <tr>
-        <td>\S+@\S+\.\S+</td>
-        <td>Электронная почта.</td>
-    </tr>
-
-</table>
-
-
-        <h3 id="d10"> Отправка через SMTP</h3>
+ <h3 id="d10"> Отправка через SMTP</h3>
 
        <p>Рассмотрим передачу параметров для Yandex. Остальные можно настроить по аналогии.</p>
 
