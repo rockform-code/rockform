@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.7.1
+ * @version 3.8
  */
 
 // AMD support
@@ -8,7 +8,7 @@
         "use strict";
         if (typeof define === 'function' && define.amd) {
             // using AMD; register as anon module
-            define(['jquery', 'jquery.form.min'], factory);
+            define(['jquery', 'jquery.form.min', 'jquery.mask.min'], factory);
         } else {
             // no AMD; invoke directly
             factory((typeof(jQuery) != 'undefined') ? jQuery : window.Zepto);
@@ -18,9 +18,32 @@
     (function($) {
         "use strict";
 
-        $ = $.noConflict(true);
-
         var base_name_form = 'rockform';
+
+        var mask_pattern = '';
+        var mask_placeholder = {};
+
+        var field_mask = {
+            init: function() {
+                $('[data-bf-mask]').each(function() {
+
+                    mask_pattern = $(this).data('bf-mask');
+                    mask_placeholder = $(this).data('bf-placeholder');
+
+                    if (mask_pattern.length > 0) {
+
+                        if (typeof mask_placeholder == 'undefined' || mask_placeholder.length < 1) {
+                            mask_placeholder = mask_pattern.replace(/[a-z0-9]+?/gi, "_");
+                        }
+
+                        mask_placeholder = { placeholder: mask_placeholder };
+
+                        $(this).mask(mask_pattern, mask_placeholder);
+                    }
+
+                });
+            }
+        }
 
         var tooltip = {
             init: function(el, err_msg) {
@@ -97,39 +120,6 @@
             reset: function() {
                 $(window).off("resize", tooltip.set);
                 $('.bf-tooltip').remove();
-
-            },
-            position: function(el, err_msg) {
-                //http://github.hubspot.com/tooltip/docs/welcome/
-                var pos = $('form', el);
-
-                if(pos == 'top right') {
-
-                } else if(pos == 'top center') {
-
-                } else if(pos == 'top left') {
-
-                } else if(pos == 'left top') {
-
-                } else if(pos == 'left middle') {
-
-                } else if(pos == 'left bottom') {
-
-                } else if(pos == 'bottom left') {
-
-                } else if(pos == 'bottom center') {
-
-                } else if(pos == 'bottom right') {
-
-                } else if(pos == 'right bottom') {
-
-                } else if(pos == 'right middle') {
-
-                } else if(pos == 'right top') {
-
-                } else {
-
-                }
 
             }
         }
@@ -243,7 +233,6 @@
                         }, 400);
 
                         custom_func(param_custom_func);
-                        //bf.init_form(config_popup, attributes);
                     }
                 })
 
@@ -278,7 +267,6 @@
                     e.stopImmediatePropagation();
                 });
             }
-
         };
 
         var capcha = {
@@ -309,7 +297,7 @@
                 $('[data-bf-config]').on("click", function(e) {
                     e.preventDefault();
 
-                    tooltip.reset();
+                  //  tooltip.reset();
 
                     var config_popup = $(this).data("bf-config");
                     if (typeof config_popup == 'undefined' || config_popup.length < 1) {
@@ -357,6 +345,8 @@
             },
             init_form: function(param) {
                 capcha.init();
+                field_mask.init();
+                 tooltip.reset();
 
                 $('form[data-bf-config], .bf-modal form').off('submit');
                 $('form[data-bf-config], .bf-modal form').on('submit', function(e) {

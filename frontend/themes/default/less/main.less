@@ -10,7 +10,7 @@
     -ms-text-size-adjust: 100%; // 2
     -webkit-text-size-adjust: 100%; // 2
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Arial, sans-serif;
     font-size: 14px;
     line-height: 1.42857143; 
     color: #333;
@@ -19,26 +19,14 @@
     // Reset and dependencies
     @import "normalize.less";
     @import "buttons.less";
-    //
-    // Forms
-    // --------------------------------------------------
-    // Normalize non-controls
-    //
-    // Normalize form controls
-    //
-    // While most of our form styles require extra classes, some basic normalization
-    // is required to ensure optimum display with or without those classes to better
-    // address browser inconsistencies.
-    // Position radios and checkboxes better
+ 
     input[type="radio"],
     input[type="checkbox"] {
         margin: 4px 0 0;
         margin-top: 1px \9; // IE8-9
         line-height: normal;
     }
-    input[type="file"] {
-        display: block;
-    }
+   
     // Make multiple select elements height not fixed
     select[multiple],
     select[size] {
@@ -89,29 +77,37 @@
     // Reset height for `textarea`s
     textarea& {
         height: auto;
-    }
+    } 
 } 
  
 .bf-row {
     width: 100%;
     float: left;
-    margin: 4px 0;
+    margin:  0 0  8px;
     .clearfix();
     label {
         display: inline-block; 
         float: left;
         font-size: 14px;
-        padding: 12px 0;
+        padding-top: 4px;
+        color: #444;
         vertical-align: middle;
         width: 120px;
+        margin: 0;
+        span {
+            padding: 0 2px;
+      
+        }
     }
 }
 
 .bf-header {
     font-size: 16px;
     font-weight: bold;
+    text-align: center;
     line-height: 15px;
-    padding-bottom: 15px;
+    color: #444;
+    padding-bottom: 20px;
 }
 
 .bf-right {
@@ -151,7 +147,7 @@
 .bf-status-1 {
     background: green;
 }
- 
+  
 
 /* popup */
 

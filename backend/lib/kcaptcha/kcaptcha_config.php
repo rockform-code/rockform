@@ -17,8 +17,8 @@ $length = mt_rand(2,3); # random 5 or 6 or 7
 //$length = 6;
 
 # CAPTCHA image size (you do not need to change it, this parameters is optimal)
-$width = 110;
-$height = 60;
+$width = 100;
+$height = 50;
 
 # symbol's vertical fluctuation amplitude
 $fluctuation_amplitude = 8;
@@ -41,7 +41,7 @@ $credits = 'www.captcha.ru'; # if empty, HTTP_HOST will be shown
 //$background_color = array(220, 230, 255);
 $foreground_color = array(mt_rand(0,80), mt_rand(0,80), mt_rand(0,80));
 //$background_color = array(mt_rand(220,255), mt_rand(220,255), mt_rand(220,255));
-$background_color = array(mt_rand(255,255), mt_rand(255,255), mt_rand(255,255));
+$background_color = array(249, 249, 249);
 
 # JPEG quality of CAPTCHA image (bigger is better quality, but larger file size)
 $jpeg_quality = 90;

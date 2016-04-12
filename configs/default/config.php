@@ -2,7 +2,7 @@
 [config]
 
 ; Почта получателей. Можно несколько через запятую.
-mail_to =   
+mail_to =
 
 ; Заголовок письма.
 subject = 'Сообщение с сайта'
@@ -10,6 +10,6 @@ subject = 'Сообщение с сайта'
 
 [validation]
 
-bf_capcha = capcha 
+bf_capcha = capcha
 name = 'required,minlength[3],words'
 phone = required

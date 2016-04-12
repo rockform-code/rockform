@@ -2,12 +2,12 @@
 [config]
 
 ; Почта получателей. Можно несколько через запятую.
-mail_to =  
+mail_to =
 
 ; Заголовок письма.
 subject = 'Заказ звонка'
 
 [validation]
 
- 
-phone = required
+
+phone = required,minlength[18]

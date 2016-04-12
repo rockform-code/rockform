@@ -11,17 +11,17 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>Демонстрация работы</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-
-
+ 
     <!-- Rockform -->
-    <!--[if lt IE 8]> 
-      <link href="/rockform/frontend/themes/default/ie.css" type="text/css" rel="stylesheet" />
-    <![endif]--> 
-
     <link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
     <script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
-    <!-- // Rockform -->
 
+   <!--[if lt IE 8]> 
+      <link href="/rockform/frontend/themes/default/ie.css" type="text/css" rel="stylesheet" />
+    <![endif]--> 
+    <!-- // Rockform -->
+ 
+ 
 </head>
 
 <body>
@@ -47,10 +47,29 @@
         <hr>
 
 
-        <h3>Встроенная форма с клиентской валидацией</h3>
-
+<div class="bf-content">
+    <div class="bf-header">
+        Заказ звонка
+    </div>
+    <form data-bf-config="order_phone" action="" method="post">
+        <div class="bf-row">
+            <label> Имя :</label>
+            <input placeholder="" class="bf-form-control" name="name" placeholder="" type="text" value="" />
+        </div>
+        <div class="bf-row">
+            <label> Телефон<span>*</span>:</label>
+            <input  data-bf-mask="+7 (000) 000-00-00" data-bf-placeholder="+7 (___) ___-__-__"  class="bf-form-control" name="phone" placeholder="" type="text" value="" />
+        </div>
  
+ 
+        <div class="bf-row">
+            <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
+        </div>
+    </form>
+</div>
 
+
+   
         <hr style="clear:both;">
         <h2>Документация</h2>
         <ul class="list-unstyled">
@@ -67,17 +86,39 @@
            <li><a href="#d8">Расширение функциональности</a></li>
         </ul>
 
+
+
+
  <h3 id="d1">Описание</h3>
 
         <p>Основные характеристики формы:</p>
-        <ul>
-            <li>Поддержка неорганиченного числа форм на одной странице.</li>
-            <li>Подключение любой формы</li>
-            <li>Поддержка модального окна.</li>
-            <li>Поддержка шаблонизатора</li>
-            <li>Поддержка капчи и защита от CSRF.</li>
-            <li>Работа через SMTP.</li>
-        </ul>
+        <ol>
+        
+<li>Поддерживает прикрепление нескольких файлов.</li>
+
+<li> Поддерживает работу через SMTP.</li>
+
+<li> Поддерживает всплывающее окно по клику по ссылке или кнопке.</li>
+
+<li> Можно встраивать в контент страницы.</li>
+
+<li> Встроенная скрытая защита от спама (работает без капчи).</li>
+
+<li> Поддержка капчи.</li>
+
+<li> Валидация.</li>
+
+<li>Поддержка адаптивности под мобильные разрешения экрана.</li>
+
+<li> Сообщения приходят на почту, можно указать несколько адресов получателей.</li>
+
+<li> Поддержка шаблонизатора.</li>
+
+<li> Поддержка неорганиченного числа форм на одной странице.</li>
+
+<li> Поддержка масок для полей ввода.</li>
+
+        </ol>
 
   <p>  Системные требования:</p>
         <ul>
@@ -328,6 +369,52 @@
   </tr>
 
 </table>
+
+
+<h3 id="d711"> Маски ввода </h3>
+
+ 
+<p>В форме доступны два атрибута для настроек масок: </p>
+
+
+<p>1. <b>data-bf-mask</b> принимает на вход выражения из таблицы ниже.
+
+
+<table class="table table-bordered">
+
+<caption>Доступны следующие аттрибуты маски</caption>
+  <tbody><tr>
+    <th>Выражение</th>
+    <th>Описание</th>
+  </tr>
+  <tr>
+    <td>A</td>
+    <td>Только буквы</td>
+  </tr>
+    <tr>
+    <td>0</td>
+    <td>Только цифры</td>
+  </tr>
+      <tr>
+    <td>S</td>
+    <td>Только буквы и цифры</td>
+  </tr>
+</tbody>
+</table>
+
+       <p class="text-muted">Пример</p>
+
+         <pre><code>data-bf-mask="+7 (000) 000-00-00" </code></pre>
+
+<p>2. <b>data-bf-placeholder</b> - плейсхолдер, формируется автоматически, но если в плейсхолдере есть цифры или буквы, то тогда можно задать явно через этот атрибут.</p>
+ 
+        <p class="text-muted">Пример</p>
+
+         <pre><code>data-bf-placeholder="+7 (___) ___-__-__" </code></pre>
+
+
+
+<p>Для работы используется плагин <a href="https://igorescobar.github.io/jQuery-Mask-Plugin/">jQuery-Mask-Plugin</a></p>
 
 <h3 id="d75">Добавление капчи</h3>
 

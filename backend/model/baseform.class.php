@@ -236,8 +236,7 @@ class Baseform {
 	}
 
 	private function set_base_form() {
-		$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array();
-		$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array();
+		$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array(); 
 		return $this->twig->render($this->tmp_form_popup, $attributes);
 	}
 
@@ -503,8 +502,30 @@ class Baseform {
 		$mail->Body = $body;
 		$mail->AltBody = strip_tags($body);
 
- 		//set files
+ 		$this->set_files_on_mail($mail);
  
+		$mail_to = explode(',', $config['mail_to']);
+		foreach($mail_to as $email) {
+			//Recipients will know all of the addresses that have received a letter
+			$mail->addAddress($email, '');
+		}
+
+		if($this->config['SMTPAuth']) {
+			//$mail->SMTPDebug = 3;
+
+			$mail->isSMTP(); // Set mailer to use SMTP
+			$mail->Host = $config['SMTPHost'];  // Specify main and backup SMTP servers
+			$mail->SMTPAuth = $config['SMTPAuth']; // Enable SMTP authentication
+			$mail->Username = $config['SMTPUsername']; // SMTP username
+			$mail->Password = $config['SMTPPassword']; // SMTP password
+			$mail->SMTPSecure = $config['SMTPSecure']; // Enable TLS encryption, `ssl` also accepted
+			$mail->Port = $config['SMTPPort']; // TCP port to connect to
+		}
+
+		return $mail->send();
+	}
+
+	private function set_files_on_mail($mail) {
 		foreach ($_FILES as $name_upload_file => $files) {
 			if(isset($_FILES[$name_upload_file]["name"])) {
 				if(is_array($_FILES[$name_upload_file]['name'])) {
@@ -530,26 +551,6 @@ class Baseform {
 				}
 			}
 		}
-
-		$mail_to = explode(',', $config['mail_to']);
-		foreach($mail_to as $email) {
-			//Recipients will know all of the addresses that have received a letter
-			$mail->addAddress($email, '');
-		}
-
-		if($this->config['SMTPAuth']) {
-			//$mail->SMTPDebug = 3;
-
-			$mail->isSMTP(); // Set mailer to use SMTP
-			$mail->Host = $config['SMTPHost'];  // Specify main and backup SMTP servers
-			$mail->SMTPAuth = $config['SMTPAuth']; // Enable SMTP authentication
-			$mail->Username = $config['SMTPUsername']; // SMTP username
-			$mail->Password = $config['SMTPPassword']; // SMTP password
-			$mail->SMTPSecure = $config['SMTPSecure']; // Enable TLS encryption, `ssl` also accepted
-			$mail->Port = $config['SMTPPort']; // TCP port to connect to
-		}
-
-		return $mail->send();
 	}
 
 	protected function set_json_encode($value) {
