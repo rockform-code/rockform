@@ -1,11 +1,6 @@
 {
   "name": "Rockform",
   "version": "3.8.0",
-  "repository": {
-    "type": "git",
-    "url": "https://Rugoals@bitbucket.org/Rugoals/rokform.git"
-  },
-  "author": "Rugoals",
   "license": "Apache2",
   "devDependencies": {
     "gulp": "~3.9.1",

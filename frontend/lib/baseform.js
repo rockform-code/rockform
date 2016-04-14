@@ -143,7 +143,7 @@
                     );
                     return false;
                 }
-
+ 
                 $.each(data, function(name, value) {
                     err_msg = '';
 
@@ -153,12 +153,12 @@
 
                     } else {
                         err_msg = validation.set_err_msg(value);
-                        el = $('[name="' + name + '"]');
+                        el = $('[name="' + name + '"]', form); 
 
                         if (el) {
                             tooltip.init(el, err_msg);
                         }
-
+ 
                         if (err_msg.length > 0) {
                             valid = +1;
                         }
@@ -346,7 +346,7 @@
             init_form: function(param) {
                 capcha.init();
                 field_mask.init();
-                 tooltip.reset();
+                tooltip.reset();
 
                 $('form[data-bf-config], .bf-modal form').off('submit');
                 $('form[data-bf-config], .bf-modal form').on('submit', function(e) {

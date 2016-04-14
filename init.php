@@ -5,7 +5,7 @@
 * @version 3.8
 */
 
-$debug = 1;
+$debug = 0;
 if($debug > 0) {
 	ini_set('error_reporting', E_ALL);
 	ini_set ('display_errors', 1);
