@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.8
+ * @version 3.9
  */
 
 // AMD support
@@ -72,6 +72,7 @@
 
                 var el, err_msg;
 
+                //Выбираем данные при прямой передачи и через событие ресайза
                 if (event.data) {
                     el = event.data.el;
                     err_msg = event.data.err_msg;
@@ -80,47 +81,174 @@
                     err_msg = event.err_msg;
                 }
 
-                if (el.attr('name')) {
-                    var min_dist = 20;
+                var id = el.attr('name');
+                var pos = el.attr('data-bf-tooltip');
 
-                    var id = el.attr('name');
-                    $('[data-bf-tooltip-id="' + id + '"]').remove();
+                //генерируем класс для тултипа
+                if (typeof pos != 'undefined') {
+                    pos = pos.replace(/[ ]+?/gi, "-");
+                } else {
 
-                    var o = el.offset();
-                    var h = el.outerHeight();
-                    var w = el.outerWidth();
+                    pos = el.parents('form').attr('data-bf-tooltip');
 
-                    el.after(
-                        '<div class="bf-tooltip" data-bf-tooltip-id="' + id + '"> \
-                         <div class="bf-arrow"></div>' + err_msg + '</div>'
-                    );
+                    if (pos === undefined) {
+                        pos = 'bottom-right';
+                    } else {
+                        pos = pos.replace(/[ ]+?/gi, "-");
 
-                    var popup_el = $('[data-bf-tooltip-id="' + id + '"]');
-                    var w_tooltip = popup_el.outerWidth();
-                    var default_position = o['left'] + w / 4 * 3;
-
-                    var pos = default_position + w_tooltip + min_dist;
-                    var pos_min = $(window).outerWidth() - min_dist - w_tooltip;
-
-                    if (pos > $(window).outerWidth()) {
-                        default_position = pos_min;
                     }
 
-                    if (pos_min <= o['left']) {
-                        default_position = o['left'];
-                        popup_el.width(w - min_dist);
-                    }
-
-                    popup_el.offset({
-                        top: o['top'] + h,
-                        left: default_position
-                    });
                 }
+
+                $('[data-bf-tooltip-id="' + id + '"]').remove();
+                el.after(
+                    '<div class="bf-tooltip bf-tooltip-' + pos + '" data-bf-tooltip-id="' + id + '"> \
+                         <div class="bf-arrow"></div>' + err_msg + '</div>'
+                );
+
+                tooltip.position(el);
+
             },
             reset: function() {
                 $(window).off("resize", tooltip.set);
                 $('.bf-tooltip').remove();
 
+            },
+            response: function(position, w_tooltip, min_dist, el_offset, el_outer_w, t) {
+                var pos = position + w_tooltip + min_dist;
+                var pos_min = $(window).outerWidth() - min_dist - w_tooltip;
+
+                if (pos > $(window).outerWidth()) {
+                    position = pos_min;
+                }
+
+                if (pos_min <= el_offset['left']) {
+                    position = el_offset['left'];
+                    t.width(el_outer_w - min_dist);
+                }
+
+                return position;
+            },
+            position: function(el) {
+                var min_dist = 20;
+
+                var el_offset = el.offset();
+
+                if (typeof el_offset != 'undefined') {
+
+                    var el_outer_h = el.outerHeight();
+                    var el_outer_w = el.outerWidth();
+                    var id = el.attr('name');
+
+                    var t = $('[data-bf-tooltip-id="' + id + '"]');
+                    var w_tooltip = t.outerWidth();
+                    var h_tooltip = t.outerHeight();
+
+                    var pos = el.attr('data-bf-tooltip');
+
+                    if (pos === undefined) {
+
+                        var pos = el.parents('form').attr('data-bf-tooltip');
+
+                        if (pos === undefined) {
+                            pos = 'bottom right';
+                        }
+                    }
+
+                    if (pos == 'top right') {
+
+                        var position = el_offset['left'] + el_outer_w / 6 * 5;
+                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+
+                        t.offset({
+                            top: el_offset['top'] - h_tooltip,
+                            left: position
+                        });
+
+                    } else if (pos == 'top center') {
+
+                        var position = el_offset['left'] + el_outer_w / 2;
+                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+
+                        t.offset({
+                            top: el_offset['top'] - h_tooltip,
+                            left: position
+                        });
+
+                    } else if (pos == 'top') {
+
+                        var position = el_offset['left'];
+                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+
+                        t.offset({
+                            top: el_offset['top'] - h_tooltip,
+                            left: position
+                        });
+                    } else if (pos == 'top left') {
+
+                        var position = el_offset['left'] - el_outer_w / 6 * 5;
+
+                        t.offset({
+                            top: el_offset['top'] - h_tooltip,
+                            left: position
+                        });
+
+                    } else if (pos == 'left center') {
+                        var position = el_offset['left'] - w_tooltip;
+
+                        t.offset({
+                            top: el_offset['top'] + el_outer_h / 2 - h_tooltip / 2,
+                            left: position
+                        });
+
+                    } else if (pos == 'bottom') {
+
+                        var position = el_offset['left'];
+                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+
+                        t.offset({
+                            top: el_offset['top'] + el_outer_h,
+                            left: position
+                        });
+
+                    } else if (pos == 'bottom left') {
+
+                        var position = el_offset['left'] - el_outer_w / 6 * 5;
+
+                        t.offset({
+                            top: el_offset['top'] + el_outer_h,
+                            left: position
+                        });
+
+                    } else if (pos == 'bottom center') {
+
+                        var position = el_offset['left'] + el_outer_w / 2;
+                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+
+                        t.offset({
+                            top: el_offset['top'] + el_outer_h,
+                            left: position
+                        });
+
+                    } else if (pos == 'bottom right') {
+
+                        var position = el_offset['left'] + el_outer_w / 6 * 5;
+                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+
+                        t.offset({
+                            top: el_offset['top'] + el_outer_h,
+                            left: position
+                        });
+
+                    } else if (pos == 'right center') {
+                        var position = el_offset['left'] + el_outer_w;
+
+                        t.offset({
+                            top: el_offset['top'] + el_outer_h / 2 - h_tooltip / 2,
+                            left: position
+                        });
+                    }
+                }
             }
         }
 
@@ -143,22 +271,19 @@
                     );
                     return false;
                 }
- 
+
                 $.each(data, function(name, value) {
                     err_msg = '';
 
                     if (name == 'token') {
 
                         bf.set_attr_form(form, data.token, 'bf-token');
-
                     } else {
-                        err_msg = validation.set_err_msg(value);
-                        el = $('[name="' + name + '"]', form); 
 
-                        if (el) {
-                            tooltip.init(el, err_msg);
-                        }
- 
+                        err_msg = validation.set_err_msg(value);
+                        el = $('[name="' + name + '"]', form);
+                        tooltip.init(el, err_msg);
+
                         if (err_msg.length > 0) {
                             valid = +1;
                         }
@@ -297,7 +422,7 @@
                 $('[data-bf-config]').on("click", function(e) {
                     e.preventDefault();
 
-                  //  tooltip.reset();
+                    //  tooltip.reset();
 
                     var config_popup = $(this).data("bf-config");
                     if (typeof config_popup == 'undefined' || config_popup.length < 1) {
@@ -320,7 +445,8 @@
 
                 });
 
-                $("form[data-bf-config]").off(); //reset event popup for form
+                //reset event popup for form
+                $("form[data-bf-config]").off();
             },
             get_custom_popup_attributes: function(button) {
 

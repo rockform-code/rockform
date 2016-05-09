@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Демонстрация работы</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+ 
+    <!-- Rockform -->
+    <link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
+    <script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
+
+   <!--[if lt IE 8]> 
+      <link href="/rockform/frontend/themes/default/ie.css" type="text/css" rel="stylesheet" />
+    <![endif]--> 
+    <!-- // Rockform -->
+ 
+ 
+</head>
+
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>Rockform</h1>
+            <p class="lead">Документация и демонстрация работы.</p>
+        </div>
+
+        <h3>Простое модальное окно</h3>
+        <p>
+            <a class="btn btn-lg btn-default" data-bf-config="" href="#">Запустить пример</a>
+        </p>
+        <hr>
+        <h3>Модальное окно с параметром</h3>
+        <p>
+            <a class="btn btn-lg btn-default" data-bf-field_title="Переданный параметр" data-bf-config="test" href="#">Запустить пример</a>
+        </p>    <hr>
+        <h3>Модальное окно заказа обратного звонка</h3>
+        <p>
+            <a class="btn btn-lg btn-default"  data-bf-config="order_phone" href="#">Заказать звонок</a>
+        </p>
+        <hr>
+
+
+<div class="bf-content">
+    <div class="bf-header">
+        Заказ звонка
+    </div>
+    <form data-bf-config="order_phone" action="" method="post">
+        <div class="bf-row">
+            <label> Имя :</label>
+            <input placeholder="" class="bf-form-control" name="name" data-bf-tooltip="right center"
+            placeholder="" type="text" value="" />
+        </div>
+        <div class="bf-row">
+            <label> Телефон<span>*</span>:</label>
+            <input data-bf-tooltip="right center" 
+            data-bf-mask="+7 (000) 000-00-00" data-bf-placeholder="+7 (___) ___-__-__"  class="bf-form-control" name="phone" type="text" value="" />
+        </div>
+ 
+ 
+        <div class="bf-row">
+            <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
+        </div>
+    </form>
+</div>
+ 
+    </div>
+    <!-- /container -->
+</body>
+
+</html>

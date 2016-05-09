@@ -9,8 +9,8 @@ requirejs.config({
         },
         "noconflict": {
             "jquery": "jquery"
-        }
+        } 
     }
 });
 
-requirejs(['baseform.min']);
+requirejs(['baseform']); 

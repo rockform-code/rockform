@@ -1,8 +1,9 @@
+@tooltip_color: red;
 .bf-tooltip {
     color: #fff;
     width: 100%;
     max-width: 280px;
-    background: red;
+    background: @tooltip_color;
     padding: 5px 10px;
     border-radius: 4px;
     display: block;
@@ -11,10 +12,9 @@
     font-style: normal;
     font-weight: 400;
     letter-spacing: normal;
-    line-height: 1.42857; 
+    line-height: 1.42857;
     position: absolute;
-    text-align: start;
-     opacity: 0.7;
+    opacity: 0.7;
     text-decoration: none;
     text-shadow: none;
     text-transform: none;
@@ -23,11 +23,88 @@
     word-spacing: normal;
     word-wrap: normal;
     z-index: 1070;
+    .bf-arrow {
+        border: 10px solid transparent;
+        border-bottom: 10px solid @tooltip_color;
+        position: absolute;
+        top: -15px;
+        left: 0;
+    }
 }
 
-.bf-tooltip .bf-arrow { 
-    border: 10px solid transparent;
-    border-bottom: 10px solid red;
-    position: absolute;
-    top: -15px;
+.bf-tooltip-top-center {
+    .bf-arrow {
+        border: 10px solid transparent;
+        border-top: 10px solid @tooltip_color;
+        top: 26px;
+        left: 2px;
+    }
+}
+
+.bf-tooltip-top-right {
+    .bf-arrow {
+        border: 10px solid transparent;
+        border-top: 10px solid @tooltip_color;
+        top: 26px;
+        left: 2px;
+    }
+}
+
+.bf-tooltip-top-left {
+    .bf-arrow {
+        border: 10px solid transparent;
+        border-top: 10px solid @tooltip_color;
+        top: 26px;
+        right: 2px;
+        left: auto;
+    }
+}
+
+.bf-tooltip-bottom-left {
+    .bf-arrow {
+        left: auto;
+        right: 0;
+    }
+}
+
+.bf-tooltip-top {
+    .bf-arrow {
+        border: 10px solid transparent;
+        border-top: 10px solid @tooltip_color;
+        top: 26px;
+        left: 2px;
+    }
+}
+
+.bf-tooltip-left-center {
+    .bf-arrow {
+        border: 10px solid transparent;
+        border-left: 10px solid @tooltip_color;
+        right: -16px;
+        top: 4px;
+        left: auto;
+    }
+}
+
+.bf-tooltip-right-center {
+    .bf-arrow {
+        border: 10px solid transparent;
+        border-right: 10px solid @tooltip_color;
+        top: 4px;
+        left: -16px;
+    }
+}
+
+.bf-tooltip-bottom {
+    .bf-arrow {
+        left: auto;
+        right: 0;
+    }
+}
+
+.bf-tooltip-top {
+    .bf-arrow {
+        left: auto;
+        right: 0;
+    }
 }
