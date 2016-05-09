@@ -92,7 +92,7 @@
                     pos = el.parents('form').attr('data-bf-tooltip');
 
                     if (pos === undefined) {
-                        pos = 'bottom-right';
+                        pos = 'right-center';
                     } else {
                         pos = pos.replace(/[ ]+?/gi, "-");
 
@@ -151,7 +151,7 @@
                         var pos = el.parents('form').attr('data-bf-tooltip');
 
                         if (pos === undefined) {
-                            pos = 'bottom right';
+                            pos = 'right center';
                         }
                     }
 
@@ -414,15 +414,12 @@
             path: '/' + base_name_form + '/init.php',
 
             init: function() {
-
-                bf.init_popup_form();
                 bf.init_form();
+                bf.init_popup_form();
             },
             init_popup_form: function() {
-                $('[data-bf-config]').on("click", function(e) {
+                $(document).on('click', '[data-bf-config]:not(form)', function(e) {
                     e.preventDefault();
-
-                    //  tooltip.reset();
 
                     var config_popup = $(this).data("bf-config");
                     if (typeof config_popup == 'undefined' || config_popup.length < 1) {
@@ -445,8 +442,6 @@
 
                 });
 
-                //reset event popup for form
-                $("form[data-bf-config]").off();
             },
             get_custom_popup_attributes: function(button) {
 
@@ -474,56 +469,57 @@
                 field_mask.init();
                 tooltip.reset();
 
-                $('form[data-bf-config], .bf-modal form').off('submit');
-                $('form[data-bf-config], .bf-modal form').on('submit', function(e) {
-                    e.preventDefault();
+                $(document).off('submit', 'form[data-bf-config], .bf-modal form')
+                    .on('submit', 'form[data-bf-config], .bf-modal form', function(e) {
+                        //$('form[data-bf-config], .bf-modal form').on('submit', function(e) {
+                        e.preventDefault();
 
-                    var form = $(this);
-                    if (typeof param == 'undefined') {
-                        param = {};
-                        param.config_popup = '';
-                    }
-                    bf.config = bf.get_config(param.config_popup, form.data("bf-config"));
-
-                    var formdata = form.formToArray(); //get serialized form
-                    //replace file object with name file
-                    $.each(formdata, function(index, element) {
-                        if (element.type == 'file') {
-                            formdata[index].value = element.value.name
+                        var form = $(this);
+                        if (typeof param == 'undefined') {
+                            param = {};
+                            param.config_popup = '';
                         }
-                    });
+                        bf.config = bf.get_config(param.config_popup, form.data("bf-config"));
 
-                    $.post(
-                        bf.path, {
-                            'fields': formdata,
-                            'type': 'validation',
-                            'bf-config': bf.config
-                        },
-                        function(data) {
-
-                            bf.set_attr_form(form, bf.config, 'bf-config');
-
-                            if (validation.server(form, data)) {
-                                //set add params from popup
-                                if (typeof param.attributes != 'undefined') {
-                                    $.each(param.attributes, function(name_item, value_item) {
-                                        bf.set_attr_form(form, value_item, name_item);
-                                    });
-                                }
-
-                                form.ajaxSubmit({
-                                    success: bf.show_response,
-                                    url: bf.path,
-                                    type: 'post',
-                                    dataType: 'json'
-                                });
-
-
+                        var formdata = form.formToArray(); //get serialized form
+                        //replace file object with name file
+                        $.each(formdata, function(index, element) {
+                            if (element.type == 'file') {
+                                formdata[index].value = element.value.name
                             }
-                            $('.bf-attr').remove();
                         });
 
-                });
+                        $.post(
+                            bf.path, {
+                                'fields': formdata,
+                                'type': 'validation',
+                                'bf-config': bf.config
+                            },
+                            function(data) {
+
+                                bf.set_attr_form(form, bf.config, 'bf-config');
+
+                                if (validation.server(form, data)) {
+                                    //set add params from popup
+                                    if (typeof param.attributes != 'undefined') {
+                                        $.each(param.attributes, function(name_item, value_item) {
+                                            bf.set_attr_form(form, value_item, name_item);
+                                        });
+                                    }
+
+                                    form.ajaxSubmit({
+                                        success: bf.show_response,
+                                        url: bf.path,
+                                        type: 'post',
+                                        dataType: 'json'
+                                    });
+
+
+                                }
+                                $('.bf-attr').remove();
+                            });
+
+                    });
             },
             set_attr_form: function(form, value, name) {
                 form.prepend('<input name="' + name + '" class="bf-attr" type="hidden" value="' + value + '" />');

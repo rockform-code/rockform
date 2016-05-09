@@ -2,12 +2,14 @@
 [config]
 
 ; Почта получателей. Можно несколько через запятую.
-mail_to =
+mail_to =  gmgsar@yandex.ru
 
 ; Заголовок письма.
-subject = 'Заказ звонка'
+subject = 'Сообщение с сайта'
+
 
 [validation]
 
-phone = required,minlength[18]
-name = required
+bf_capcha = capcha 
+name = 'required,minlength[3],words'
+phone = required
