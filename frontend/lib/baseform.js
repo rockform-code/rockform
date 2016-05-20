@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.9
+ * @version 3.10
  */
 
 // AMD support
@@ -541,7 +541,7 @@
 
                 if (responseText['status'] > 0) {
                     $form.hide();
-
+        /*
                     setTimeout(
                         function() {
                             $('.bf-modal-close').click(); //if popup
@@ -555,6 +555,7 @@
                             $form.clearForm();
                         }, 3000
                     );
+        */
                 }
             }
         }

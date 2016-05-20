@@ -10,500 +10,438 @@
     <meta name="author" content="">
     <meta name="robots" content="noindex, nofollow" />
     <title>Демонстрация работы</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
- 
-    <!-- Rockform -->
-    <link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
-    <script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
-
-   <!--[if lt IE 8]> 
-      <link href="/rockform/frontend/themes/default/ie.css" type="text/css" rel="stylesheet" />
-    <![endif]--> 
-    <!-- // Rockform -->
- 
- 
+    <link href="dist/css/bootstrap.min.css" rel=stylesheet>
+    <link href="assets/css/docs.min.css" rel=stylesheet>
 </head>
 
 <body>
-    <div class="container">
-        <div class="page-header">
+    <div class=bs-docs-header id=content tabindex=-1>
+        <div class=container>
             <h1>Rockform</h1>
-            <p class="lead">Документация и демонстрация работы.</p>
+            <p>Документация и демонстрация работы.</p>
         </div>
-
-        <h3>Простое модальное окно</h3>
-        <p>
-            <a class="btn btn-lg btn-default" data-bf-config="" href="#">Запустить пример</a>
-        </p>
-        <hr>
-        <h3>Модальное окно с параметром</h3>
-        <p>
-            <a class="btn btn-lg btn-default" data-bf-field_title="Переданный параметр" data-bf-config="test" href="#">Запустить пример</a>
-        </p>    <hr>
-        <h3>Модальное окно заказа обратного звонка</h3>
-        <p>
-            <a class="btn btn-lg btn-default"  data-bf-config="order_phone" href="#">Заказать звонок</a>
-        </p>
-        <hr>
-
-
-<div class="bf-content">
-    <div class="bf-header">
-        Заказ звонка
     </div>
-    <form data-bf-config="order_phone" action="" method="post">
-        <div class="bf-row">
-            <label> Имя :</label>
-            <input placeholder="" class="bf-form-control" name="name" data-bf-tooltip="right center"
-            placeholder="" type="text" value="" />
-        </div>
-        <div class="bf-row">
-            <label> Телефон<span>*</span>:</label>
-            <input data-bf-tooltip="right center" 
-            data-bf-mask="+7 (000) 000-00-00" data-bf-placeholder="+7 (___) ___-__-__"  class="bf-form-control" name="phone" type="text" value="" />
-        </div>
- 
- 
-        <div class="bf-row">
-            <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
-        </div>
-    </form>
-</div>
-
-
-   
-        <hr style="clear:both;">
-        <h2>Документация</h2>
-        <ul class="list-unstyled">
-            <li><a href="#d1"> Описание</a></li>
-            <li><a href="#d2"> Как подключить скрипт</a></li>
-            <li><a href="#d3"> Где хранятся настройки</a></li>
-            <li><a href="#d6"> Шаблон отправки на почту</a></li>
-            <li><a href="#d71"> Валидация </a></li>
-
-             <li><a href="#d75"> Подключение капчи</a></li>
-
-            
-            <li><a href="#d10"> Отправка через SMTP</a></li>
-           <li><a href="#d8">Расширение функциональности</a></li>
-        </ul>
-
-
-
-
- <h3 id="d1">Описание</h3>
-
-        <p>Основные характеристики формы:</p>
-        <ol>
-        
-<li>Поддерживает прикрепление нескольких файлов.</li>
-
-<li> Поддерживает работу через SMTP.</li>
-
-<li> Поддерживает всплывающее окно по клику по ссылке или кнопке.</li>
-
-<li> Можно встраивать в контент страницы.</li>
-
-<li> Встроенная скрытая защита от спама (работает без капчи).</li>
-
-<li> Поддержка капчи.</li>
-
-<li> Валидация.</li>
-
-<li>Поддержка адаптивности под мобильные разрешения экрана.</li>
-
-<li> Сообщения приходят на почту, можно указать несколько адресов получателей.</li>
-
-<li> Поддержка шаблонизатора.</li>
-
-<li> Поддержка неорганиченного числа форм на одной странице.</li>
-
-<li> Поддержка масок для полей ввода.</li>
-
-        </ol>
-
-  <p>  Системные требования:</p>
-        <ul>
-            <li>Работает с PHP 5.2 и выше</li>
-            <li>Работает в IE8 и выше.</li>
-        </ul>
-
-
-
-<h3 id="d2">Как подключить скрипт</h3>
-
-
-        <p>Подключить скрипты в указанной последовательности</p>
-        <pre><code>&lt;!-- Rockform --&gt;
+    <div class="container bs-docs-container">
+        <div class=row>
+            <div class=col-md-9 role=main>
+                <div class=bs-docs-section>
+                    <h1 class="page-header" id="overview">Обзор</h1>
+                    <h2 id="description">Описание</h2>
+                    <p>Основные характеристики формы:</p>
+                    <ol>
+                        <li>Встроенная защита от спама, плюс поддержка капчи.</li>
+                        <li>Поддержка отправки сообщения нескольким получателям. Поддержка отправки писем через SMTP.</li>
+                        <li>Поддержка прикрепления неограниченного числа файлов.</li>
+                        <li>Поддержка подключения практически любых форм.</li>
+                        <li>Можно подключать любое число форм на одной странице.</li>
+                        <li>Поддержка всплывающего окна.</li>
+                        <li>В шаблонах имеется поддержка шаблонизатора Twig.</li>
+                        <li>Поддержка валидации в виде всплывающих подсказок, настройки масок ввода.</li>
+                    </ol>
+                    <h2 id="system-requirements">Системные требования</h2>
+                    <ul>
+                        <li>Работает с PHP 5.2.17 и выше</li>
+                        <li>Работает c IE9 и выше.</li>
+                    </ul>
+                </div>
+                <div class=bs-docs-section>
+                    <h1 class="page-header" id="example">Примеры</h1>
+                    <h3>Простое модальное окно</h3>
+                    <p>
+                        <a class="btn btn-lg btn-default" data-bf-config="" href="#">Запустить пример</a>
+                    </p>
+                    <hr>
+                    <h3>Модальное окно заказа обратного звонка</h3>
+                    <p>
+                        <a class="btn btn-lg btn-default" data-bf-config="order_phone" href="#">Заказать звонок</a>
+                    </p>
+                    <hr>
+                    <div class="bf-content">
+                        <div class="bf-header">
+                            Заказ звонка
+                        </div>
+                        <form data-bf-config="order_phone" action="" method="post">
+                            <div class="bf-row">
+                                <label> Имя :</label>
+                                <input placeholder="" class="bf-form-control" name="name" data-bf-tooltip="right center" placeholder="" type="text" value="" />
+                            </div>
+                            <div class="bf-row">
+                                <label> Телефон<span>*</span>:</label>
+                                <input data-bf-tooltip="right center" data-bf-mask="+7 (000) 000-00-00" data-bf-placeholder="+7 (___) ___-__-__" class="bf-form-control" name="phone" type="text" value="" />
+                            </div>
+                            <div class="bf-row">
+                                <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
+                            </div>
+                        </form>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+                <div class=bs-docs-section>
+                    <h1 class="page-header" id="install">Установка</h1>
+                    <h2 id="how-install">Как подключить скрипт</h2>
+                    <p>Для установки нужно подключить скрипты в указанной последовательности:</p>
+                    <pre><code>&lt;!-- Rockform --&gt;
     &lt;link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
     &lt;script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"&gt;&lt;/script&gt;
 &lt;!-- // Rockform --&gt;
 </code></pre>
-
-<p> Для поддержки всплывающего окна в IE7 надо добавить следующий код:
-
-
-</p>
-
-
-<pre><code>&lt;!--[if lt IE 8]&gt;
-      &lt;link href="/rockform/frontend/themes/default/ie.css" type="text/css" rel="stylesheet" /&gt;
-    &lt;![endif]--&gt;</code></pre>
-        <p>Для подключения существующей формы на странице достаточно тегу <strong>form</strong> добавить атрибут с названием конфигурации: </p>
-
-         <pre><code>data-bf-config=""</code></pre>
-
-
-       <p> Можно оставить пустым, тогда конфигурация возьмётся из папки по умолчанию: <strong>/configs/default</strong>. </p>
- 
-        <p>Для вызова всплывающего окна надо настроить шаблон, который можно найти в папке <strong>/configs/default/templates/form_popup.html</strong>. В него можно передать любой html-код с формой, он подхватится автоматически. Работает с поддержкой шаблонизатора Twig.</p>
-
-        <p>Для вызова всплывающего окна нужно добавить атрибут:</p>
-
-          <pre><code>data-bf-config=""</code></pre>
-
-         <p>на любой тег, кроме формы.</p>
-
-        <p>В всплывающую форму можно передать параметры через data-атрибуты, например: </p>
-
-        <pre><code>data-bf-field_title="Параметр"</code></pre>
-
-        <p>Где <strong>title</strong> можно заменить на своё название.</p>
-
-        <p>Стоит учесть, что здесь обязательно нужно использовать нижнее подчёркивание.</p>
-
-        <p>Переданная переменная будет доступна как: <strong>{{field_title}}</strong> в шаблонах отправки на почту и в всплывающей форме.</p>
-
-
-        <h3 id="d6"> Шаблон отправки на почту</h3>
-        <p>Шаблон лежит в папке <strong>/templates/report_on_mail.html</strong>.</p>
-        <p>В качестве шаблона для полей используется конструкция <strong>{{название_поля}}</strong>. Поддерживает работу с шаблонизатором Twig.</p>
-
-        <p>Также доступны две системные перенные:  </p>
-        <ul>
-    <li><b>{{field_page_link}}</b> - адрес страницы оформления формы.</li>
-    <li><b>{{field_page_h1}}</b> - тег <strong>h1</strong> страницы оформления формы.</li>
-</ul>
-
- 
-       <h3 id="d3">Настройки</h3>
-
-      <p>Настройки хранятся в .ini формате и находятся в файле <strong>config.php</strong>.</p>
-
-        <p>Для подключения формы на странице достаточно добавить атрибут: </p>
-
-       <pre><code>data-bf-config=""</code></pre>
-
-       <p> и передать ему название конфигурации.</p>
-
-         <p class="text-muted">Пример</p>
-
-         <pre><code>data-bf-config="Название_конфигурации"</code></pre>
-
-        <p>Название конфигурации совпадает с именем папки в директории <strong>/configs/</strong>. По умолчанию, при пустом вызове, настройки берутся из <strong>/configs/default/</strong>. Можно создать сколько угодно конфигураций, просто копируя папку <strong>default</strong> с другим названием и меняя параметры на свои.</p>
-
-        <p>Важной характеристикой является поддержка наследования. Например, в новой конфигурации можно не указывать почту получателя, она возьмётся из папки по умолчанию: <strong>/configs/default</strong>.
-        Не наследуются только секция валидации.
-        </p>
-
-
-<table class="table table-bordered">
-
-<caption>Доступные настройки</caption>
-    <tbody>
-    <tr>
-    <th>Параметр</th>
-     <th>Значение по умолчанию</th>
-     <th>Обязательное</th>
-
-    <th>Описание</th>
-  </tr>
-
-  <tr>
-    <td>mail_to</td>
-    <td></td>
-     <td>Да</td>
-    <td>Почта получателей. Можно несколько через запятую.</td>
-    <tr>
-
- <tr>
-    <td>subject </td>
-    <td>Письмо с сайта</td>
-     <td></td>
-    <td>Заголовок письма.</td>
-    <tr>
-
-  <tr>
-    <td>from_email</td>
-    <td>from@{{SERVER_NAME}}</td>
-     <td></td>
-    <td>Почта, которая будет указана в качестве адреса отправителя.</td>
-    <tr>
-
-  <tr>
-    <td>from_name</td>
-    <td>Из {{SERVER_NAME}}</td>
-     <td></td>
-    <td>Имя или название источника отправителя.</td>
-    <tr>
-
-      <tr>
-    <td>used_lexicon</td>
-    <td>default</td>
-     <td></td>
-    <td>Лексикон</td>
-    <tr>
-
-      <tr>
-    <td>disable_mail_send</td>
-    <td>0</td>
-     <td></td>
-    <td>Не отправлять почту</td>
-    <tr>
-
-      <tr>
-    <td>SMTPHost</td>
-    <td></td>
-     <td></td>
-    <td><span style="display: none;">Specify main and backup SMTP servers</span>
-Адрес SMTP сервера</td>
-    <tr>
-      <tr>
-    <td>SMTPAuth</td>
-    <td></td>
-     <td></td>
-    <td><span style="display: none;">Enable SMTP authentication</span>Включение SMTP авторизации </td>
-    <tr>
-      <tr>
-    <td>SMTPUsername</td>
-    <td></td>
-     <td></td>
-    <td><span style="display: none;">SMTP username</span> SMTP пользователь  </td>
-    <tr>
-      <tr>
-    <td>SMTPPassword</td>
-    <td></td>
-     <td></td>
-    <td><span style="display: none;">SMTP password </span>SMTP пароль  </td>
-    <tr>
-       <tr>
-    <td>SMTPSecure</td>
-    <td>ssl</td>
-     <td></td>
-    <td>
-    <span style="display: none;">
-        Enable TLS encryption, `ssl` also accepted
-    </span>
-     Включение шифрования TLS, также доступен `ssl`  </td>
-    <tr>
-      <tr>
-    <td>SMTPPort</td>
-    <td>465</td>
-     <td></td>
-    <td> <span style="display: none;">TCP port to connect to</span>  TCP порт</td>
-    <tr>
-
-
- </table>
- 
-<h3 id="d71"> Валидация </h3>
-
-<p>Для включения валидации полей, надо в конфигурационом файле добавить секцию [validation].</p>
-<p>Затем перечислить названия полей и атрибуты валидации к ним.</p>
-
-<p>Пример: <b>name = 'required,minlength[3],words'</b>. Это будет означать, что атрибут поля <i>name</i> со значением - "name"
-  будет обязательно для заполнения, минимальное допустимое число символов 3 и на вход должны быть переданы только слова.</p>
-
-<table class="table table-bordered">
-
-<caption>Доступны следующие аттрибуты валидации</caption>
-  <tbody><tr>
-    <th>Выражение</th>
-    <th>Описание</th>
-  </tr>
-  <tr>
-    <td>required</td>
-    <td>Поле становится обязательным для заполнения</td>
-  </tr>
-  <tr>
-    <td>minlength[1]</td>
-    <td>Минимальное число символов, в скобочках указывается значение</td>
-  </tr>
-  <tr>
-    <td>maxlength[10]</td>
-    <td>Максимально число символов, в скобочках указывается значение</td>
-  </tr>
-  <tr>
-    <td>rangelength[1,10]</td>
-    <td>Диапозон числа символов, в скобочках указывается значение</td>
-  </tr>
-  <tr>
-    <td>email</td>
-    <td>Электронная почта</td>
-  </tr>
-  <tr>
-    <td>url</td>
-    <td>Ссылка</td>
-  </tr>
-  <tr>
-    <td>ip</td>
-    <td>ip-адрес</td>
-  </tr>
-  <tr>
-    <td>number</td>
-    <td>Дробные числа</td>
-  </tr>
-  <tr>
-    <td>digits</td>
-    <td>Только цифры</td>
-  </tr>
-  <tr>
-    <td>letter</td>
-    <td>Только буквы</td>
-  </tr>
-  <tr>
-    <td>words</td>
-    <td>Ввод слов</td>
-  </tr>
-  <tr>
-    <td>file[.jpg,.png]</td>
-    <td>Допустимые расширения файлов, в скобочках расширения через запятую</td>
-  </tr>
-
-</table>
-
-<h3 id="d717"> Всплывающие подсказки </h3>
-
-
-<p>Существует поддержка настройки позиции всплывающих подсказок. Аттрибут <b>data-bf-tooltip=""</b> можно задать как глобально для тега 
-
-<b>form</b>, так и для каждого элемента индивидуально.</p>
-
-<table class="table table-bordered">
-
-<caption>Доступны следующие аттрибуты </caption>
-  <tbody><tr>
-    <th>Выражение</th>
-    <th>Описание</th>
-  </tr>
-  <tr>
-    <td>top right</td>
-    <td>Сверху справа</td>
-  </tr>
-  <tr>
-    <td>top center</td>
-    <td>Сверху по центру</td>
-  </tr>
-    <tr>
-    <td>top</td>
-    <td>Сверху</td>
-  </tr>
-    <tr>
-    <td>top left</td>
-    <td>Сверху слева</td>
-  </tr>
-    <tr>
-    <td>bottom</td>
-    <td>Снизу</td>
-  </tr>
-    <tr>
-    <td>bottom left</td>
-    <td>Снизу слева</td>
-  </tr>
-    <tr>
-    <td>bottom right</td>
-    <td>Снизу справа</td>
-  </tr>
-    <tr>
-    <td>left center</td>
-    <td>Слева</td>
-  </tr>    <tr>
-    <td>
-right center</td>
-    <td>Справа</td>
-  </tr>   
-</table>
-
-
-<h3 id="d711"> Маски ввода </h3>
-
- 
-<p>В форме доступны два атрибута для настроек масок: </p>
-
-
-<p>1. <b>data-bf-mask</b> принимает на вход выражения из таблицы ниже.
-
-
-<table class="table table-bordered">
-
-<caption>Доступны следующие аттрибуты маски</caption>
-  <tbody><tr>
-    <th>Выражение</th>
-    <th>Описание</th>
-  </tr>
-  <tr>
-    <td>A</td>
-    <td>Только буквы</td>
-  </tr>
-    <tr>
-    <td>0</td>
-    <td>Только цифры</td>
-  </tr>
-      <tr>
-    <td>S</td>
-    <td>Только буквы и цифры</td>
-  </tr>
-</tbody>
-</table>
-
-       <p class="text-muted">Пример</p>
-
-         <pre><code>data-bf-mask="+7 (000) 000-00-00" </code></pre>
-
-<p>2. <b>data-bf-placeholder</b> - плейсхолдер, формируется автоматически, но если в плейсхолдере есть цифры или буквы, то тогда можно задать явно через этот атрибут.</p>
- 
-        <p class="text-muted">Пример</p>
-
-         <pre><code>data-bf-placeholder="+7 (___) ___-__-__" </code></pre>
-
-
-
-<p>Для работы используется плагин <a href="https://igorescobar.github.io/jQuery-Mask-Plugin/">jQuery-Mask-Plugin</a></p>
-
-<h3 id="d75">Добавление капчи</h3>
-
-<p>1. Для добавления капчи нужно картинке присвоить аттрибут - <b>data-bf-capcha=""</b>.</p> 
-<p>2. В конфигурационном файле указать в секции <b>[validation]</b> параметр  
-
-<b>bf_capcha = capcha</b>. Где <b>bf_capcha</b> - значение атрибута <i>name</i> для поля, в который будет вводиться информация с картинки.</p>
-
- <h3 id="d10"> Отправка через SMTP</h3>
-
-       <p>Рассмотрим передачу параметров для Yandex. Остальные можно настроить по аналогии.</p>
-
-
-        <pre><code>
-         from_email = your_mail@yandex.ru>; Почта, которая будет указана в качестве адреса отправителя. Совпадает с пользователем SMTP.
-         SMTPHost =  smtp.yandex.ru ;Адрес SMTP сервера
-         SMTPAuth  = true ;Включение SMTP авторизации
-         SMTPUsername = your_mail@yandex.ru ;SMTP пользователь
-         SMTPPassword =  ; SMTP пароль
-         SMTPSecure = ssl ;Включение шифрования TLS, также доступен `ssl`
-         SMTPPort = 465; TCP порт
-</code></pre>
-
-      <h3 id="d8">  Расширение функциональности</h3>
-            <p>Для расширения фунциональности, например, для записи данных из формы
-               в базу данных существует класс расширения.</p>
-            <p>Класс находится по пути <strong>/configs/default/events.php</strong></p>
-            <p>Для создания специфичной функциональности в своём конфиге нужно скопировать этот файл
-              со своими изменениями.</p>
-        </ul>
-
-   <br />
-        <br />
+                    <h2 id="built-form">Для встроенной формы</h2>
+                    <p>Для подключения существующей формы на странице достаточно тегу <code>form</code> добавить атрибут с названием конфигурации <code>data-bf-config="Название_конфигурации"</code>. </p>
+                    <p> Можно оставить пустым, тогда конфигурация возьмётся из папки по умолчанию:
+                        <code>/configs/default/</code>. </p>
+                    <h2 id="popup-form">Для всплывающего окна</h2>
+                    <p>Для начала нужно настроить шаблон, который можно найти в папке <code>/configs/default/templates/form_popup.html</code>. В него можно передать любой html-код с формой, он подхватится автоматически. Работает с поддержкой шаблонизатора Twig.</p>
+                    <p>Для вызова всплывающего окна нужно добавить атрибут <code>data-bf-config=""</code> на любой тег, кроме формы.</p>
+                    <p>В всплывающую форму можно передать параметры через data-атрибуты, например: <code>data-bf-field_title="Параметр"</code></p>
+                    <p>Где <code>title</code> можно заменить на своё название.</p>
+                    <div id="callout-overview-single-data" class="bs-callout bs-callout-danger">
+                        <p>Стоит учесть, что здесь обязательно нужно использовать нижнее подчёркивание.</p>
+                    </div>
+                    <p>Переданная переменная будет доступна в шаблонах как: <code>{{field_title}}</code>.</p>
+                </div>
+                <div class=bs-docs-section>
+                    <h1 class="page-header" id="template">Шаблоны</h1>
+                    <h2 id="template-on-mail"> Шаблон отправки на почту</h2>
+                    <p>Шаблон лежит в папке <code>/templates/report_on_mail.html</code>.</p>
+                    <p>В качестве шаблона для полей используется конструкция <code>{{название_поля_ввода}}</code>. Поддерживает работу с шаблонизатором Twig.</p>
+                    <p>Также доступны системные перенные: </p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped bs-events-table">
+                            <thead>
+                                <tr>
+                                    <th>Переменная</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{field_page_link}}</td>
+                                    <td>Адрес страницы оформления формы.</td>
+                                </tr>
+                                <tr>
+                                    <td>{{field_page_h1}}</td>
+                                    <td>Тег <code>h1</code> страницы оформления формы.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h2 id="template-popup"> Шаблон всплывающего окна</h2>
+                    <p>Шаблон лежит в папке <code>/configs/default/templates/form_popup.html</code>.</p>
+                </div>
+                <div class=bs-docs-section>
+                    <h1 class="page-header" id="settings">Настройки</h1>
+                    <h2 id="settings-how">Как задать настройки</h2>
+                    <p>Настройки хранятся в <code>.ini</code> формате и находятся по умолчанию в файле <code>/configs/default/config.php</code>.</p>
+                    <figure class=" "><pre><code data-lang="bash" class="language-bash">rockform/
+└── configs/
+    ├── default
+        ├── templates
+        │   ├── form_popup.html
+        │   └──  report_mail.html
+        ├── config.php
+        └── events.php</code></pre></figure>
+                    <p>Название конфигурации совпадает с именем папки в директории <code>/configs/</code>. По умолчанию, при пустом вызове, настройки берутся из <code>/configs/default/</code>. Можно создать сколько угодно конфигураций, просто копируя папку <code>default</code> с другим названием и меняя параметры на свои.</p>
+                    <div id="callout-scrollspy-needs-nav" class="bs-callout bs-callout-warning">
+                        <p>Стоит отметить, что конфигурации наследуются от <code>/configs/default/config.php</code>, поэтому можно опускать почту и другие повторяющиеся параметры. Не наследуется только секция валидации.</p>
+                    </div>
+                    <h2 id="settings-available"> Доступные настройки</h2>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>Параметр</th>
+                                <th>Значение по умолчанию</th>
+                                <th>Пример</th>
+                                <th>Обязательное</th>
+                                <th>Описание</th>
+                            </tr>
+                            <tr>
+                                <td>mail_to</td>
+                                <td></td>
+                                <td></td>
+                                <td>Да</td>
+                                <td>Почта получателей. Можно несколько через запятую.</td>
+                            </tr>
+                            <tr>
+                                <td>subject </td>
+                                <td>Письмо с сайта</td>
+                                <td></td>
+                                <td></td>
+                                <td>Заголовок письма.</td>
+                            </tr>
+                            <tr>
+                                <td>from_email</td>
+                                <td>from@{{SERVER_NAME}}</td>
+                                <td>your_mail@yandex.ru</td>
+                                <td></td>
+                                <td>Почта, которая будет указана в качестве адреса отправителя. Совпадает с пользователем SMTP.</td>
+                            </tr>
+                            <tr>
+                                <td>from_name</td>
+                                <td>Из {{SERVER_NAME}}</td>
+                                <td></td>
+                                <td></td>
+                                <td>Имя или название источника отправителя.</td>
+                            </tr>
+                            <tr>
+                                <td>used_lexicon</td>
+                                <td>default</td>
+                                <td></td>
+                                <td></td>
+                                <td>Лексикон</td>
+                            </tr>
+                            <tr>
+                                <td>disable_mail_send</td>
+                                <td>0</td>
+                                <td></td>
+                                <td></td>
+                                <td>Не отправлять почту</td>
+                            </tr>
+                            <tr>
+                                <td>SMTPHost</td>
+                                <td></td>
+                                <td>smtp.yandex.ru</td>
+                                <td></td>
+                                <td><span style="display: none;">Specify main and backup SMTP servers</span> Адрес SMTP сервера</td>
+                            </tr>
+                            <tr>
+                                <td>SMTPAuth</td>
+                                <td></td>
+                                <td>true</td>
+                                <td></td>
+                                <td><span style="display: none;">Enable SMTP authentication</span>Включение SMTP авторизации </td>
+                            </tr>
+                            <tr>
+                                <td>SMTPUsername</td>
+                                <td></td>
+                                <td>your_mail@yandex.ru</td>
+                                <td></td>
+                                <td><span style="display: none;">SMTP username</span> SMTP пользователь </td>
+                            </tr>
+                            <tr>
+                                <td>SMTPPassword</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><span style="display: none;">SMTP password </span>SMTP пароль </td>
+                            </tr>
+                            <tr>
+                                <td>SMTPSecure</td>
+                                <td>ssl</td>
+                                <td>ssl</td>
+                                <td></td>
+                                <td>
+                                    Включение шифрования TLS, также доступен `ssl` </td>
+                            </tr>
+                            <tr>
+                                <td>SMTPPort</td>
+                                <td>465</td>
+                                <td>465</td>
+                                <td></td>
+                                <td> TCP порт</td>
+                            </tr>
+                    </table>
+                    <h2 id="validation"> Валидация </h2>
+                    <p>Для включения валидации полей, надо в конфигурационом файле добавить секцию <code>[validation]</code>.</p>
+                    <p>Затем перечислить названия полей и атрибуты валидации к ним.</p>
+                    <p>Пример: <code>name_user = 'required,minlength[3],words'</code>. Это будет означать, что атрибут <code>name</code> со значением - <code>name_user</code> будет обязателен для заполнения, минимальное допустимое число символов будет 3 и на вход должны быть переданы только слова.</p>
+                    <table class="table table-bordered">
+                        <caption>Атрибуты валидации</caption>
+                        <tbody>
+                            <tr>
+                                <th>Выражение</th>
+                                <th>Описание</th>
+                            </tr>
+                            <tr>
+                                <td>required</td>
+                                <td>Поле становится обязательным для заполнения.</td>
+                            </tr>
+                            <tr>
+                                <td>minlength[1]</td>
+                                <td>Минимальное число символов. В скобочках указывается значение.</td>
+                            </tr>
+                            <tr>
+                                <td>maxlength[10]</td>
+                                <td>Максимально число символов. В скобочках указывается значение.</td>
+                            </tr>
+                            <tr>
+                                <td>rangelength[1,10]</td>
+                                <td>Диапозон числа символов. В скобочках указывается значение.</td>
+                            </tr>
+                            <tr>
+                                <td>email</td>
+                                <td>Электронная почта.</td>
+                            </tr>
+                            <tr>
+                                <td>url</td>
+                                <td>Ссылка.</td>
+                            </tr>
+                            <tr>
+                                <td>ip</td>
+                                <td>ip-адрес.</td>
+                            </tr>
+                            <tr>
+                                <td>number</td>
+                                <td>Дробные числа.</td>
+                            </tr>
+                            <tr>
+                                <td>digits</td>
+                                <td>Только цифры.</td>
+                            </tr>
+                            <tr>
+                                <td>letter</td>
+                                <td>Только буквы.</td>
+                            </tr>
+                            <tr>
+                                <td>words</td>
+                                <td>Ввод слов.</td>
+                            </tr>
+                            <tr>
+                                <td>file[.jpg,.png]</td>
+                                <td>Допустимые расширения файлов. В скобочках расширения через запятую.</td>
+                            </tr>
+                    </table>
+                    <h2 id="tooltip"> Всплывающие подсказки </h2>
+                    <p>Существует поддержка настройки позиции всплывающих подсказок. Атрибут <code>data-bf-tooltip=""</code> можно задать как глобально для тега <code>form</code>, так и индивидуально для каждого элемента полей ввода.</p>
+                    <table class="table table-bordered ">
+                        <caption>Доступны следующие атрибуты </caption>
+                        <tbody>
+                            <tr>
+                                <th>Выражение</th>
+                                <th>Описание</th>
+                            </tr>
+                            <tr>
+                                <td>top right</td>
+                                <td>Сверху справа</td>
+                            </tr>
+                            <tr>
+                                <td>top center</td>
+                                <td>Сверху по центру</td>
+                            </tr>
+                            <tr>
+                                <td>top</td>
+                                <td>Сверху</td>
+                            </tr>
+                            <tr>
+                                <td>top left</td>
+                                <td>Сверху слева</td>
+                            </tr>
+                            <tr>
+                                <td>bottom</td>
+                                <td>Снизу</td>
+                            </tr>
+                            <tr>
+                                <td>bottom left</td>
+                                <td>Снизу слева</td>
+                            </tr>
+                            <tr>
+                                <td>bottom right</td>
+                                <td>Снизу справа</td>
+                            </tr>
+                            <tr>
+                                <td>left center</td>
+                                <td>Слева</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    right center</td>
+                                <td>Справа</td>
+                            </tr>
+                    </table>
+                    <h2 id="mask"> Маски ввода </h2>
+                    <p>В форме доступны два атрибута для настроек масок: </p>
+                    <p>1. <code>data-bf-mask</code> принимает на вход выражения из таблицы ниже.
+                        <table class="table table-bordered">
+                            <caption>Доступны следующие атрибуты маски</caption>
+                            <tbody>
+                                <tr>
+                                    <th>Выражение</th>
+                                    <th>Описание</th>
+                                </tr>
+                                <tr>
+                                    <td>A</td>
+                                    <td>Только буквы</td>
+                                </tr>
+                                <tr>
+                                    <td>0</td>
+                                    <td>Только цифры</td>
+                                </tr>
+                                <tr>
+                                    <td>S</td>
+                                    <td>Только буквы и цифры</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-muted">Пример</p>
+                        <pre><code>data-bf-mask="+7 (000) 000-00-00" </code></pre>
+                        <p>2. <code>data-bf-placeholder</code> - плейсхолдер, формируется автоматически, но если в плейсхолдере есть цифры или буквы, тогда нужно задать явно через этот атрибут.</p>
+                        <p class="text-muted">Пример</p>
+                        <pre><code>data-bf-placeholder="+7 (___) ___-__-__" </code></pre>
+                        <p>Для работы используется плагин <a href="https://igorescobar.github.io/jQuery-Mask-Plugin/">jQuery-Mask-Plugin</a></p>
+                        <h2 id="capcha">Добавление капчи</h2>
+                        <p>1. Для добавления капчи нужно картинке присвоить аттрибут - <code>data-bf-capcha=""</code>.</p>
+                        <p>2. В конфигурационном файле указать в секции <code>[validation]</code> параметр
+                            <code>bf_capcha = capcha;</code>. Где <code>bf_capcha</code> - значение атрибута <code>name</code> для поля, в который будет вводиться информация с картинки.</p>
+                </div>
+                <div class=bs-docs-section>
+                    <h1 class="page-header" id="expansion">Расширение функциональности</h1>
+                    <p>Для расширения фунциональности, например, для записи данных из формы в базу данных существует класс расширения.</p>
+                    <p>Класс находится по пути <code>/configs/default/events.php</code></p>
+                    <p>Для создания специфичной функциональности в своём конфиге нужно скопировать этот файл со своими изменениями.</p>
+                </div>
+            </div>
+            <div class=col-md-3 role=complementary>
+                <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm">
+                    <ul class="nav bs-docs-sidenav">
+                        <li><a href="#overview"> Обзор</a>
+                            <ul class=nav>
+                                <li><a href="#description">Описание</a></li>
+                                <li><a href="#system-requirements">Системные требования</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#example"> Примеры</a></li>
+                        <li><a href="#install"> Установка</a>
+                            <ul class=nav>
+                                <li><a href="#how-install">Как подключить скрипт</a></li>
+                                <li><a href="#built-form">Для встроенной формы</a></li>
+                                <li><a href="#popup-form">Для всплывающего окна</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#template">Шаблоны</a>
+                            <ul class=nav>
+                                <li><a href="#template-on-mail">Шаблон отправки на почту</a></li>
+                                <li><a href="#template-popup">Шаблон всплывающего окна</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#settings"> Настройки </a>
+                            <ul class=nav>
+                                <li><a href="#settings-how">Как задать настройки</a></li>
+                                <li><a href="#settings-available">Доступные настройки</a></li>
+                                <li><a href="#validation">Валидация</a></li>
+                                <li><a href="#tooltip">Всплывающие подсказки</a></li>
+                                <li><a href="#mask">Маски ввода</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#expansion">Расширение функциональности</a></li>
+                    </ul>
+                    <a class="back-to-top" href="#top"> Наверх </a> </nav>
+            </div>
+        </div>
     </div>
-    <!-- /container -->
+    </div>
+    <footer class=bs-docs-footer role=contentinfo>
+        <div class=container>
+        </div>
+    </footer>
+    <script src=https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js></script>
+    <script>
+    window.jQuery || document.write('<script src="assets/js/vendor/jquery.min.js"><\/script>');
+    </script>
+    <script src="dist/js/bootstrap.min.js"></script>
+    <script src="assets/js/docs.min.js"></script>
+    <!-- Rockform -->
+    <link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
+    <script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
+    <!-- // Rockform -->
 </body>
 
 </html>
