@@ -40,8 +40,8 @@
                     </ol>
                     <h2 id="system-requirements">Системные требования</h2>
                     <ul>
-                        <li>Работает с PHP 5.2.17 и выше</li>
-                        <li>Работает c IE9 и выше.</li>
+                        <li>Работает с PHP 5.2.17 и выше.</li>
+                        <li>Работает c IE6 и выше. Всплывающее окно работает, начиная с IE9.</li>
                     </ul>
                 </div>
                 <div class=bs-docs-section>
@@ -134,10 +134,10 @@
                     <p>Настройки хранятся в <code>.ini</code> формате и находятся по умолчанию в файле <code>/configs/default/config.php</code>.</p>
                     <figure class=" "><pre><code data-lang="bash" class="language-bash">rockform/
 └── configs/
-    ├── default
+    └── default
         ├── templates
         │   ├── form_popup.html
-        │   └──  report_mail.html
+        │   └── report_mail.html
         ├── config.php
         └── events.php</code></pre></figure>
                     <p>Название конфигурации совпадает с именем папки в директории <code>/configs/</code>. По умолчанию, при пустом вызове, настройки берутся из <code>/configs/default/</code>. Можно создать сколько угодно конфигураций, просто копируя папку <code>default</code> с другим названием и меняя параметры на свои.</p>
