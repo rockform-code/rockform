@@ -21,3 +21,4 @@ name8 = required
 name9 = required
 name10 = required
 name11 = required
+checkbox = required

@@ -4,9 +4,9 @@ class Baseform {
 
 	protected $config, $lexicon, $field, $valid;
  
-	var $tmp_form_popup = 'form_popup.html';
-	var $tmp_report_on_mail = 'report_mail.html';
-	var $tmp_report_after_send_form = 'popup_after_send.html'; 
+	private $tmp_form_popup = 'form_popup.html';
+	private $tmp_report_on_mail = 'report_mail.html'; 
+	private $tmp_form_success = 'form_success.html';
 
 	function __construct() {
 
@@ -164,10 +164,10 @@ class Baseform {
 
 	public function init() {
 
-		$type = isset($_REQUEST['type']) ? preg_replace ("/[^a-z]/i","", $_REQUEST['type']) : 'default';
+		$type = isset($_REQUEST['type']) ? preg_replace ("/[^a-z_]/i","", $_REQUEST['type']) : 'default';
 
 		$out = array();
-
+ 
  		switch ($type) {
  			case 'capcha':
  			return $this->set_capcha();
@@ -180,8 +180,12 @@ class Baseform {
     			$out = $this->set_json_encode($this->check_validation());
     		break;
 
+    		case 'form_success':
+    			$out = $this->set_form_success();
+    		break;
+
 			default:
-				$out = $this->set_json_encode($this->set_form_data());
+				$out = $this->set_json_encode($this->set_form_data()); 
 			break;
 		}
 		return $out;
@@ -240,15 +244,22 @@ class Baseform {
 		return $this->twig->render($this->tmp_form_popup, $attributes);
 	}
 
+	private function set_form_success($attributes = array()) { 
+		return $this->twig->render($this->tmp_form_success, $attributes);
+	}
+
 	private function set_form_data_status($status = 0, $value = '') {
-		return array('status' => $status, 'value' => $value);
+		return array(
+			'status' => $status, 
+			'value' => $value, 
+			'bf-config' => $this->config['name']
+		);
 	}
 
 	private function check_validation() {
 
 		$configs = $this->get_validation_configs();
-
-		//print_r($configs);
+ 
 		$out = array();
 
 		if(!empty($configs)) {

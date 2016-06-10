@@ -19,9 +19,7 @@ class Test {
 
     //Check work parser config
     echo $this->report($this->test_parse_config(), 'Проверка работы функции парсинга конфига.'); 
-
-
-
+ 
   }
 
   function report($value = false, $name = 'test') {

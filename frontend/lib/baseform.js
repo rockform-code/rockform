@@ -254,7 +254,7 @@
 
         var validation = {
 
-            server: function(form, data) {
+            server: function(form, data, event) {
 
                 var err_msg;
                 var el;
@@ -262,13 +262,9 @@
 
                 tooltip.reset();
 
-                $('.bf-status').remove();
-
                 if (data.mail_to) {
 
-                    form.before(
-                        '<div class="bf-status bf-status-0">' + data.mail_to + '</div>'
-                    );
+                    tooltip.init($(':focus', form), data.mail_to);
                     return false;
                 }
 
@@ -349,7 +345,6 @@
                         $('.bf-modal, .bf-fixed-overlay').css('opacity', '0');
 
                         $('.bf-modal-box').html(xhr);
-
                         popup.loader_off();
 
                         //animation end
@@ -359,7 +354,7 @@
 
                         custom_func(param_custom_func);
                     }
-                })
+                });
 
             },
 
@@ -368,7 +363,7 @@
                 $('body').append('<div class="bf-fixed-overlay bf-fixed-overlay__modal"> \
                             <div class="bf-modal"> \
                                 <div class="bf-modal_container"> \
-                                    <a href="javascript:;" class="bf-modal-close" title=""></a> \
+                                    <a href="javascript:;" data-bf-popup="close" class="bf-modal-close" title=""></a> \
                                       <div class="bf-modal-box"></div> \
                                 </div> \
                             </div> \
@@ -383,14 +378,17 @@
                 $('.bf-loading').remove();
             },
             set_close_event: function() {
-                $(".bf-modal-close, .bf-fixed-overlay").one("click", function() {
-                    $(".bf-fixed-overlay").remove();
-                    bf.init_form();
+                $(document).on("click", "[data-bf-popup='close'], .bf-fixed-overlay", function() {
+                    popup.close();
                 });
 
-                $(".bf-modal").on("click", function(e) {
+                $(document).on("click", ".bf-modal", function(e) {
                     e.stopImmediatePropagation();
                 });
+            },
+            close: function() {
+                $(".bf-fixed-overlay").remove();
+                bf.init_form(); //перезапускаем
             }
         };
 
@@ -469,57 +467,63 @@
                 field_mask.init();
                 tooltip.reset();
 
-                $(document).off('submit', 'form[data-bf-config], .bf-modal form')
-                    .on('submit', 'form[data-bf-config], .bf-modal form', function(e) {
-                        //$('form[data-bf-config], .bf-modal form').on('submit', function(e) {
-                        e.preventDefault();
+                $(document)
+                    .off('submit', 'form[data-bf-config], .bf-modal form')
+                    .on('submit', 'form[data-bf-config], .bf-modal form',
+                        function(e) {
+                            e.preventDefault();
 
-                        var form = $(this);
-                        if (typeof param == 'undefined') {
-                            param = {};
-                            param.config_popup = '';
-                        }
-                        bf.config = bf.get_config(param.config_popup, form.data("bf-config"));
-
-                        var formdata = form.formToArray(); //get serialized form
-                        //replace file object with name file
-                        $.each(formdata, function(index, element) {
-                            if (element.type == 'file') {
-                                formdata[index].value = element.value.name
+                            var form = $(this);
+                            if (typeof param == 'undefined') {
+                                param = {};
+                                param.config_popup = '';
                             }
-                        });
+                            bf.config = bf.get_config(param.config_popup, form.data("bf-config"));
 
-                        $.post(
-                            bf.path, {
-                                'fields': formdata,
-                                'type': 'validation',
-                                'bf-config': bf.config
-                            },
-                            function(data) {
+                            //сериализуем форму
+                            var formdata = form.formToArray();
 
-                                bf.set_attr_form(form, bf.config, 'bf-config');
-
-                                if (validation.server(form, data)) {
-                                    //set add params from popup
-                                    if (typeof param.attributes != 'undefined') {
-                                        $.each(param.attributes, function(name_item, value_item) {
-                                            bf.set_attr_form(form, value_item, name_item);
-                                        });
-                                    }
-
-                                    form.ajaxSubmit({
-                                        success: bf.show_response,
-                                        url: bf.path,
-                                        type: 'post',
-                                        dataType: 'json'
-                                    });
-
-
+                            //заменяем объект файла именем файла
+                            $.each(formdata, function(index, element) {
+                                if (element.type == 'file') {
+                                    formdata[index].value = element.value.name
                                 }
-                                $('.bf-attr').remove();
                             });
 
-                    });
+                            //серверная валидация
+                            $.post(
+                                bf.path, {
+                                    'fields': formdata,
+                                    'type': 'validation',
+                                    'bf-config': bf.config
+                                },
+                                function(data) {
+
+                                    bf.set_attr_form(form, bf.config, 'bf-config');
+
+                                    //вывод ошибок валидации и уведомлений
+                                    if (validation.server(form, data, e)) {
+
+                                        //добавляем дополнительные параметры в форму из всплывающего окна
+                                        if (typeof param.attributes != 'undefined') {
+                                            $.each(param.attributes, function(name_item, value_item) {
+                                                bf.set_attr_form(form, value_item, name_item);
+                                            });
+                                        }
+
+                                        form.ajaxSubmit({
+                                            success: bf.show_response,
+                                            url: bf.path,
+                                            type: 'post',
+                                            dataType: 'json'
+                                        });
+
+
+                                    }
+                                    $('.bf-attr').remove();
+                                });
+
+                        });
             },
             set_attr_form: function(form, value, name) {
                 form.prepend('<input name="' + name + '" class="bf-attr" type="hidden" value="' + value + '" />');
@@ -534,30 +538,50 @@
                 }
                 return config;
             },
-            show_response: function(responseText, statusText, xhr, $form) {
+            show_response: function(response, statusText, xhr, form) {
 
-                $('.bf-status').remove();
-                $form.before('<div class="bf-status bf-status-' + responseText['status'] + '">' + responseText['value'] + '</div>');
+                if (response['status'] > 0) {
+                    form.hide();
 
-                if (responseText['status'] > 0) {
-                    $form.hide();
-        /*
-                    setTimeout(
-                        function() {
-                            $('.bf-modal-close').click(); //if popup
-                        }, 2000
-                    );
+                    $.ajax({
+                        url: bf.path,
+                        data: { 'type': 'form_success', 'bf-config': response['bf-config'] },
+                        method: "post",
+                        dataType: "html",
+                        beforeSend: function(content) {
 
-                    setTimeout(
-                        function() {
-                            $form.show();
-                            $('.bf-status').remove();
-                            $form.clearForm();
-                        }, 3000
-                    );
-        */
+                        },
+                        success: function(content) {
+
+                            console.log(content);
+
+                            form.after(content);
+
+                            setTimeout(
+                                function() {
+                                    popup.close();
+                                }, 2000
+                            );
+
+                            setTimeout(
+                                function() {
+                                    form.show();
+                                    form.clearForm();
+                                    $('[data-bf-success]').remove();
+                                }, 3000
+                            );
+                        }
+                    });
+
+                } else {
+                    tooltip.init($(':focus', form), response['value']);
                 }
+            },
+
+            set_success_template: function() {
+
             }
         }
         bf.init();
-    }));
+    })
+);

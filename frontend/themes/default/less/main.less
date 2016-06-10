@@ -1,32 +1,24 @@
-/*
- * Rockform v.3
- */
- 
 // Core variables and mixins
 @import "variables.less";
 @import "mixins.less";
- 
 .bf-content {
     -ms-text-size-adjust: 100%; // 2
     -webkit-text-size-adjust: 100%; // 2
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     font-family: Arial, sans-serif;
     font-size: 14px;
-    line-height: 1.42857143; 
+    line-height: 1.42857143;
     color: #333;
     width: 400px;
-
     // Reset and dependencies
     @import "normalize.less";
     @import "buttons.less";
- 
     input[type="radio"],
     input[type="checkbox"] {
         margin: 4px 0 0;
         margin-top: 1px \9; // IE8-9
         line-height: normal;
     }
-   
     // Make multiple select elements height not fixed
     select[multiple],
     select[size] {
@@ -40,7 +32,6 @@
     }
 }
 
- 
 .bf-form-control {
     float: left;
     width: 258px;
@@ -77,16 +68,16 @@
     // Reset height for `textarea`s
     textarea& {
         height: auto;
-    } 
-} 
- 
+    }
+}
+
 .bf-row {
     width: 100%;
     float: left;
-    margin:  0 0  8px;
+    margin: 0 0 8px;
     .clearfix();
     label {
-        display: inline-block; 
+        display: inline-block;
         float: left;
         font-size: 14px;
         padding-top: 4px;
@@ -96,7 +87,6 @@
         margin: 0;
         span {
             padding: 0 2px;
-      
         }
     }
 }
@@ -111,11 +101,11 @@
 }
 
 .bf-right {
-    float: right; 
+    float: right;
 }
 
 .bf-info-img {
-    display: inline-block; 
+    display: inline-block;
     float: left;
     padding: 0;
     vertical-align: middle;
@@ -127,9 +117,10 @@
 }
 
 
-/* status field*/
+/* notice */
 
-.bf-status {
+.bf-notice-success {
+    background: green;
     border: 1px solid #ccc;
     border-radius: 5px;
     color: #fff;
@@ -138,16 +129,9 @@
     padding: 10px 0;
     text-align: center;
     width: 100%;
+    clear: both;
 }
 
-.bf-status-0 {
-    background: red;
-}
-
-.bf-status-1 {
-    background: green;
-}
-  
 
 /* popup */
 
@@ -164,10 +148,10 @@
         width: 100%;
     }
     .bf-row label {
-        width: 100%; 
+        width: 100%;
     }
     .bf-form-control {
         width: 96%;
-        padding:  2%;  
-    } 
+        padding: 2%;
+    }
 }

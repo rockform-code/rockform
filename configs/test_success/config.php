@@ -2,12 +2,14 @@
 [config]
 
 ; Почта получателей. Можно несколько через запятую.
-mail_to =   
+mail_to =
+
+disable_mail_send = 1
 
 ; Заголовок письма.
-subject = 'Сообщение с сайта'
- 
+subject = 'Тест'
+
 [validation]
 
-name = 'required,minlength[3],words'
-phone = required
+phone = required,minlength[18]
+name = required
