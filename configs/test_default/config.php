@@ -8,9 +8,4 @@ mail_to =
 subject = 'Сообщение с сайта'
 
 disable_mail_send = 1
-
-
-[validation]
-
-name = 'required,minlength[3],words'
-phone = required
+ 

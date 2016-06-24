@@ -9,45 +9,46 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="robots" content="noindex, nofollow" />
-    <title>Демонстрация работы</title>
+    <title>Rockform тестирование</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-    <script src="/rockform/test/frontend/js/dinamic.js"></script>
+    <!-- Rockform -->
     <link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
     <script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
+    <!--[if lt IE 8]> 
+      <link href="/rockform/frontend/themes/default/ie.css" type="text/css" rel="stylesheet" />
+    <![endif]-->
+    <!-- // Rockform -->
 </head>
 
 <body>
     <div class="container">
         <div class="page-header">
             <h1>Rockform тестирование</h1>
-            <p class="lead">Проверка работы на динамически созданных элементах</p>
+            <p class="lead">Проверка шаблона ответа и уведомлений.</p>
         </div>
-        <h3>Простое модальное окно</h3>
-        <p><a class="btn btn-lg btn-default" data-bf-config="test_default" href="#">Запустить пример</a></p>
-        <div id="dinamic">
-        </div>
-        <p><a id="create_dinamic" href="#">Добавить кпопку</a></p>
-        <p><a id="create_dinamic_form" href="#">Добавить форму</a></p>
+ 
+        <h3>Модальное окно заказа обратного звонка</h3>
+        <p>
+            <a class="btn btn-lg btn-default" data-bf-config="test_success" href="#">Заказать звонок</a>
+        </p>
+        <hr>
         <div class="bf-content">
-            <div class="bf-header">
-                Заказ звонка
-            </div>
-            <form data-bf-config="test_default" action="" method="post">
+           
+            <form data-bf-config="test_success" action="" method="post">
                 <div class="bf-row">
                     <label> Имя :</label>
-                    <input placeholder="" class="bf-form-control" name="name" data-bf-tooltip="right center" placeholder="" type="text" value="" />
+                    <input placeholder="" class="bf-form-control" name="name" data-bf-tooltip="right center" placeholder="" type="text" value="Имя" />
                 </div>
-                <div class="bf-row">
+                 
+                 <div class="bf-row">
                     <label> Телефон<span>*</span>:</label>
-                    <input data-bf-tooltip="right center" data-bf-mask="+7 (000) 000-00-00" data-bf-placeholder="+7 (___) ___-__-__" class="bf-form-control" name="phone" type="text" value="" />
+                    <input data-bf-tooltip="right center" data-bf-mask="+7 (000) 000-00-00" data-bf-placeholder="+7 (___) ___-__-__" class="bf-form-control" name="phone" type="text" value="+7 (222) 222-22-22" />
                 </div>
+
                 <div class="bf-row">
                     <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
                 </div>
             </form>
-        </div>
-        <div id="dinamic-form">
         </div>
     </div>
     <!-- /container -->

@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.10
+ * @version 3.11.0
  */
 
 // AMD support
@@ -406,10 +406,21 @@
             }
         };
 
+        /*
+                $(document).on('click', '[data-bf-config]', function(e) {
+
+
+                });
+
+        $('form[data-bf-config]').on('DOMSubtreeModified', function() {
+            bf.init();
+        });
+*/
         var bf = {
 
             config: '',
             path: '/' + base_name_form + '/init.php',
+            timeclose: 0,
 
             init: function() {
                 bf.init_form();
@@ -463,6 +474,8 @@
 
             },
             init_form: function(param) {
+
+
                 capcha.init();
                 field_mask.init();
                 tooltip.reset();
