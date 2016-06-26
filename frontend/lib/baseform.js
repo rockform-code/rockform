@@ -25,23 +25,29 @@
 
         var field_mask = {
             init: function() {
+
+                $(document).on('focus', '[data-bf-mask]', function() {
+                    field_mask.set($(this));
+                });
+
                 $('[data-bf-mask]').each(function() {
+                    field_mask.set($(this));
+                });
+            },
+            set: function(el) {
+                mask_pattern = el.data('bf-mask');
+                mask_placeholder = el.attr('placeholder');
 
-                    mask_pattern = $(this).data('bf-mask');
-                    mask_placeholder = $(this).data('bf-placeholder');
+                if (mask_pattern.length > 0) {
 
-                    if (mask_pattern.length > 0) {
-
-                        if (typeof mask_placeholder == 'undefined' || mask_placeholder.length < 1) {
-                            mask_placeholder = mask_pattern.replace(/[a-z0-9]+?/gi, "_");
-                        }
-
-                        mask_placeholder = { placeholder: mask_placeholder };
-
-                        $(this).mask(mask_pattern, mask_placeholder);
+                    if (typeof mask_placeholder == 'undefined' || mask_placeholder.length < 1) {
+                        mask_placeholder = mask_pattern.replace(/[a-z0-9]+?/gi, "_");
                     }
 
-                });
+                    mask_placeholder = { placeholder: mask_placeholder };
+
+                    el.mask(mask_pattern, mask_placeholder);
+                }
             }
         }
 
@@ -394,33 +400,21 @@
 
         var capcha = {
             init: function() {
-                var item = $('[data-bf-capcha=""]');
-                item.off();
                 capcha.update();
-                item.on("click", function() {
+                $(document).on("click", 'img[data-bf-capcha]', function() {
                     capcha.update();
                 });
             },
             update: function() {
-                $('[data-bf-capcha=""]').attr('src', bf.path + '?type=capcha&u=' + Math.random());
+                $('img[data-bf-capcha]').attr('src', bf.path + '?type=capcha&u=' + Math.random());
             }
         };
 
-        /*
-                $(document).on('click', '[data-bf-config]', function(e) {
-
-
-                });
-
-        $('form[data-bf-config]').on('DOMSubtreeModified', function() {
-            bf.init();
-        });
-*/
         var bf = {
 
             config: '',
             path: '/' + base_name_form + '/init.php',
-            timeclose: 0,
+            timeclose: 2000,
 
             init: function() {
                 bf.init_form();
@@ -474,7 +468,6 @@
 
             },
             init_form: function(param) {
-
 
                 capcha.init();
                 field_mask.init();

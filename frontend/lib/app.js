@@ -13,4 +13,6 @@ requirejs.config({
     }
 });
 
+requirejs(['jquery.form.min']); 
+requirejs(['jquery.mask.min']); 
 requirejs(['baseform']); 

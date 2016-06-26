@@ -67,7 +67,7 @@
                             </div>
                             <div class="bf-row">
                                 <label> Телефон<span>*</span>:</label>
-                                <input data-bf-tooltip="right center" data-bf-mask="+7 (000) 000-00-00" data-bf-placeholder="+7 (___) ___-__-__" class="bf-form-control" name="phone" type="text" value="" />
+                                <input data-bf-tooltip="right center" data-bf-mask="+7 (000) 000-00-00" placeholder="+7 (___) ___-__-__" class="bf-form-control" name="phone" type="text" value="" />
                             </div>
                             <div class="bf-row">
                                 <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
@@ -125,8 +125,13 @@
                             </tbody>
                         </table>
                     </div>
-                    <h2 id="template-popup"> Шаблон всплывающего окна</h2>
+                    <h2 id="template-popup">Шаблон всплывающего окна</h2>
                     <p>Шаблон лежит в папке <code>/configs/default/templates/form_popup.html</code>.</p>
+                    <h2 id="template-success">Шаблон ответа об успешной отправке
+                    </h2>
+                    <p>Шаблон лежит в папке
+                        <code>/configs/default/templates/form_success.html</code>.
+                    </p>
                 </div>
                 <div class=bs-docs-section>
                     <h1 class="page-header" id="settings">Настройки</h1>
@@ -373,14 +378,22 @@
                         </table>
                         <p class="text-muted">Пример</p>
                         <pre><code>data-bf-mask="+7 (000) 000-00-00" </code></pre>
-                        <p>2. <code>data-bf-placeholder</code> - плейсхолдер, формируется автоматически, но если в плейсхолдере есть цифры или буквы, тогда нужно задать явно через этот атрибут.</p>
+                        <p>2. <code>placeholder</code> - плейсхолдер, формируется автоматически, но если в плейсхолдере есть цифры или буквы, тогда нужно задать явно через этот атрибут.</p>
                         <p class="text-muted">Пример</p>
-                        <pre><code>data-bf-placeholder="+7 (___) ___-__-__" </code></pre>
+                        <pre><code>placeholder="+7 (___) ___-__-__" </code></pre>
                         <p>Для работы используется плагин <a href="https://igorescobar.github.io/jQuery-Mask-Plugin/">jQuery-Mask-Plugin</a></p>
                         <h2 id="capcha">Добавление капчи</h2>
-                        <p>1. Для добавления капчи нужно картинке присвоить аттрибут - <code>data-bf-capcha=""</code>.</p>
+                        <p>1. Для добавления капчи нужно картинке присвоить атрибут -
+                            <code>data-bf-capcha=""</code>.</p>
                         <p>2. В конфигурационном файле указать в секции <code>[validation]</code> параметр
                             <code>bf_capcha = capcha;</code>. Где <code>bf_capcha</code> - значение атрибута <code>name</code> для поля, в который будет вводиться информация с картинки.</p>
+                        <p class="text-muted">Пример</p>
+                        <pre>&lt;div class="bf-row"&gt;
+    &lt;div class="bf-info-img"&gt;
+    &lt;img width="100" height="50" title="Обновить картинку" data-bf-capcha="" src="/rockform/init.php?type=capcha" alt="" /&gt;
+    &lt;/div&gt;
+    &lt;input class="capcha bf-form-control" name="bf_capcha" placeholder="Код с картинки" type="text" value="" /&gt;
+&lt;/div&gt;</pre>
                 </div>
                 <div class=bs-docs-section>
                     <h1 class="page-header" id="expansion">Расширение функциональности</h1>
@@ -410,6 +423,7 @@
                             <ul class=nav>
                                 <li><a href="#template-on-mail">Шаблон отправки на почту</a></li>
                                 <li><a href="#template-popup">Шаблон всплывающего окна</a></li>
+                                <li><a href="#template-success">Шаблон успешной отправки</a></li>
                             </ul>
                         </li>
                         <li><a href="#settings"> Настройки </a>
@@ -439,8 +453,8 @@
     <script src="dist/js/bootstrap.min.js"></script>
     <script src="assets/js/docs.min.js"></script>
     <!-- Rockform -->
-    <link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
-    <script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
+    <link href="../frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
+    <script data-main="../frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
     <!-- // Rockform -->
 </body>
 

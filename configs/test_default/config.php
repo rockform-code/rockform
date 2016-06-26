@@ -2,10 +2,13 @@
 [config]
 
 ; Почта получателей. Можно несколько через запятую.
-mail_to =  
+mail_to =  test@test.ru
 
 ; Заголовок письма.
 subject = 'Сообщение с сайта'
 
 disable_mail_send = 1
- 
+
+[validation]
+
+bf_capcha = capcha;
