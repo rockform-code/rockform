@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.11.0
+ * @version 3.12.0
  */
 
 // AMD support
@@ -67,7 +67,7 @@
                     }, tooltip.set);
 
                 } else {
-
+                    //убираем тултип, если нету сообщения об ошибке
                     var id = el.attr('name');
                     if (id) {
                         $('[data-bf-tooltip-id="' + id + '"]').remove();
@@ -88,6 +88,10 @@
                 }
 
                 var id = el.attr('name');
+
+                //получаем первый элемент формы для групп с одинаковым именем
+                el = $( '[name="'+id+'"]:first', el.parents('form'));
+
                 var pos = el.attr('data-bf-tooltip');
 
                 //генерируем класс для тултипа
@@ -278,7 +282,6 @@
                     err_msg = '';
 
                     if (name == 'token') {
-
                         bf.set_attr_form(form, data.token, 'bf-token');
                     } else {
 
