@@ -169,22 +169,32 @@ class Baseform {
 		$out = array();
  
  		switch ($type) {
- 			case 'capcha':
+ 			//рисует капчу
+ 			//set capcha
+ 			case 'capcha': 
  			return $this->set_capcha();
 
-			case 'form':
+ 			//рисует всплывающую форму
+ 			//set popup form
+			case 'form': 
     		 	$out = $this->set_base_form();
     		break;
 
-    		case 'validation':
+    		//проверяет валидацию
+    		//check validation
+    		case 'validation': 
     			$out = $this->set_json_encode($this->check_validation());
     		break;
 
-    		case 'form_success':
+    		//отдаёт шаблон ответа, об успешной отправке
+    		//set form success
+    		case 'form_success': 
     			$out = $this->set_form_success();
     		break;
 
-			default:
+    		//отправляет сообщение
+    		//set message
+			default: 
 				$out = $this->set_json_encode($this->set_form_data()); 
 			break;
 		}
@@ -213,6 +223,9 @@ class Baseform {
 		list($field, $config) = events::before_success_send_form($field, $this->config);
 		$this->field = $field;
 		$this->config = $config;
+
+		//Проверка, что отправлено с сайта и что это ajax 
+		//spam protection
  
 		$error_check_spam = $this->check_spam();
 
@@ -258,15 +271,21 @@ class Baseform {
 
 	private function check_validation() {
 
+		//проверяет наличие правил валидации
+		//checks for validation rules
 		$configs = $this->get_validation_configs();
  
 		$out = array();
-
-		if(!empty($configs)) {
+ 
+		if(!empty($configs)) { 
 			foreach ($configs as $name => $type) {
 				foreach ($type as $type_element) {
 
+					//Параметры фильтра валидации
+					//Validation parameters of the filter
 					$detail_params = explode('[', $type_element); 
+					//Название типа валидации
+					//Type the name of the validation
 					$name_params = $detail_params[0]; 
  
 					if(!empty($detail_params[1])) {
@@ -285,6 +304,8 @@ class Baseform {
 			}
 		}
 
+		//Проверка существования почты получателя
+		//Verifying the existence of mail address
 		$mail_to = $this->config['mail_to'];
 		if(empty($mail_to)) {
 			$out['mail_to'] = $this->lexicon['err_isset_email'];
@@ -297,12 +318,14 @@ class Baseform {
 
 	private function set_validation($name = '', $type = '') {
 
-		list($type_name, 	$type_param) = $type;
+		list($type_name, $type_param) = $type;
 
 		$fields = isset($_POST['fields']) ? $_POST['fields'] : array();
-		//print_r($name);
-		$field_value = '';
  
+		$field_value = '';
+ 		
+ 		//получаем значение поля для проверки
+ 		//get the value of the field to check
 		foreach ($fields as $field) { 
 			if(strcmp($name, $field['name']) == 0) {
 				if(isset($field['value'])) {
@@ -437,8 +460,9 @@ class Baseform {
 				}
 			break;
 			case 'capcha': //Makes the element required.
-				$_SESSION['captcha_keystring'] = isset($_SESSION['captcha_keystring']) ? $_SESSION['captcha_keystring'] : '';
-				//echo $_SESSION['captcha_keystring'].', '.$field_value.'<br />';
+				$_SESSION['captcha_keystring'] = 
+				isset($_SESSION['captcha_keystring']) ? $_SESSION['captcha_keystring'] : '';
+				 
 				if(
 					strcmp($_SESSION['captcha_keystring'], $field_value) !== 0
 				){
@@ -456,6 +480,7 @@ class Baseform {
 		}
 		return $out;
 	}
+
 	private function get_validation_configs() {
 		$out = array();
 		 
@@ -473,6 +498,7 @@ class Baseform {
 	private function check_spam() {
 		$out = '';
 
+		//ajax check
 		if(
 			isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
 			strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
@@ -482,10 +508,24 @@ class Baseform {
 			$out = $this->set_form_data_status(0, $this->lexicon['spam']);
 		}
 
+		//CSRF check
 		$token = isset($_POST['bf-token']) ? $_POST['bf-token'] : '';
 		$_SESSION['bf-token'] = isset($_SESSION['bf-token']) ? $_SESSION['bf-token'] : 0;
 
 		if(!empty($token) && (strcmp($_SESSION['bf-token'], $token) !== 0)) {
+			$out = $this->set_form_data_status(0, $this->lexicon['spam']);
+		}
+
+		//Capcha validation check
+		//Приводим передаваемые данные в масссив - fields
+		$field_post = isset($_POST) ? $_POST : array();
+		unset($_POST);
+		foreach ($field_post as $name => $value) {
+			$_POST['fields'][] = array('name' => $name, 'value' => $value); 
+		}
+
+		$v = $this->check_validation(); 
+		if(isset($v['capcha'])) { 
 			$out = $this->set_form_data_status(0, $this->lexicon['spam']);
 		}
 

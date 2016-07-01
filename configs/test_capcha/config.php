@@ -11,5 +11,5 @@ subject = 'Проверка капчи'
 
 [validation]
 
-phone = required,minlength[18]
-name = required
+
+capcha = required, capcha
