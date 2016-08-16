@@ -79,12 +79,26 @@
                 <div class=bs-docs-section>
                     <h1 class="page-header" id="install">Установка</h1>
                     <h2 id="how-install">Как подключить скрипт</h2>
+
                     <p>Для установки нужно подключить скрипты в указанной последовательности:</p>
                     <pre><code>&lt;!-- Rockform --&gt;
     &lt;link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
     &lt;script data-main="/rockform/frontend/lib/app" src="/rockform/frontend/lib/require.min.js"&gt;&lt;/script&gt;
 &lt;!-- // Rockform --&gt;
 </code></pre>
+
+<p>Альтернативный вызов, например, если метод выше не работает.</p>
+   <pre><code>&lt;!-- Rockform --&gt;
+    &lt;link href="/rockform/frontend/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
+    &lt;script src="/rockform/frontend/lib/jquery.min.js"&gt;&lt;/script&gt;
+    &lt;script src="/rockform/frontend/lib/jquery.mask.min.js"&gt;&lt;/script&gt;
+    &lt;script src="/rockform/frontend/lib/jquery.form.min.js"&gt;&lt;/script&gt;
+    &lt;script src="/rockform/frontend/lib/baseform.min.js"&gt;&lt;/script&gt;
+&lt;!-- // Rockform --&gt;
+</code></pre>
+
+
+
                     <h2 id="built-form">Для встроенной формы</h2>
                     <p>Для подключения существующей формы на странице достаточно тегу <code>form</code> добавить атрибут с названием конфигурации <code>data-bf-config="Название_конфигурации"</code>. </p>
                     <p> Можно оставить пустым, тогда конфигурация возьмётся из папки по умолчанию:
@@ -127,11 +141,21 @@
                     </div>
                     <h2 id="template-popup">Шаблон всплывающего окна</h2>
                     <p>Шаблон лежит в папке <code>/configs/default/templates/form_popup.html</code>.</p>
+
+                     <div class="bs-callout bs-callout-info" id="callout-overview-single-data">
+                        <p>Для закрытия окна по кнопке из формы - ей нужно добавить атрибут <code>data-bf-popup='close'</code></p>
+                    </div>
+
                     <h2 id="template-success">Шаблон ответа об успешной отправке
                     </h2>
                     <p>Шаблон лежит в папке
                         <code>/configs/default/templates/form_success.html</code>.
                     </p>
+
+                    <div class="bs-callout bs-callout-danger" id="callout-overview-single-data">
+                        <p>Стоит учесть, что здесь обязательно нужно добавить атрибут <code>data-bf-success=""</code> в тег обёртки шаблона.</p>
+                    </div>
+         
                 </div>
                 <div class=bs-docs-section>
                     <h1 class="page-header" id="settings">Настройки</h1>
@@ -150,6 +174,11 @@
                         <p>Стоит отметить, что конфигурации наследуются от <code>/configs/default/config.php</code>, поэтому можно опускать почту и другие повторяющиеся параметры. Не наследуется только секция валидации.</p>
                     </div>
                     <h2 id="settings-available"> Доступные настройки</h2>
+                    
+                    <p>Для настроек можно использовать названия полей из формы и суперглобального массива <a href="http://php.net/manual/ru/reserved.variables.server.php">$_SERVER</a>.</p>
+
+                    <p>Например: <code>subject = 'Письмо от {{username}}'</code>. Где <code>username</code>, - это значение атрибута поля ввода <code>name="username"</code>.</p>
+
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
@@ -435,6 +464,8 @@
                                 <li><a href="#mask">Маски ввода</a></li>
                             </ul>
                         </li>
+                         
+                         <li><a href="#capcha">Добавление капчи</a></li>
                         <li><a href="#expansion">Расширение функциональности</a></li>
                     </ul>
                     <a class="back-to-top" href="#top"> Наверх </a> </nav>

@@ -1,0 +1,29 @@
+<div class="bf-content">
+    <div class="bf-header">
+        Форма отправки сообщения!
+    </div>
+    <form action="" method="post">
+        <div class="bf-row">
+            <label> Имя<span>*</span>:</label>
+            <input placeholder="" class="bf-form-control" name="name" placeholder="" type="text" value="" />
+        </div>
+        <div class="bf-row">
+            <label> Телефон<span>*</span>:</label>
+            <input  data-bf-mask="+7 (000) 000-00-00" placeholder="+7 (___) ___-__-__"  class="bf-form-control" name="phone" placeholder="" type="text" value="" />
+        </div>
+ 
+        <div class="bf-row">
+            <label>Комментарий:</label>
+            <textarea class="bf-form-control" cols="40" rows="5" name="comment">{{field_title}}</textarea>
+        </div>
+
+        <div class="bf-row">
+            <label>Прикрепить файлы:</label>
+            <input class="bf-form-control" multiple="multiple" name="upload_file" type="file" />
+        </div>
+ 
+        <div class="bf-row">
+            <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
+        </div>
+    </form>
+</div>

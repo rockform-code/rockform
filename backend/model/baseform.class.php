@@ -77,7 +77,7 @@ class Baseform {
  		$config['SMTPPassword'] = empty($config['SMTPPassword']) ? '' : $config['SMTPPassword'];
  	 	$config['SMTPSecure'] = empty($config['SMTPSecure']) ? 'ssl' : $config['SMTPSecure'];
 		$config['SMTPPort'] = empty($config['SMTPPort']) ? 465 : $config['SMTPPort'];
- 
+
 		$this->config = $config; 
 	}
 
@@ -195,9 +195,19 @@ class Baseform {
     		//отправляет сообщение
     		//set message
 			default: 
+			
+				//шаблонизация параметров
+				$fields = isset($_POST) ? $_POST : array();
+				$data = array_merge($fields, $_SERVER);
+
+				foreach ($this->config as $k => $v) {
+					$this->config[$k] = $this->twig_string->render($v, $data);
+				}
+ 
 				$out = $this->set_json_encode($this->set_form_data()); 
 			break;
 		}
+
 		return $out;
 	}
 
@@ -242,7 +252,9 @@ class Baseform {
 			} else {
 				$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
 			}
+
 			events::after_success_send_form($field, $config);
+
  		} else {
  			$out = $error_check_spam;
  		}
@@ -308,8 +320,9 @@ class Baseform {
 
 		//Проверка существования почты получателя
 		//Verifying the existence of mail address
+		$disable_mail_send = $this->config['disable_mail_send'];
 		$mail_to = $this->config['mail_to'];
-		if(empty($mail_to)) {
+		if(empty($mail_to) && empty($disable_mail_send)) {
 			$out['mail_to'] = $this->lexicon['err_isset_email'];
 		}
 
@@ -544,8 +557,8 @@ class Baseform {
 
 		$mail->CharSet = 'utf-8';
 
-		$mail->From =  $this->twig_string->render($config['from_email'],  $_SERVER);
-		$mail->FromName = $this->twig_string->render($config['from_name'],  $_SERVER);
+		$mail->From =  $config['from_email'];
+		$mail->FromName = $config['from_name'];
 
 		$mail->isHTML(true);
 		$mail->Subject = $config['subject'];
@@ -583,16 +596,6 @@ class Baseform {
  
 		//Проверка включена ли поддержка загрузки файлов
 		if(ini_get('file_uploads')) {
- 			
- 			/*
- 			//upload_max_filesize = 1M
-			//post_max_size = 1M
-			
-			//Максимальный размер загружаемого файла
-			if($this->get_filesize() > ini_get('upload_max_filesize')) {
-				return $this->set_form_data_status(0, $this->lexicon['err_file_uploads_size']);
-			}
-			*/
  
 			//Перебираем поля с атрибутом отправки файла
 			foreach ($_FILES as $name_upload_file => $files) {
@@ -631,33 +634,6 @@ class Baseform {
 		}
  
 		return $err;
-	}
-
-
-	//размер загружаемых файлов на сервер
-	function get_filesize() {
-
-		$size = 0;
-
-		foreach ($_FILES as $name_upload_file => $files) {
-
-			if(isset($_FILES[$name_upload_file]["name"])) {
-				if(is_array($_FILES[$name_upload_file]['name'])) {
-					foreach ($_FILES[$name_upload_file]['name'] as $key => $name_file) {
-						if ($_FILES[$name_upload_file]['error'][$key] == UPLOAD_ERR_OK) {
-    						$size = $size + $_FILES[$name_upload_file]['size'][$key];
-						}  
-					}
-				} else {
-					if ($_FILES[$name_upload_file]['error'] == UPLOAD_ERR_OK) {
-    					$size = $size + $_FILES[$name_upload_file]['size'];
-					}
-				}
-			} 
-
-		}
-
-		return $size;
 	}
 
 	protected function set_json_encode($value) {

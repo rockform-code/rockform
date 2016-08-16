@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.13.0
+ * @version 3.14.0
  */
 
 // AMD support
@@ -369,6 +369,7 @@
 
             set_overlay: function() {
 
+                $(".bf-fixed-overlay").remove();
                 $('body').append('<div class="bf-fixed-overlay bf-fixed-overlay__modal"> \
                             <div class="bf-modal"> \
                                 <div class="bf-modal_container"> \
@@ -417,8 +418,18 @@
 
             config: '',
             path: '/' + base_name_form + '/init.php',
-            timeclose: 2000,
+            timer: function(form) {
+                var def = 2000;
 
+                var timer = form.data('bf-timer');
+                if (typeof timer != 'undefined') {
+                    if(parseInt(timer) > 0) {
+                        def = timer;
+                    }
+                }
+                console.log(def);
+                return def;
+            },
             init: function() {
                 bf.init_form();
                 bf.init_popup_form();
@@ -521,12 +532,14 @@
                                         }
 
                                         form.ajaxSubmit({
+                                            beforeSubmit: function(arr, form, options) {
+                                                $(':focus', form).prop('disabled', true);
+                                            },
                                             success: bf.show_response,
                                             url: bf.path,
                                             type: 'post',
                                             dataType: 'json'
                                         });
-
 
                                     }
                                     $('.bf-attr').remove();
@@ -549,7 +562,10 @@
             },
             show_response: function(response, statusText, xhr, form) {
 
+                $(':focus', form).prop('disabled', false);
+
                 if (response['status'] > 0) {
+
                     form.hide();
 
                     $.ajax({
@@ -567,7 +583,7 @@
                             setTimeout(
                                 function() {
                                     popup.close();
-                                }, 2000
+                                }, bf.timer(form)
                             );
 
                             setTimeout(
@@ -575,7 +591,7 @@
                                     form.show();
                                     form.clearForm();
                                     $('[data-bf-success]').remove();
-                                }, 3000
+                                }, (bf.timer(form) + 1000)
                             );
                         }
                     });
