@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.14.0
+ * @version 3.15.0
  */
 
 // AMD support
@@ -90,7 +90,7 @@
                 var id = el.attr('name');
 
                 //получаем первый элемент формы для групп с одинаковым именем
-                el = $( '[name="'+id+'"]:first', el.parents('form'));
+                el = $('[name="' + id + '"]:first', el.parents('form'));
 
                 var pos = el.attr('data-bf-tooltip');
 
@@ -102,7 +102,7 @@
                     pos = el.parents('form').attr('data-bf-tooltip');
 
                     if (pos === undefined) {
-                        pos = 'right-center';
+                        pos = 'top-right';
                     } else {
                         pos = pos.replace(/[ ]+?/gi, "-");
 
@@ -161,7 +161,7 @@
                         var pos = el.parents('form').attr('data-bf-tooltip');
 
                         if (pos === undefined) {
-                            pos = 'right center';
+                            pos = 'top right';
                         }
                     }
 
@@ -362,6 +362,7 @@
                         }, 400);
 
                         custom_func(param_custom_func);
+
                     }
                 });
 
@@ -377,6 +378,7 @@
                                       <div class="bf-modal-box"></div> \
                                 </div> \
                             </div> \
+                            <small class="bf-modal-after"></small> \
                         </div>');
 
             },
@@ -423,11 +425,11 @@
 
                 var timer = form.data('bf-timer');
                 if (typeof timer != 'undefined') {
-                    if(parseInt(timer) > 0) {
+                    if (parseInt(timer) > 0) {
                         def = timer;
                     }
                 }
-                console.log(def);
+
                 return def;
             },
             init: function() {
@@ -487,8 +489,15 @@
                 field_mask.init();
                 tooltip.reset();
 
-                $(document)
-                    .off('submit', 'form[data-bf-config], .bf-modal form')
+                var b = $(document);
+
+                var ua = window.navigator.userAgent;
+                var msie = ua.indexOf("MSIE ");
+                if (msie > 0) {
+                    b = $('html');
+                }
+
+                b.off('submit', 'form[data-bf-config], .bf-modal form')
                     .on('submit', 'form[data-bf-config], .bf-modal form',
                         function(e) {
                             e.preventDefault();
@@ -533,7 +542,15 @@
 
                                         form.ajaxSubmit({
                                             beforeSubmit: function(arr, form, options) {
-                                                $(':focus', form).prop('disabled', true);
+
+                                                var ua = window.navigator.userAgent;
+                                                var msie = ua.indexOf("MSIE ");
+                                                if (msie > 0) {
+
+                                                } else {
+                                                    $(':focus', form).prop('disabled', true);
+                                                }
+
                                             },
                                             success: bf.show_response,
                                             url: bf.path,
@@ -566,17 +583,13 @@
 
                 if (response['status'] > 0) {
 
-                    form.hide();
-
-                    $.ajax({
-                        url: bf.path,
-                        data: { 'type': 'form_success', 'bf-config': response['bf-config'] },
-                        method: "post",
-                        dataType: "html",
-                        beforeSend: function(content) {
-
+                    $.post(
+                        bf.path, {
+                            'type': 'form_success',
+                            'bf-config': response['bf-config']
                         },
-                        success: function(content) {
+                        function(content) {
+                            form.hide();
 
                             form.after(content);
 
@@ -593,8 +606,9 @@
                                     $('[data-bf-success]').remove();
                                 }, (bf.timer(form) + 1000)
                             );
-                        }
-                    });
+                        },
+                        'html'
+                    );
 
                 } else {
                     tooltip.init($(':focus', form), response['value']);

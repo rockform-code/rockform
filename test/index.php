@@ -79,6 +79,8 @@ $test->init();
       <li><a href="frontend/popup_control.html">Проверка управляющих элементов внутри всплывающей формы (вызов другой формы, закрытие формы)</a></li>
        <li><a href="frontend/twig_in_config.html">Проверка шаблонизации конфига</a></li>
         <li><a href="frontend/timer.html">Проверка таймера</a></li>
+ <li><a href="frontend/ie7.html">Поддержка ie7-8</a></li>
+
 
      <li>Тестирование валидации</li>
      <li>Тестирование наследования конфигураций</li>

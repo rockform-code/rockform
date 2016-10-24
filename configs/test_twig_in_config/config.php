@@ -2,8 +2,12 @@
 [config]
 
 ; Почта получателей. Можно несколько через запятую.
-mail_to =
+mail_to =    
 
 ; Заголовок письма.
 subject = 'Название: {{comment}}'
+ 
+ [validation]
 
+name = 'required,minlength[3],words'
+phone = required

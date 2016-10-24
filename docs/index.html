@@ -31,17 +31,18 @@
                     <ol>
                         <li>Встроенная защита от спама, плюс поддержка капчи.</li>
                         <li>Поддержка отправки сообщения нескольким получателям. Поддержка отправки писем через SMTP.</li>
-                        <li>Поддержка прикрепления неограниченного числа файлов.</li>
+                        <li>Поддержка прикрепления неограниченного числа файлов (ie9+).</li>
                         <li>Поддержка подключения практически любых форм.</li>
                         <li>Можно подключать любое число форм на одной странице.</li>
                         <li>Поддержка всплывающего окна.</li>
-                        <li>В шаблонах имеется поддержка шаблонизатора Twig.</li>
+                        <li>Поддержка шаблонизатора Twig.</li>
                         <li>Поддержка валидации в виде всплывающих подсказок, настройки масок ввода.</li>
                     </ol>
                     <h2 id="system-requirements">Системные требования</h2>
                     <ul>
-                        <li>Работает с PHP 5.2.17 и выше.</li>
-                        <li>Работает c IE6 и выше. Всплывающее окно работает, начиная с IE9.</li>
+                            <li>Работает с PHP 5.2 и выше.</li>
+                            <li>Jquery >= 1.7+</li>
+                            <li>Браузеры: ie7+</li>
                     </ul>
                 </div>
                 <div class=bs-docs-section>
@@ -63,11 +64,11 @@
                         <form data-bf-config="order_phone" action="" method="post">
                             <div class="bf-row">
                                 <label> Имя :</label>
-                                <input placeholder="" class="bf-form-control" name="name" data-bf-tooltip="right center" placeholder="" type="text" value="" />
+                                <input placeholder="" class="bf-form-control" name="name"   placeholder="" type="text" value="" />
                             </div>
                             <div class="bf-row">
                                 <label> Телефон<span>*</span>:</label>
-                                <input data-bf-tooltip="right center" data-bf-mask="+7 (000) 000-00-00" placeholder="+7 (___) ___-__-__" class="bf-form-control" name="phone" type="text" value="" />
+                                <input   data-bf-mask="+7 (000) 000-00-00" placeholder="+7 (___) ___-__-__" class="bf-form-control" name="phone" type="text" value="" />
                             </div>
                             <div class="bf-row">
                                 <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
