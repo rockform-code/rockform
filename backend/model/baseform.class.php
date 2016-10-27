@@ -59,14 +59,14 @@ class Baseform {
 			}
 		}
 
- 		$config['used_lexicon'] = empty($used_lexicon) ? 'default' : $used_lexicon;
+ 		$config['used_lexicon'] = empty($config['used_lexicon']) ? 'default' : $config['used_lexicon'];
 		$this->set_lexicon($config['used_lexicon']);
 
 		$config['mail_to'] = empty($config['mail_to']) ? '' : $config['mail_to'];
  		$config['subject'] = empty($config['subject']) ? $this->lexicon['subject'] : $config['subject'];
  		$config['from_email'] = empty($config['from_email']) ? $this->lexicon['from_email'] : $config['from_email'];
  		$config['from_name'] = empty($config['from_name']) ? $this->lexicon['from_name'] : $config['from_name'];
- 		$config['used_lexicon'] = empty($config['used_lexicon']) ? 'default' : $config['used_lexicon'];
+  
  		$config['disable_mail_send'] = empty($config['disable_mail_send']) ? '' : $config['disable_mail_send'];
 
 		$config['charset'] = empty($config['charset']) ? 'utf-8' : $config['charset'];
@@ -82,11 +82,14 @@ class Baseform {
 	}
 
 	private function set_lexicon($used_lexicon = '') {
-		$config_ini = parse_ini_file(BASE_FORM_PATH.'backend/lexicon/'.$used_lexicon.'.ini');
-		foreach ($config_ini as $key => $value) {
-					if(!empty($value)) {
-							$lexicon[$key] = $value;
-					}
+		$lexicon = array();
+		if(file_exists(BASE_FORM_PATH.'backend/lexicon/'.$used_lexicon.'.ini')) {
+			$config_ini = parse_ini_file(BASE_FORM_PATH.'backend/lexicon/'.$used_lexicon.'.ini');
+			foreach ($config_ini as $key => $value) {
+				if(!empty($value)) {
+					$lexicon[$key] = $value;
+				}
+			}
 		}
 		$this->lexicon = $lexicon;
 	}

@@ -9,7 +9,7 @@ class Test {
   function init() {
 
     define("BASE_FORM_PATH", $_SERVER['DOCUMENT_ROOT'].'/rockform/');
-    session_start();
+    //session_start();
 
     require_once BASE_FORM_PATH.'backend/lib/twig/twig/lib/Twig/Autoloader.php';
     require_once BASE_FORM_PATH.'backend/lib/phpmailer/phpmailer/PHPMailerAutoload.php';

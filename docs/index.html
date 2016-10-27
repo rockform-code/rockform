@@ -29,14 +29,14 @@
                     <h2 id="description">Описание</h2>
                     <p>Основные характеристики формы:</p>
                     <ol>
-                        <li>Встроенная защита от спама, плюс поддержка капчи.</li>
-                        <li>Поддержка отправки сообщения нескольким получателям. Поддержка отправки писем через SMTP.</li>
-                        <li>Поддержка прикрепления неограниченного числа файлов (ie9+).</li>
-                        <li>Поддержка подключения практически любых форм.</li>
+                        <li>Встроенная защита от спама, поддержка капчи.</li>
+                        <li>Поддержка отправки сообщения нескольким получателям. Работа через SMTP.</li>
+                        <li>Поддержка прикрепления неограниченного числа файлов (ie9+).</li> 
                         <li>Можно подключать любое число форм на одной странице.</li>
-                        <li>Поддержка всплывающего окна.</li>
-                        <li>Поддержка шаблонизатора Twig.</li>
-                        <li>Поддержка валидации в виде всплывающих подсказок, настройки масок ввода.</li>
+                        <li>Поддержка всплывающей формы.</li>
+                        <li>Использование шаблонизатора в шаблонах (Twig).</li>
+                        <li>Поддержка валидации, тултипы, настройка масок ввода.</li>
+                        <li>Адаптивность стилей.</li>
                     </ol>
                     <h2 id="system-requirements">Системные требования</h2>
                     <ul>
@@ -95,10 +95,15 @@
     &lt;script src="/rockform/frontend/lib/jquery.mask.min.js"&gt;&lt;/script&gt;
     &lt;script src="/rockform/frontend/lib/jquery.form.min.js"&gt;&lt;/script&gt;
     &lt;script src="/rockform/frontend/lib/baseform.min.js"&gt;&lt;/script&gt;
+
 &lt;!-- // Rockform --&gt;
 </code></pre>
 
-
+<p>Для ie >= 8 были отдельно вынесены библиотеки совместимости и часть стилей, поэтому если нужна поддержка этих браузеров надо использовать альтернативный вызов и добавить код ниже.</p>
+     <pre><code>&lt;!--[if lt IE 8]&gt 
+         &lt;script src="/rockform/frontend/lib/json2.js">&lt;/script&gt
+       &lt;link href="/rockform/frontend/themes/default/ie.css" type="text/css" rel="stylesheet" /&gt
+     &lt;![endif]--&gt</code></pre>
 
                     <h2 id="built-form">Для встроенной формы</h2>
                     <p>Для подключения существующей формы на странице достаточно тегу <code>form</code> добавить атрибут с названием конфигурации <code>data-bf-config="Название_конфигурации"</code>. </p>
@@ -412,6 +417,8 @@
                         <p class="text-muted">Пример</p>
                         <pre><code>placeholder="+7 (___) ___-__-__" </code></pre>
                         <p>Для работы используется плагин <a href="https://igorescobar.github.io/jQuery-Mask-Plugin/">jQuery-Mask-Plugin</a></p>
+
+
                         <h2 id="capcha">Добавление капчи</h2>
                         <p>1. Для добавления капчи нужно картинке присвоить атрибут -
                             <code>data-bf-capcha=""</code>.</p>
@@ -425,6 +432,16 @@
     &lt;input class="capcha bf-form-control" name="bf_capcha" placeholder="Код с картинки" type="text" value="" /&gt;
 &lt;/div&gt;</pre>
                 </div>
+                   <div class=bs-docs-section>
+                    <h1 class="page-header" id="localization">Локализация</h1>
+<p>Файл для локализаций лежит в <code>backend/lexicon/default.ini</code>. Значения в этом файле можно переопределить на своё усмотрение или скопировать в файл с другим названием. Нaпример в <code>backend/lexicon/en.ini.</code></p>
+
+<p>Установить новый файл локализаций можно через опцию <code>used_lexicon</code> в конфигурации, передав название нового файла. Для примера выше, это будет выглядеть так: <code>used_lexicon = en</code>.</p> 
+                
+           
+                </div>
+
+
                 <div class=bs-docs-section>
                     <h1 class="page-header" id="expansion">Расширение функциональности</h1>
                     <p>Для расширения фунциональности, например, для записи данных из формы в базу данных существует класс расширения.</p>
@@ -463,10 +480,11 @@
                                 <li><a href="#validation">Валидация</a></li>
                                 <li><a href="#tooltip">Всплывающие подсказки</a></li>
                                 <li><a href="#mask">Маски ввода</a></li>
+                                <li><a href="#capcha">Добавление капчи</a></li>
                             </ul>
                         </li>
                          
-                         <li><a href="#capcha">Добавление капчи</a></li>
+                         <li><a href="#localization">Локализация</a></li>
                         <li><a href="#expansion">Расширение функциональности</a></li>
                     </ul>
                     <a class="back-to-top" href="#top"> Наверх </a> </nav>
@@ -479,9 +497,11 @@
         </div>
     </footer>
     <script src=https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js></script>
+    <!--
     <script>
     window.jQuery || document.write('<script src="assets/js/vendor/jquery.min.js"><\/script>');
     </script>
+    -->
     <script src="dist/js/bootstrap.min.js"></script>
     <script src="assets/js/docs.min.js"></script>
     <!-- Rockform -->

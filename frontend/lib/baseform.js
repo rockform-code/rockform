@@ -54,6 +54,8 @@
         var tooltip = {
             init: function(el, err_msg) {
 
+                
+
                 if (err_msg.length > 0) {
 
                     tooltip.set({
@@ -170,8 +172,12 @@
                         var position = el_offset['left'] + el_outer_w / 6 * 5;
                         position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
 
+                        h_tooltip = t.outerHeight();
+
+                        var top = parseInt(el_offset['top']) - parseInt(h_tooltip);
+
                         t.offset({
-                            top: el_offset['top'] - h_tooltip,
+                            top: top,
                             left: position
                         });
 
@@ -179,7 +185,7 @@
 
                         var position = el_offset['left'] + el_outer_w / 2;
                         position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
-
+                        h_tooltip = t.outerHeight();
                         t.offset({
                             top: el_offset['top'] - h_tooltip,
                             left: position
@@ -189,7 +195,7 @@
 
                         var position = el_offset['left'];
                         position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
-
+                        h_tooltip = t.outerHeight();
                         t.offset({
                             top: el_offset['top'] - h_tooltip,
                             left: position
@@ -197,7 +203,7 @@
                     } else if (pos == 'top left') {
 
                         var position = el_offset['left'] - el_outer_w / 6 * 5;
-
+                        h_tooltip = t.outerHeight();
                         t.offset({
                             top: el_offset['top'] - h_tooltip,
                             left: position
@@ -205,7 +211,7 @@
 
                     } else if (pos == 'left center') {
                         var position = el_offset['left'] - w_tooltip;
-
+                        h_tooltip = t.outerHeight();
                         t.offset({
                             top: el_offset['top'] + el_outer_h / 2 - h_tooltip / 2,
                             left: position
@@ -274,7 +280,13 @@
 
                 if (data.mail_to) {
 
-                    tooltip.init($(':focus', form), data.mail_to);
+                    //фокус не работает
+                    if (/iPad|iPhone|iPod/g.test(navigator.userAgent)) {
+                        tooltip.init($('input[type="submit"], button:last'), data.mail_to);
+                    } else {
+                        tooltip.init($(document.activeElement), data.mail_to);
+                    }
+
                     return false;
                 }
 
