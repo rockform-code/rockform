@@ -11,6 +11,20 @@ if($debug > 0) {
 	ini_set ('display_errors', 1);
 }
 
+if(!function_exists('mb_substr')){
+    function mb_substr($string, $offset, $length) {
+        $arr = preg_split("//u", $string);
+        $slice = array_slice($arr, $offset + 1, $length);
+        return implode("", $slice);
+    }
+}
+
+if(!function_exists('mb_strlen')){
+	function mb_strlen($string = '') { 
+    	return (count(preg_split("//u", $string)) - 2);
+	} 
+}
+
 if(!function_exists('hash')){
 	function hash ($algo = '', $data = '') {
 		return md5($data);
