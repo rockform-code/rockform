@@ -1,6 +1,6 @@
 {
   "name": "Rockform",
-  "version": "3.12.0",
+  "version": "3.16.0",
   "license": "Apache2",
   "devDependencies": {
     "gulp": "~3.9.1",

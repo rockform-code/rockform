@@ -2,7 +2,7 @@
 
 /**
 * Rockform - Simple, flexible ajax webform.
-* @version 3.15.0
+* @version 3.16.0
 */
 
 $debug = 0;
@@ -20,9 +20,9 @@ if(!function_exists('mb_substr')){
 }
 
 if(!function_exists('mb_strlen')){
-	function mb_strlen($string = '') { 
+	function mb_strlen($string = '') {
     	return (count(preg_split("//u", $string)) - 2);
-	} 
+	}
 }
 
 if(!function_exists('hash')){

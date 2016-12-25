@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.15.0
+ * @version 3.16.0
  */
 
 // AMD support
@@ -53,8 +53,6 @@
 
         var tooltip = {
             init: function(el, err_msg) {
-
-                
 
                 if (err_msg.length > 0) {
 
@@ -126,23 +124,33 @@
                 $('.bf-tooltip').remove();
 
             },
-            response: function(position, w_tooltip, min_dist, el_offset, el_outer_w, t) {
-                var pos = position + w_tooltip + min_dist;
+            response: function(left, w_tooltip, el_offset, el_outer_w, t) {
+                var min_dist = 20;
+
+                t.css('white-space', 'nowrap');
+                var pos = left + w_tooltip + min_dist;
                 var pos_min = $(window).outerWidth() - min_dist - w_tooltip;
 
                 if (pos > $(window).outerWidth()) {
-                    position = pos_min;
+                    left = pos_min;
                 }
 
                 if (pos_min <= el_offset['left']) {
-                    position = el_offset['left'];
+
+
+                    t.css('white-space', 'normal');
+
+                    left = el_offset['left'];
                     t.width(el_outer_w - min_dist);
+
+
                 }
 
-                return position;
+                return left;
             },
             position: function(el) {
-                var min_dist = 20;
+
+                var dist_from_input = 5;
 
                 var el_offset = el.offset();
 
@@ -169,22 +177,22 @@
 
                     if (pos == 'top right') {
 
-                        var position = el_offset['left'] + el_outer_w / 6 * 5;
-                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+                        var left = el_offset['left'] + el_outer_w / 6 * 5;
+                        left = tooltip.response(left, w_tooltip, el_offset, el_outer_w, t);
 
                         h_tooltip = t.outerHeight();
 
-                        var top = parseInt(el_offset['top']) - parseInt(h_tooltip);
+                        var top = parseInt(el_offset['top']) - parseInt(h_tooltip) - dist_from_input;
 
                         t.offset({
                             top: top,
-                            left: position
+                            left: left
                         });
 
                     } else if (pos == 'top center') {
 
                         var position = el_offset['left'] + el_outer_w / 2;
-                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+                        position = tooltip.response(position, w_tooltip, el_offset, el_outer_w, t);
                         h_tooltip = t.outerHeight();
                         t.offset({
                             top: el_offset['top'] - h_tooltip,
@@ -194,7 +202,7 @@
                     } else if (pos == 'top') {
 
                         var position = el_offset['left'];
-                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+                        position = tooltip.response(position, w_tooltip, el_offset, el_outer_w, t);
                         h_tooltip = t.outerHeight();
                         t.offset({
                             top: el_offset['top'] - h_tooltip,
@@ -220,7 +228,7 @@
                     } else if (pos == 'bottom') {
 
                         var position = el_offset['left'];
-                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+                        position = tooltip.response(position, w_tooltip, el_offset, el_outer_w, t);
 
                         t.offset({
                             top: el_offset['top'] + el_outer_h,
@@ -239,7 +247,7 @@
                     } else if (pos == 'bottom center') {
 
                         var position = el_offset['left'] + el_outer_w / 2;
-                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+                        position = tooltip.response(position, w_tooltip, el_offset, el_outer_w, t);
 
                         t.offset({
                             top: el_offset['top'] + el_outer_h,
@@ -249,7 +257,7 @@
                     } else if (pos == 'bottom right') {
 
                         var position = el_offset['left'] + el_outer_w / 6 * 5;
-                        position = tooltip.response(position, w_tooltip, min_dist, el_offset, el_outer_w, t);
+                        position = tooltip.response(position, w_tooltip, el_offset, el_outer_w, t);
 
                         t.offset({
                             top: el_offset['top'] + el_outer_h,
@@ -284,7 +292,7 @@
                     if (/iPad|iPhone|iPod/g.test(navigator.userAgent)) {
                         tooltip.init($('input[type="submit"], button:last'), data.mail_to);
                     } else {
-                        tooltip.init($(document.activeElement), data.mail_to);
+                        tooltip.init($(':focus', form), data.mail_to);
                     }
 
                     return false;
@@ -501,6 +509,10 @@
                 field_mask.init();
                 tooltip.reset();
 
+                $(document).on('mouseover', '.bf-tooltip', function() {
+                    $(this).remove();
+                });
+
                 var b = $(document);
 
                 var ua = window.navigator.userAgent;
@@ -591,9 +603,12 @@
             },
             show_response: function(response, statusText, xhr, form) {
 
-                $(':focus', form).prop('disabled', false);
+                var focused = $('input[type="submit"], button:last', form);
 
-                if (response['status'] > 0) {
+                focused.prop('disabled', false).removeAttr("disabled");
+
+
+                if (parseInt(response.status) > 0) {
 
                     $.post(
                         bf.path, {
@@ -623,7 +638,7 @@
                     );
 
                 } else {
-                    tooltip.init($(':focus', form), response['value']);
+                    tooltip.init(focused, response.value);
                 }
             },
 
