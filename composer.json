@@ -4,7 +4,7 @@
     "license": "Apache 2.0",
     "type": "project",
     "config": {
-        "vendor-dir": "backend/lib"
+        "vendor-dir": "core/backend"
     },
     "repositories": [{
         "type": "vcs",

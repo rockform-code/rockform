@@ -1,5 +1,5 @@
 requirejs.config({
-    baseUrl: '/rockform/frontend/lib/',
+    baseUrl: '/rockform/core/frontend/',
     paths: {
         jquery: 'jquery.min'
     },

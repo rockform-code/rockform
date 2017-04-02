@@ -196,76 +196,102 @@
                             </tr>
                             <tr>
                                 <td>mail_to</td>
-                                <td></td>
+                                <td>username@yandex.ru(Первый получатель)</td>
                                 <td></td>
                                 <td>Да</td>
-                                <td>Почта получателей. Можно несколько через запятую.</td>
+                                <td>Почта получателей. Можно несколько через запятую. Имя в скобочках опционально.</td>
                             </tr>
                             <tr>
-                                <td>subject </td>
+                                <td>mail_subject </td>
                                 <td>Письмо с сайта</td>
                                 <td></td>
                                 <td></td>
                                 <td>Заголовок письма.</td>
                             </tr>
                             <tr>
-                                <td>from_email</td>
+                                <td>mail_from</td>
                                 <td>from@{{SERVER_NAME}}</td>
-                                <td>your_mail@yandex.ru</td>
+                                <td>username@yandex.ru</td>
                                 <td></td>
                                 <td>Почта, которая будет указана в качестве адреса отправителя. Совпадает с пользователем SMTP.</td>
                             </tr>
                             <tr>
-                                <td>from_name</td>
+                                <td>mail_from_name</td>
                                 <td>Из {{SERVER_NAME}}</td>
                                 <td></td>
                                 <td></td>
                                 <td>Имя или название источника отправителя.</td>
                             </tr>
-                            <tr>
-                                <td>used_lexicon</td>
-                                <td>default</td>
-                                <td></td>
-                                <td></td>
-                                <td>Лексикон</td>
-                            </tr>
-                            <tr>
-                                <td>disable_mail_send</td>
+                             <tr>
+                                <td>mail_disable_send</td>
                                 <td>0</td>
                                 <td></td>
                                 <td></td>
-                                <td>Не отправлять почту</td>
+                                <td>Не отправлять на почту (0 или 1)</td>
                             </tr>
+
+                             <tr>
+                                <td>mail_add_cc</td>
+                                <td>username@yandex.ru(Первый получатель)</td>
+                                <td></td>
+                                <td></td>
+                                <td>Добавить получателей точной копии (CC).  Можно несколько через запятую. Имя в скобочках опционально.</td>
+                            </tr>
+
                             <tr>
-                                <td>SMTPHost</td>
+                                <td>mail_add_bcc</td>
+                                <td>username@yandex.ru(Первый получатель)</td>
+                                <td></td>
+                                <td></td>
+                                <td>Добавить получателей скрытой копии (BCC).  Можно несколько через запятую. Имя в скобочках опционально.</td>
+                            </tr>
+
+                            <tr>
+                                <td>mail_reply_to</td>
+                                <td>username@yandex.ru(Первый получатель)</td>
+                                <td></td>
+                                <td></td>
+                                <td>Добавление адреса для ответа (Reply-To).  Можно несколько через запятую. Имя в скобочках опционально.</td>
+                            </tr>
+                  
+                            <tr>
+                                <td>mail_confirm_reading_to</td>
+                                <td>username@yandex.ru</td>
+                                <td></td>
+                                <td></td>
+                                <td>Требование подтверждения прочтения.</td>
+                            </tr>
+         
+                            <tr>
+                                <td>mail_smtp_host</td>
                                 <td></td>
                                 <td>smtp.yandex.ru</td>
                                 <td></td>
                                 <td><span style="display: none;">Specify main and backup SMTP servers</span> Адрес SMTP сервера</td>
                             </tr>
                             <tr>
-                                <td>SMTPAuth</td>
+                                <td>mail_smtp_auth</td>
                                 <td></td>
                                 <td>true</td>
                                 <td></td>
                                 <td><span style="display: none;">Enable SMTP authentication</span>Включение SMTP авторизации </td>
                             </tr>
                             <tr>
-                                <td>SMTPUsername</td>
+                                <td>mail_smtp_username</td>
                                 <td></td>
                                 <td>your_mail@yandex.ru</td>
                                 <td></td>
                                 <td><span style="display: none;">SMTP username</span> SMTP пользователь </td>
                             </tr>
                             <tr>
-                                <td>SMTPPassword</td>
+                                <td>mail_smtp_password</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td><span style="display: none;">SMTP password </span>SMTP пароль </td>
                             </tr>
                             <tr>
-                                <td>SMTPSecure</td>
+                                <td>mail_smtp_secure</td>
                                 <td>ssl</td>
                                 <td>ssl</td>
                                 <td></td>
@@ -273,11 +299,25 @@
                                     Включение шифрования TLS, также доступен `ssl` </td>
                             </tr>
                             <tr>
-                                <td>SMTPPort</td>
+                                <td>mail_smtp_port</td>
                                 <td>465</td>
                                 <td>465</td>
                                 <td></td>
                                 <td> TCP порт</td>
+                            </tr>
+                                  <tr>
+                                <td>lexicon</td>
+                                <td>default</td>
+                                <td></td>
+                                <td></td>
+                                <td>Название файла локализации в папке <code>/core/lexicon/</code>.</td>
+                            </tr>
+                              <tr>
+                                <td>charset</td>
+                                <td>utf-8</td>
+                                <td></td>
+                                <td></td>
+                                <td>Кодировка</td>
                             </tr>
                     </table>
                     <h2 id="validation"> Валидация </h2>
@@ -511,13 +551,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="assets/js/docs.min.js"></script>
     <!-- Rockform -->
-    <link href="../frontend/themes/default/main.css" type="text/css" rel="stylesheet" />
-    <script data-main="../frontend/lib/app" src="/rockform/frontend/lib/require.min.js"></script>
+    <link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" />
+    <script data-main="/rockform/core/frontend/app" src="/rockform/core/frontend/require.min.js"></script>
     <!-- // Rockform -->
 
     <!--[if lt IE 8]> 
-         <script src="/rockform/frontend/lib/json2.js"></script>
-       <link href="/rockform/frontend/themes/default/ie.css" type="text/css" rel="stylesheet" />
+         <script src="/rockform/core/frontend/json2.js"></script>
+       <link href="/rockform/core/themes/default/ie.css" type="text/css" rel="stylesheet" />
      <![endif]-->
 </body>
 

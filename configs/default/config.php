@@ -1,4 +1,4 @@
-<?php defined("BASE_FORM_PATH") or die("Access denied"); ?>
+<?php defined("BF_PATH") or die("Access denied"); ?>
 [config]
 
 ; Почта получателей. Можно несколько через запятую.

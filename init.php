@@ -2,7 +2,7 @@
 
 /**
 * Rockform - Simple, flexible ajax webform.
-* @version 4.0.0
+* @version 4.1.0
 */
 
 $debug = 1;
@@ -13,20 +13,20 @@ if($debug > 0) {
 
 session_start();
 
-define("BASE_FORM_PATH", $_SERVER['DOCUMENT_ROOT'].'/rockform/');
+define("BF_PATH", $_SERVER['DOCUMENT_ROOT'].'/rockform/');
 
-require_once BASE_FORM_PATH.'backend/model/compatibility.php';
+require_once BF_PATH.'core/backend/baseform/compatibility.php';
 
 if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-	require_once BASE_FORM_PATH.'backend/lib/twig/twig/lib/Twig/Autoloader.php';
-	require_once BASE_FORM_PATH.'backend/lib/phpmailer/phpmailer/PHPMailerAutoload.php';
-	require_once BASE_FORM_PATH.'backend/lib/rockncoding/json/JSON.php';
-	require_once BASE_FORM_PATH.'backend/lib/rockncoding/kcaptcha/kcaptcha.php';
+	require_once BF_PATH.'core/backend/twig/twig/lib/Twig/Autoloader.php';
+	require_once BF_PATH.'core/backend/phpmailer/phpmailer/PHPMailerAutoload.php';
+	require_once BF_PATH.'core/backend/rockncoding/json/JSON.php';
+	require_once BF_PATH.'core/backend/rockncoding/kcaptcha/kcaptcha.php';
 } else {
- 	require_once BASE_FORM_PATH.'backend/lib/autoload.php';
+ 	require_once BF_PATH.'core/backend/autoload.php';
 }
 
-require_once BASE_FORM_PATH.'backend/model/baseform.class.php';
+require_once BF_PATH.'core/backend/baseform/baseform.class.php';
 
 $baseform = new baseform();
 echo $baseform->init();
