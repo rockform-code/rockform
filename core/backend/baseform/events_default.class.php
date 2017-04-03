@@ -1,7 +1,7 @@
 <?php
 
-class Events {
-
+class Events_default {
+	
 	function before_set_validation() {
 
 	}

@@ -1,21 +1,31 @@
 <?php
 
-class Baseform {
+class Baseform extends Events {
 
 	protected $config, $lexicon, $fields, $valid;
 
-	function __construct() {
+	function __construct($config_name = '') {
  
-		$this->set_config();
+		$this->set_config($config_name);
+
+		$templates_path = BF_PATH.'configs/'.$this->config['name'].'/templates/';
+		if(!file_exists($templates_path)){
+			$templates_path = BF_PATH.'core/config/templates/';
+		}
 
 		Twig_Autoloader::register(true);
-		$loader = new Twig_Loader_Filesystem(BF_PATH.'configs/'.$this->config['name'].'/templates/');
-		$this->twig = new Twig_Environment($loader);
+		$loader = new Twig_Loader_Filesystem($templates_path);
+		$this->twig = new Twig_Environment(
+			$loader, 
+			array(
+				'charset' => $this->config['charset']
+			)
+		);
 		$this->twig_string = new Twig_Environment(new Twig_Loader_String());
  
 	}
 
-	private function set_config() {
+	private function set_config($config_name = '') {
 
 		$config = array();
 		$lexicon = array();
@@ -25,10 +35,8 @@ class Baseform {
 		$params = $this->get_config(BF_PATH.'core/config/config.ini.php');
 		$config = isset($params['config']) ? $params['config'] : array();
 
-		if(isset($_POST['bf-config'])) {
-			$config['name'] = preg_replace("/[^a-zA-Z0-9_\-]/","", $_POST['bf-config']);
-		}
-
+		$config['name'] = $config_name;
+ 
 		if(!empty($config['name'])) {
  
 			$params_custom = $this->get_config(BF_PATH.'configs/'.$config['name'].'/config.php');
@@ -73,15 +81,16 @@ class Baseform {
 		$config['tmp_report'] = empty($config['tmp_report']) ? 'report.html' : $config['tmp_report'];
  		$config['tmp_success'] = empty($config['tmp_success']) ? 'success.html' : $config['tmp_success']; 
  
-		$this->lexicon = $this->set_lexicon($config['lexicon']);
+		$this->lexicon = $this->get_lexicon($config['lexicon']);
 		$this->config = $config; 
 	}
 
-	private function set_lexicon($lexicon = '') {
+	private function get_lexicon($lexicon = '') {
 		$out = array();
 		if(file_exists(BF_PATH.'core/lexicon/'.$lexicon.'.ini')) {
-			$lexicon = $this->parse_config(BF_PATH.'core/lexicon/'.$lexicon.'.ini');
-		}
+			$lexicon = file_get_contents(BF_PATH.'core/lexicon/'.$lexicon.'.ini');
+			$out = $this->parse_config(BF_PATH.'core/lexicon/'.$lexicon.'.ini');
+		}  
 		return $out;
 	}
 
@@ -219,7 +228,7 @@ class Baseform {
 		$error_check_spam = $this->check_spam();
 
 		if(empty($error_check_spam)) {
-			if(empty($config['disable_mail_send'])) {
+			if(empty($config['mail_disable_send'])) {
 
 				$mail_out = $this->set_mail($config);
 
@@ -295,9 +304,9 @@ class Baseform {
 		}
 
 		//Verifying the existence of mail address
-		$disable_mail_send = $this->config['disable_mail_send'];
+		$mail_disable_send = $this->config['mail_disable_send'];
 		$mail_to = $this->config['mail_to'];
-		if(empty($mail_to) && empty($disable_mail_send)) {
+		if(empty($mail_to) && empty($mail_disable_send)) {
 			$out['mail_to'] = $this->lexicon['err_isset_email'];
 		}
 
