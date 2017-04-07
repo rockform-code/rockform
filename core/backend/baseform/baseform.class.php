@@ -8,7 +8,7 @@ class Baseform extends Events {
  
 		$this->set_config($config_name);
 
-		$templates_path = BF_PATH.'configs/'.$this->config['name'].'/templates/';
+		$templates_path = BF_PATH_CONFIGS.$this->config['name'].'/templates/';
 		if(!file_exists($templates_path)){
 			$templates_path = BF_PATH.'core/config/templates/';
 		}
@@ -39,7 +39,7 @@ class Baseform extends Events {
  
 		if(!empty($config['name'])) {
  
-			$params_custom = $this->get_config(BF_PATH.'configs/'.$config['name'].'/config.php');
+			$params_custom = $this->get_config(BF_PATH_CONFIGS.$config['name'].'/config.php');
 
 			if(isset($params_custom['validation']) && is_array($params_custom)) {
 		 		$this->valid = $params_custom['validation'];
@@ -183,9 +183,8 @@ class Baseform extends Events {
     		break;
  
     		//set message
-			default: 
+			default:  
 			
-				 
 				$fields = isset($_POST) ? $_POST : array();
 				$data = array_merge($fields, $_SERVER);
 
@@ -219,7 +218,7 @@ class Baseform extends Events {
 			}
 		}
  
-		list($fields, $config) = events::before_success_send_form($fields, $this->config);
+		//list($fields, $config) = events::before_success_send_form($fields, $this->config);
 		$this->fields = $fields;
 		$this->config = $config;
  
@@ -241,7 +240,7 @@ class Baseform extends Events {
 				$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
 			}
 
-			events::after_success_send_form($fields, $config);
+			//events::after_success_send_form($fields, $config);
 
  		} else {
  			$out = $error_check_spam;
