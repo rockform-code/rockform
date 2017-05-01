@@ -30,13 +30,9 @@
                     <p>Основные характеристики формы:</p>
                     <ol>
                         <li>Встроенная защита от спама, поддержка капчи.</li>
-                        <li>Поддержка отправки сообщения нескольким получателям. Работа через SMTP.</li>
-                        <li>Поддержка прикрепления неограниченного числа файлов (ie9+).</li> 
-                        <li>Можно подключать любое число форм на одной странице.</li>
-                        <li>Поддержка всплывающей формы.</li>
-                        <li>Использование шаблонизатора в шаблонах (Twig).</li>
-                        <li>Поддержка валидации, тултипы, настройка масок ввода.</li>
-                        <li>Адаптивность стилей.</li>
+                        <li>Работа через SMTP.</li> 
+                        <li>Поддержка всплывающей формы.</li> 
+                        <li>Поддержка валидации, тултипы, настройка масок ввода.</li> 
                     </ol>
                     <h2 id="system-requirements">Системные требования</h2>
                     <ul>
@@ -61,7 +57,7 @@
                         <div class="bf-header">
                             Заказ звонка
                         </div>
-                        <form data-bf-config="order_phone" action="" method="post">
+                        <form data-bf-config="order_phone" action="#" method="post">
                             <div class="bf-row">
                                 <label> Имя :</label>
                                 <input placeholder="" class="bf-form-control" name="name"   placeholder="" type="text" value="" />
@@ -107,24 +103,33 @@
 
                     <h2 id="built-form">Для встроенной формы</h2>
                     <p>Для подключения существующей формы на странице достаточно тегу <code>form</code> добавить атрибут с названием конфигурации <code>data-bf-config="Название_конфигурации"</code>. </p>
-                    <p> Можно оставить пустым, тогда конфигурация возьмётся из папки по умолчанию:
-                        <code>/configs/default/</code>. </p>
+                    <p> Можно оставить пустым, тогда конфигурация возьмётся из настроек по умолчанию:
+                        <code>/core/config/config.ini.php</code>. </p>
+
                     <h2 id="popup-form">Для всплывающего окна</h2>
-                    <p>Для начала нужно настроить шаблон, который можно найти в папке <code>/configs/default/templates/form_popup.html</code>. В него можно передать любой html-код с формой, он подхватится автоматически. Работает с поддержкой шаблонизатора Twig.</p>
+
+                    <p>Для начала нужно настроить шаблон, который можно найти в папке <code>/configs/example/templates/popup.html</code>. В него можно передать любой html-код с формой, он подхватится автоматически. Работает с поддержкой шаблонизатора Twig.</p>
+
                     <p>Для вызова всплывающего окна нужно добавить атрибут <code>data-bf-config=""</code> на любой тег, кроме формы.</p>
+
                     <p>В всплывающую форму можно передать параметры через data-атрибуты, например: <code>data-bf-field_title="Параметр"</code></p>
+
                     <p>Где <code>title</code> можно заменить на своё название.</p>
                     <div id="callout-overview-single-data" class="bs-callout bs-callout-danger">
                         <p>Стоит учесть, что здесь обязательно нужно использовать нижнее подчёркивание.</p>
                     </div>
+
                     <p>Переданная переменная будет доступна в шаблонах как: <code>{{field_title}}</code>.</p>
+
                 </div>
                 <div class=bs-docs-section>
                     <h1 class="page-header" id="template">Шаблоны</h1>
+
                     <h2 id="template-on-mail"> Шаблон отправки на почту</h2>
-                    <p>Шаблон лежит в папке <code>/templates/report_on_mail.html</code>.</p>
+
+                    <p>Шаблон лежит в папке выбранного конфига <code>/templates/report.html</code>.</p>
                     <p>В качестве шаблона для полей используется конструкция <code>{{название_поля_ввода}}</code>. Поддерживает работу с шаблонизатором Twig.</p>
-                    <p>Также доступны системные перенные: </p>
+                    <p>Также доступны системные переменные: </p>
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped bs-events-table">
                             <thead>
@@ -145,43 +150,55 @@
                             </tbody>
                         </table>
                     </div>
-                    <h2 id="template-popup">Шаблон всплывающего окна</h2>
-                    <p>Шаблон лежит в папке <code>/configs/default/templates/form_popup.html</code>.</p>
 
+
+                    <h2 id="template-popup">Шаблон всплывающего окна</h2>
+                    <p>Шаблон лежит в папке выбранного конфига <code>/templates/popup.html</code>.</p>
+
+<!--
                      <div class="bs-callout bs-callout-info" id="callout-overview-single-data">
                         <p>Для закрытия окна по кнопке из формы - ей нужно добавить атрибут <code>data-bf-popup='close'</code></p>
                     </div>
+-->
 
                     <h2 id="template-success">Шаблон ответа об успешной отправке
                     </h2>
-                    <p>Шаблон лежит в папке
-                        <code>/configs/default/templates/form_success.html</code>.
+                    <p>Шаблон лежит в папке выбранного конфига
+                        <code>/templates/success.html</code>.
                     </p>
 
                     <div class="bs-callout bs-callout-danger" id="callout-overview-single-data">
-                        <p>Стоит учесть, что здесь обязательно нужно добавить атрибут <code>data-bf-success=""</code> в тег обёртки шаблона.</p>
+                        <p>Стоит учесть, что здесь обязательно нужно добавить атрибут <code>data-bf-success</code> в тег обёртки шаблона.</p>
                     </div>
          
                 </div>
                 <div class=bs-docs-section>
                     <h1 class="page-header" id="settings">Настройки</h1>
+
                     <h2 id="settings-how">Как задать настройки</h2>
-                    <p>Настройки хранятся в <code>.ini</code> формате и находятся по умолчанию в файле <code>/configs/default/config.php</code>.</p>
-                    <figure class=" "><pre><code data-lang="bash" class="language-bash">rockform/
-└── configs/
-    └── default
+
+                    <p>Настройки хранятся в формате <code>.ini</code>. По умолчанию, при пустом вызове, настройки берутся из <code>/config/config.ini.php</code>.</p>
+                    <figure class=" ">
+
+                    <pre><code data-lang="bash" class="language-bash">rockform/
+    └── config
         ├── templates
-        │   ├── form_popup.html
-        │   └── report_mail.html
-        ├── config.php
-        └── events.php</code></pre></figure>
-                    <p>Название конфигурации совпадает с именем папки в директории <code>/configs/</code>. По умолчанию, при пустом вызове, настройки берутся из <code>/configs/default/</code>. Можно создать сколько угодно конфигураций, просто копируя папку <code>default</code> с другим названием и меняя параметры на свои.</p>
+        │	├── popup.html
+        │	├── success.html
+        │	└── report.html
+        └─── config.ini.php
+     </code></pre></figure>
+     <p>Дополнительные конфигурации можно создавать в папке <code>/configs/</code>.</p>
+                    <p> Можно создать сколько угодно конфигураций, просто копируя <code>/configs/example/</code> с другим названием и меняя параметры на свои.</p>
+
                     <div id="callout-scrollspy-needs-nav" class="bs-callout bs-callout-warning">
-                        <p>Стоит отметить, что конфигурации наследуются от <code>/configs/default/config.php</code>, поэтому можно опускать почту и другие повторяющиеся параметры. Не наследуется только секция валидации.</p>
+                        <p>Стоит отметить, что конфигурации наследуются от <code>/config/config.ini.php</code>, поэтому можно опускать почту и другие повторяющиеся параметры. Не наследуется только секция валидации.</p>
                     </div>
+
+
                     <h2 id="settings-available"> Доступные настройки</h2>
                     
-                    <p>Для настроек можно использовать названия полей из формы и суперглобального массива <a href="http://php.net/manual/ru/reserved.variables.server.php">$_SERVER</a>.</p>
+                    <p>Для настроек можно использовать названия полей из формы и суперглобальный массив <a href="http://php.net/manual/ru/reserved.variables.server.php">$_SERVER</a>.</p>
 
                     <p>Например: <code>subject = 'Письмо от {{username}}'</code>. Где <code>username</code>, - это значение атрибута поля ввода <code>name="username"</code>.</p>
 
@@ -381,60 +398,62 @@
                             </tr>
                     </table>
                     <h2 id="tooltip"> Всплывающие подсказки </h2>
-                    <p>Существует поддержка настройки позиции всплывающих подсказок. Атрибут <code>data-bf-tooltip=""</code> можно задать как глобально для тега <code>form</code>, так и индивидуально для каждого элемента полей ввода.</p>
+                    <p>Существует поддержка настройки позиции всплывающих подсказок. Атрибут <code>data-bf-tooltip=""</code> 
+                    можно задать, как глобально для тега <code>form</code>, так и индивидуально для каждого элемента полей ввода.</p>
                     <table class="table table-bordered ">
                         <caption>Доступны следующие атрибуты </caption>
                         <tbody>
                             <tr>
-                                <th>Выражение</th>
+                                <th>Выражение</th> 
                                 <th>Описание</th>
                             </tr>
                             <tr>
                                 <td>top right</td>
+                               
                                 <td>Сверху справа</td>
                             </tr>
                             <tr>
-                                <td>top center</td>
+                                <td>top center</td> 
                                 <td>Сверху по центру</td>
                             </tr>
-                            <!-- 
+                            
                             <tr>
-                                <td>top</td>
+                                <td>top</td> 
                                 <td>Сверху</td>
                             </tr>
 
                             <tr>
-                                <td>top left</td>
+                                <td>top left</td> 
                                 <td>Сверху слева</td>
                             </tr>
                             <tr>
-                                <td>bottom</td>
+                                <td>bottom</td> 
                                 <td>Снизу</td>
                             </tr>
                             <tr>
-                                <td>bottom left</td>
+                                <td>bottom left</td> 
                                 <td>Снизу слева</td>
                             </tr>
-                                -->
+                               
                             <tr>
-                                <td>bottom right</td>
+                                <td>bottom right</td> 
                                 <td>Снизу справа</td>
                             </tr>
 
                              <tr>
-                                <td>bottom center</td>
+                                <td>bottom center</td> 
                                 <td>Снизу по центру</td>
                             </tr>
-                            <!-- 
+                       
                             <tr>
-                                <td>left center</td>
+                                <td>left center</td> 
                                 <td>Слева</td>
-                            </tr> -->
-                            <!-- 
+                            </tr>  
+                            
                             <tr>
                                 <td>
-                                    right center</td>
-                                <td>Справа</td> -->
+                                    right center</td> 
+                                <td>Справа</td>  
                             </tr>
                     </table>
                     <h2 id="mask"> Маски ввода </h2>
@@ -461,6 +480,7 @@
                                 </tr>
                             </tbody>
                         </table>
+
                         <p class="text-muted">Пример</p>
                         <pre><code>data-bf-mask="+7 (000) 000-00-00" </code></pre>
                         <p>2. <code>placeholder</code> - плейсхолдер, формируется автоматически, но если в плейсхолдере есть цифры или буквы, тогда нужно задать явно через этот атрибут.</p>
@@ -471,34 +491,64 @@
 
                         <h2 id="capcha">Добавление капчи</h2>
                         <p>1. Для добавления капчи нужно картинке присвоить атрибут -
-                            <code>data-bf-capcha=""</code>.</p>
+                            <code>data-bf-capcha</code>.</p>
                         <p>2. В конфигурационном файле указать в секции <code>[validation]</code> параметр
                             <code>bf_capcha = capcha;</code>. Где <code>bf_capcha</code> - значение атрибута <code>name</code> для поля, в который будет вводиться информация с картинки.</p>
                         <p class="text-muted">Пример</p>
                         <pre>&lt;div class="bf-row"&gt;
     &lt;div class="bf-info-img"&gt;
-    &lt;img width="100" height="50" title="Обновить картинку" data-bf-capcha="" src="/rockform/init.php?type=capcha" alt="" /&gt;
+    &lt;img width="100" height="50" title="Обновить картинку" data-bf-capcha src="" alt="" /&gt;
     &lt;/div&gt;
     &lt;input class="capcha bf-form-control" name="bf_capcha" placeholder="Код с картинки" type="text" value="" /&gt;
 &lt;/div&gt;</pre>
                 </div>
                    <div class=bs-docs-section>
                     <h1 class="page-header" id="localization">Локализация</h1>
-<p>Файл для локализаций лежит в <code>backend/lexicon/default.ini</code>. Значения в этом файле можно переопределить на своё усмотрение или скопировать в файл с другим названием. Нaпример в <code>backend/lexicon/en.ini.</code></p>
+<p>Файл для локализаций лежит в <code>/core/lexicon/default.ini</code>. Значения в этом файле можно переопределить на своё усмотрение или скопировать в файл с другим названием. Нaпример в <code>/core/lexicon/en.ini.</code></p>
 
-<p>Установить новый файл локализаций можно через опцию <code>used_lexicon</code> в конфигурации, передав название нового файла. Для примера выше, это будет выглядеть так: <code>used_lexicon = en</code>.</p> 
+<p>Установить новый файл локализаций можно через опцию <code>lexicon</code> в конфигурации, передав название нового файла. Для примера выше, это будет выглядеть так: <code>lexicon = en</code>.</p> 
                 
            
                 </div>
 
 
                 <div class=bs-docs-section>
-                    <h1 class="page-header" id="expansion">Расширение функциональности</h1>
-                    <p>Для расширения фунциональности, например, для записи данных из формы в базу данных существует класс расширения.</p>
-                    <p>Класс находится по пути <code>/configs/default/events.php</code></p>
-                    <p>Для создания специфичной функциональности в своём конфиге нужно скопировать этот файл со своими изменениями.</p>
+                    <h1 class="page-header" id="expansion">Класс расширения PHP</h1>
+
+                    <p>Для расширения фунциональности, например для записи данных из формы в базу данных, существует класс расширения.</p>
+                    <p>Класс примера можно найти в <code>/configs/example/events.php</code> (файл можно скопировать в любой другой конфиг).</p>
+                    <p>Методы класса срабатывают только при вызове данного конфига.</p>
+ 
+  <table class="table table-bordered">
+                            <caption>Доступны следующие события</caption>
+                            <tbody>
+                            <tr><th>Событие</th><th>Описание</th></tr>
+
+                                <tr>
+                                    <td>before_show_modal</td>
+                                    <td>Срабатывает до показа всплывающей формы.</td>
+                                </tr>
+                                <tr>
+                                    <td>before_success_modal</td>
+                                    <td>Срабатывает до показа формы об успешной отправке.</td>
+                                </tr>
+                                <tr>
+                                    <td>before_success_send_form</td>
+                                    <td>Срабатывает перед успешной отправкой формы.</td>
+                                </tr>
+                                <tr>
+                                    <td>after_success_send_form</td>
+                                    <td>Срабатывает после успешной отправки формы.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
                 </div>
+
+
             </div>
+
             <div class=col-md-3 role=complementary>
                 <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm">
                     <ul class="nav bs-docs-sidenav">
