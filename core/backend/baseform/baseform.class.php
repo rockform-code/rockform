@@ -47,15 +47,16 @@ class Baseform extends Events {
 
 			if(!empty($params_custom['config']) && is_array($params_custom)) { 
 				foreach ($params_custom['config'] as $k => $value) {
-					if(!empty($value)) {
-						$config[$k] = $value;
-					}
+					$config[$k] = $value;
 				}
 			}
 		}
 
+		$config['lexicon'] = empty($config['lexicon']) ? 'default' : $config['lexicon'];
+		$this->lexicon = $this->get_lexicon($config['lexicon']);
+
 		//config mail
-		$config['mail_disable_send'] = empty($config['mail_disable_send']) ? '' : $config['mail_disable_send'];
+		$config['mail_disable_send'] = !isset($config['mail_disable_send']) ? 0 : $config['mail_disable_send'];
 
 		$config['mail_to'] = empty($config['mail_to']) ? '' : $config['mail_to'];
  		$config['mail_subject'] = empty($config['mail_subject']) ? $this->lexicon['mail_subject'] : $config['mail_subject'];
@@ -75,13 +76,11 @@ class Baseform extends Events {
 		$config['mail_smtp_port'] = empty($config['mail_smtp_port']) ? 465 : $config['mail_smtp_port'];
 
 		$config['charset'] = empty($config['charset']) ? 'utf-8' : $config['charset'];
-		$config['lexicon'] = empty($config['lexicon']) ? 'default' : $config['lexicon'];
 
 		$config['tmp_popup'] = empty($config['tmp_popup']) ? 'popup.html' : $config['tmp_popup'];
 		$config['tmp_report'] = empty($config['tmp_report']) ? 'report.html' : $config['tmp_report'];
  		$config['tmp_success'] = empty($config['tmp_success']) ? 'success.html' : $config['tmp_success']; 
  
-		$this->lexicon = $this->get_lexicon($config['lexicon']);
 		$this->config = $config; 
 	}
 
@@ -89,7 +88,7 @@ class Baseform extends Events {
 		$out = array();
 		if(file_exists(BF_PATH.'core/lexicon/'.$lexicon.'.ini')) {
 			$lexicon = file_get_contents(BF_PATH.'core/lexicon/'.$lexicon.'.ini');
-			$out = $this->parse_config(BF_PATH.'core/lexicon/'.$lexicon.'.ini');
+			$out = $this->parse_config($lexicon);
 		}  
 		return $out;
 	}
@@ -170,13 +169,11 @@ class Baseform extends Events {
     		 	$out = $this->set_base_form();
     		break;
 
-    		 
     		//check validation
     		case 'validation': 
     			$out = $this->set_json_encode($this->check_validation());
     		break;
 
-    		 
     		//set form success
     		case 'form_success': 
     			$out = $this->set_form_success();
@@ -200,7 +197,6 @@ class Baseform extends Events {
 	}
 
 	function set_capcha() {
-
 		$captcha = new KCAPTCHA();
 		$_SESSION['captcha_keystring'] = $captcha->getKeyString();
 	}
@@ -218,7 +214,7 @@ class Baseform extends Events {
 			}
 		}
  
-		//list($fields, $config) = events::before_success_send_form($fields, $this->config);
+		list($fields, $config) = $this->before_success_send_form($fields, $this->config);
 		$this->fields = $fields;
 		$this->config = $config;
  
@@ -240,7 +236,7 @@ class Baseform extends Events {
 				$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
 			}
 
-			//events::after_success_send_form($fields, $config);
+			$this->after_success_send_form($fields, $config);
 
  		} else {
  			$out = $error_check_spam;
@@ -255,10 +251,17 @@ class Baseform extends Events {
 
 	private function set_base_form() {
 		$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array(); 
+
+		//events
+		$attributes = $this->before_show_modal($attributes);
+
 		return $this->twig->render($this->config['tmp_popup'], $attributes);
 	}
 
 	private function set_form_success($attributes = array()) { 
+
+		$attributes = $this->before_success_modal($attributes);
+
 		return $this->twig->render($this->config['tmp_success'], $attributes);
 	}
 
@@ -274,6 +277,9 @@ class Baseform extends Events {
 
 		//checks for validation rules
 		$configs = $this->get_validation_configs();
+
+		//events
+		$configs = $this->before_set_validation($configs);
  
 		$out = array();
  
@@ -326,7 +332,7 @@ class Baseform extends Events {
 		foreach ($fields as $field) { 
 			if(strcmp($name, $field['name']) == 0) {
 				if(isset($field['value'])) {
-					$field_value = trim($field['value']);
+					$field_value = ($field['value']);
 				}
 			}
 		}
@@ -341,6 +347,7 @@ class Baseform extends Events {
 			case 'range': //Makes the element require a given value range.
 			break;
 			case 'regexp':
+
 			break;
 			case 'email': //Makes the element require a valid email
 				if(!empty($field_value)) {
@@ -419,40 +426,45 @@ class Baseform extends Events {
 				}
 			break;
 			case 'minlength': //Makes the element require a given minimum length.
-				$field_count = mb_strlen($field_value, 'utf-8');
-				if($field_count < intval($type_param)) {
-					$out = $this->twig_string->render(
-						$this->lexicon['valid_minlength'],
-						array('minlength' => intval($type_param))
-					);
-
+				if(!empty($field_value)) {
+					$field_count = mb_strlen($field_value, 'utf-8');
+						if($field_count < intval($type_param)) {
+							$out = $this->twig_string->render(
+							$this->lexicon['valid_minlength'],
+							array('minlength' => intval($type_param))
+						);
+					}
 				}
 			break;
 			case 'maxlength': //Makes the element require a given maxmimum length.
-				$field_count = mb_strlen($field_value, 'utf-8');
-				if($field_count > intval($type_param)) {
-					$out = $this->twig_string->render(
+				if(!empty($field_value)) {
+					$field_count = mb_strlen($field_value, 'utf-8');
+					if($field_count > intval($type_param)) {
+						$out = $this->twig_string->render(
 						$this->lexicon['valid_maxlength'],
 						array('maxlength' => $type_param)
-					);
+						);
+					}
 				}
 			break;
 			case 'rangelength': //Makes the element require a given value range.
-			  $field_count = mb_strlen($field_value, 'utf-8');
-				$type_param = explode(',', $type_param);
+				if(!empty($field_value)) {
+			  		$field_count = mb_strlen($field_value, 'utf-8');
+					$type_param = explode(',', $type_param);
 
-				if(count($type_param) == 2) {
-					if(
-						$field_count > intval($type_param[1]) ||
-						$field_count < intval($type_param[0])
-					) {
+					if(count($type_param) == 2) {
+						if(
+							$field_count > intval($type_param[1]) ||
+							$field_count < intval($type_param[0])
+						) {
 						    $out = $this->twig_string->render(
 								$this->lexicon['valid_rangelength'],
 								array(
 									'maxlength' => $type_param[1],
 									'minlength' => $type_param[0]
 								)
-						);
+							);
+						}
 					}
 				}
 			break;
@@ -606,6 +618,7 @@ class Baseform extends Events {
  
 		//Проверка включена ли поддержка загрузки файлов
 		if(ini_get('file_uploads')) {
+ 
  
 			//Перебираем поля с атрибутом отправки файла
 			foreach ($_FILES as $name_upload_file => $files) {

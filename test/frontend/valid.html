@@ -1,0 +1,87 @@
+ 
+<div class="page-header">
+    <h3>Загрузка файла</h3></div>
+ 
+<div class="bf-content">
+ 
+ <form enctype="multipart/form-data" data-bf-config="valid" action="" method="post">
+ 
+        <h4>required    ;Поле становится обязательным для заполнения.</h4>
+        <div class="bf-row">
+            <label> </label>
+            <input data-bf-tooltip="top right" class="bf-form-control" name="required" placeholder="" type="text" value="" />
+        </div>
+
+ 
+        <h4>minlength[5]    ;Минимальное число символов. В скобочках указывается значение.</h4>
+        <div class="bf-row">
+            <label> </label>
+            <input data-bf-tooltip="top right" class="bf-form-control" name="minlength" placeholder="" type="text" value="" />
+        </div>
+
+        <h4>maxlength[10]   ;Максимально число символов. В скобочках указывается значение.</h4>
+        <div class="bf-row">
+            <label> </label>
+            <input data-bf-tooltip="top right" class="bf-form-control" name="maxlength" placeholder="" type="text" value="" />
+        </div>
+
+        <h4>rangelength[3,10]   ;Диапозон числа символов. В скобочках указывается значение.</h4>
+        <div class="bf-row">
+            <label> </label>
+            <input data-bf-tooltip="top right" class="bf-form-control" name="rangelength" placeholder="" type="text" value="" />
+        </div>
+
+        <h4>email   ;Электронная почта.</h4>
+        <div class="bf-row">
+            <label> </label>
+            <input data-bf-tooltip="top right" class="bf-form-control" name="email" placeholder="" type="text" value="" />
+        </div>
+
+        <h4>url     ;Ссылка.</h4>
+        <div class="bf-row">
+            <label> </label>
+            <input data-bf-tooltip="top right" class="bf-form-control" name="url" placeholder="" type="text" value="" />
+        </div>
+
+        <h4>ip  ;ip-адрес.</h4>
+        <div class="bf-row">
+            <label> </label>
+            <input data-bf-tooltip="top right" class="bf-form-control" name="ip" placeholder="" type="text" value="" />
+        </div>
+
+        <h4>number  ;Дробные числа.</h4>
+        <div class="bf-row">
+            <label> </label>
+            <input data-bf-tooltip="top right" class="bf-form-control" name="number" placeholder="" type="text" value="" />
+        </div>
+        <h4>digits  ;Только цифры.</h4>
+        <div class="bf-row">
+            <label> </label>
+            <input data-bf-tooltip="top right" class="bf-form-control" name="digits" placeholder="" type="text" value="" />
+        </div>
+
+        <h4>letter  ;Только буквы.</h4>
+        <div class="bf-row">
+            <label> </label>
+            <input data-bf-tooltip="top right" class="bf-form-control" name="letter" placeholder="" type="text" value="" />
+        </div>
+        <h4>words   ;Ввод слов.</h4>
+        <div class="bf-row">
+            <label> </label>
+            <input data-bf-tooltip="top right" class="bf-form-control" name="words" placeholder="" type="text" value="" />
+        </div>
+ 
+
+ <h4>file[.jpg,.png]     ;Допустимые расширения файлов. В скобочках расширения через запятую.</h4>
+        <div class="bf-row">
+            <label>
+</label>
+            <input class="bf-form-control" multiple="multiple" name="file" type="file" />
+        </div>
+       
+ 
+        <div class="bf-row">
+            <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
+        </div>
+    </form>
+</div>

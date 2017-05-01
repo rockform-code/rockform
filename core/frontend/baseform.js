@@ -18,11 +18,47 @@
     (function($) {
         "use strict";
 
-        var base_name_form = 'rockform';
+        var base_name_form = 'rockform',
+            mask_pattern = '',
+            mask_placeholder = {};
 
-        var mask_pattern = '';
-        var mask_placeholder = {};
+        //capcha
+        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
+        var callback = function(allmutations) {
+
+                allmutations.map(function(mr) {
+
+                    var jq = $(mr.addedNodes);
+                    jq.find('img[data-bf-capcha]').click();
+
+                });
+
+            },
+            mo = new MutationObserver(callback),
+            options = {
+                'childList': true,
+                'subtree': true
+            };
+
+        mo.observe(document.getElementsByTagName("body")[0], options);
+
+
+        var capcha = {
+            init: function() {
+                capcha.update();
+                $(document)
+                    .off("click", 'img[data-bf-capcha]')
+                    .on("click", 'img[data-bf-capcha]', function() {
+                        capcha.update();
+                    });
+            },
+            update: function() {
+                $('img[data-bf-capcha]').attr('src', bf.path + '?type=capcha&u=' + Math.random());
+            }
+        };
+
+        //mask
         var field_mask = {
             init: function() {
 
@@ -210,11 +246,15 @@
                         });
                     } else if (pos == 'top left') {
 
-                        var position = el_offset['left'] - el_outer_w / 6 * 5;
+                        var left = el_offset['left'] + el_outer_w / 6 - w_tooltip;
+
                         h_tooltip = t.outerHeight();
+
+                        var top = parseInt(el_offset['top']) - parseInt(h_tooltip) - dist_from_input;
+
                         t.offset({
-                            top: el_offset['top'] - h_tooltip,
-                            left: position
+                            top: top,
+                            left: left
                         });
 
                     } else if (pos == 'left center') {
@@ -237,7 +277,7 @@
 
                     } else if (pos == 'bottom left') {
 
-                        var position = el_offset['left'] - el_outer_w / 6 * 5;
+                        var position = el_offset['left'] + el_outer_w / 6 - w_tooltip;
 
                         t.offset({
                             top: el_offset['top'] + el_outer_h,
@@ -424,18 +464,6 @@
             }
         };
 
-        var capcha = {
-            init: function() {
-                capcha.update();
-                $(document).off("click", 'img[data-bf-capcha]').on("click", 'img[data-bf-capcha]', function() {
-                    capcha.update();
-                });
-            },
-            update: function() {
-                $('img[data-bf-capcha]').attr('src', bf.path + '?type=capcha&u=' + Math.random());
-            }
-        };
-
         var bf = {
 
             config: '',
@@ -579,7 +607,10 @@
                                             success: bf.show_response,
                                             url: bf.path,
                                             type: 'post',
-                                            dataType: 'json'
+                                            dataType: 'json',
+                                            error: function(jqXHR, textStatus, errorThrown) {
+                                                alert('Server: ' + textStatus);
+                                            }
                                         });
 
                                     }
@@ -647,5 +678,4 @@
             }
         }
         bf.init();
-    })
-);
+    }));

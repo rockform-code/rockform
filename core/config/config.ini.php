@@ -2,5 +2,8 @@
 [config]
 
 ; Почта получателей. Можно несколько через запятую.
-mail_to =  gmgsar@yandex.ru
-mail_disable_send = 1
+mail_to =
+
+; Заголовок письма
+; mail_subject =
+

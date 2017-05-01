@@ -2,10 +2,10 @@
 
 /**
 * Rockform - Simple, flexible ajax webform.
-* @version 4.1.0
+* @version 4.0.0
 */
 
-$debug = 1;
+$debug = 0;
 
 if($debug > 0) {
 	ini_set('error_reporting', E_ALL);
