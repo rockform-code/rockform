@@ -48,7 +48,6 @@ sans-serif;
     cursor: not-allowed
 }
 
-//
 .bf-content .btn {
     display: inline-block;
     margin-bottom: 0;
@@ -68,10 +67,6 @@ sans-serif;
     user-select: none
 }
 
-.bf-content .btn.active.focus,
-.bf-content .btn.active:focus,
-.bf-content .btn.focus,
-.bf-content .btn:active.focus,
 .bf-content .btn:active:focus,
 .bf-content .btn:focus {
     outline: dotted thin;
@@ -79,14 +74,12 @@ sans-serif;
     outline-offset: -2px
 }
 
-.bf-content .btn.focus,
 .bf-content .btn:focus,
 .bf-content .btn:hover {
     color: #333;
     text-decoration: none
 }
 
-.bf-content .btn.active,
 .bf-content .btn:active {
     outline: 0;
     background-image: none;
@@ -112,64 +105,35 @@ fieldset[disabled] a.bf-content .btn {
     border-color: #ccc
 }
 
-.bf-content .btn-default.focus,
 .bf-content .btn-default:focus {
     color: #333;
     background-color: #e6e6e6;
     border-color: #8c8c8c
 }
 
-.bf-content .btn-default.active,
 .bf-content .btn-default:active,
-.bf-content .btn-default:hover,
-.open>.dropdown-toggle.bf-content .btn-default {
+.bf-content .btn-default:hover {
     color: #333;
     background-color: #e6e6e6;
     border-color: #adadad
 }
 
-.bf-content .btn-default.active.focus,
-.bf-content .btn-default.active:focus,
-.bf-content .btn-default.active:hover,
 .bf-content .btn-default:active.focus,
 .bf-content .btn-default:active:focus,
-.bf-content .btn-default:active:hover,
-.open>.dropdown-toggle.bf-content .btn-default.focus,
-.open>.dropdown-toggle.bf-content .btn-default:focus,
-.open>.dropdown-toggle.bf-content .btn-default:hover {
+.bf-content .btn-default:active:hover {
     color: #333;
     background-color: #d4d4d4;
     border-color: #8c8c8c
 }
 
-.bf-content .btn-default.disabled,
-.bf-content .btn-default.disabled.active,
-.bf-content .btn-default.disabled.focus,
-.bf-content .btn-default.disabled:active,
-.bf-content .btn-default.disabled:focus,
-.bf-content .btn-default.disabled:hover,
 .bf-content .btn-default[disabled],
-.bf-content .btn-default[disabled].active,
-.bf-content .btn-default[disabled].focus,
 .bf-content .btn-default[disabled]:active,
 .bf-content .btn-default[disabled]:focus,
-.bf-content .btn-default[disabled]:hover,
-fieldset[disabled] .bf-content .btn-default,
-fieldset[disabled] .bf-content .btn-default.active,
-fieldset[disabled] .bf-content .btn-default.focus,
-fieldset[disabled] .bf-content .btn-default:active,
-fieldset[disabled] .bf-content .btn-default:focus,
-fieldset[disabled] .bf-content .btn-default:hover {
+.bf-content .btn-default[disabled]:hover {
     background-color: #fff;
     border-color: #ccc
 }
 
-.bf-content .btn-default .badge {
-    color: #fff;
-    background-color: #333
-}
-
-//
 .bf-row {
     width: 100%;
     float: left;
@@ -238,6 +202,50 @@ fieldset[disabled] .bf-content .btn-default:hover {
 /*  tooltip.less */
 
 @import "tooltip.less";
+
+/* file upload */
+
+.bf-input-file {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.bf-input-file + label {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 10px 5px;
+    color: #444;
+    text-align: right;
+}
+
+.bf-input-file:focus + label {
+    outline: none;
+}
+
+.bf-input-file + label svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    margin-top: -4px;
+    margin-right: 4px;
+}
+
+.bf-input-file:focus + label,
+.bf-input-file + label:hover {
+    color: #666;
+}
+
 
 /* mobile */
 

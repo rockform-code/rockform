@@ -9,7 +9,7 @@ var Promise = require('es6-promise').Promise;
 
 
 gulp.task('css', function() {
-    return gulp.src('frontend/themes/default/less/main.less')
+    return gulp.src('core/themes/default/less/main.less')
         .pipe(less())
         .pipe(autoprefixer({
             browsers: ['last 3 versions', '> 1%', 'IE 9', 'IE 10', 'IE 11'],
@@ -18,16 +18,16 @@ gulp.task('css', function() {
         .pipe(minifyCSS({
             keepBreaks: true
         }))
-        .pipe(gulp.dest('frontend/themes/default/'));
+        .pipe(gulp.dest('core/themes/default/'));
 });
 
 gulp.task('js', function() {
-    return gulp.src('frontend/lib/baseform.js')
+    return gulp.src('core/frontend/baseform.js')
         .pipe(uglify())
         .pipe(rename({
             suffix: ".min"
         }))
-        .pipe(gulp.dest('frontend/lib/'));
+        .pipe(gulp.dest('core/frontend/'));
 });
 
 gulp.task('requirejs', function() {
@@ -36,7 +36,7 @@ gulp.task('requirejs', function() {
         .pipe(rename({
             suffix: ".min"
         }))
-        .pipe(gulp.dest('frontend/lib/'));
+        .pipe(gulp.dest('core/frontend'));
 });
 
 gulp.task('bower', function() {
@@ -45,12 +45,12 @@ gulp.task('bower', function() {
         .pipe(rename({
             suffix: ".min"
         }))
-        .pipe(gulp.dest('frontend/lib/'))
+        .pipe(gulp.dest('core/frontend'))
 });
 
 gulp.task('watch', function() {
-    gulp.watch('frontend/themes/default/less/*.less', ['css'])
-    gulp.watch('frontend/lib/*.js', ['js']),
+    gulp.watch('core/themes/default/less/*.less', ['css'])
+    gulp.watch('core/frontend/*.js', ['js']),
         gulp.watch('node_modules/requirejs/require.js', ['requirejs']),
         gulp.watch('bower.json', ['bower'])
 });

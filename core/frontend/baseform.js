@@ -1,9 +1,9 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 4.0.0
  */
 
 // AMD support
+;
 (function(factory) {
         "use strict";
         if (typeof define === 'function' && define.amd) {
@@ -21,6 +21,26 @@
         var base_name_form = 'rockform',
             mask_pattern = '',
             mask_placeholder = {};
+
+        $(document).on('change', '.bf-input-file', function(e) {
+
+            var $input = $(this),
+                $label = $input.next('label'),
+                labelVal = $label.html();
+            var fileName = '';
+
+            if (this.files && this.files.length > 1) {
+                fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);
+            } else if (e.target.value) {
+                fileName = e.target.value.split('\\').pop();
+            }
+
+            if (fileName) {
+                $label.find('span').html(fileName);
+            } else {
+                $label.html(labelVal);
+            }
+        });
 
         //capcha
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -57,6 +77,7 @@
                 $('img[data-bf-capcha]').attr('src', bf.path + '?type=capcha&u=' + Math.random());
             }
         };
+
 
         //mask
         var field_mask = {
