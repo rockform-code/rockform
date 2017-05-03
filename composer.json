@@ -1,17 +1,17 @@
 {
     "name": "rockncoding/rockform",
-    "description": "Simple ajax contact form",
-    "license": "Apache 2.0",
+    "description": "Simple form of ajax",
+    "license": "",
     "type": "project",
     "config": {
         "vendor-dir": "core/backend"
     },
     "repositories": [{
         "type": "vcs",
-        "url": "https://github.com/rockncoding/JSON.git"
+        "url": "https://github.com/rockncoding/JSON"
     }, {
         "type": "vcs",
-        "url": "https://github.com/rockncoding/kcaptcha.git"
+        "url": "https://github.com/rockncoding/kcaptcha"
     }],
     "require": {
         "php": ">=5.2.7",

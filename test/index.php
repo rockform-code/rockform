@@ -39,11 +39,7 @@
 
 
 <!-- Rockform -->
-
- <!--[if lt IE 8]> 
-         <script src="/rockform/frontend/lib/json2.js"></script>
-       <link href="/rockform/themes/default/ie.css" type="text/css" rel="stylesheet" />
-     <![endif]-->
+ 
 
 <?php if(isset($_GET['alt'])) { ?> 
  
@@ -62,7 +58,6 @@
     <script data-main="/rockform/core/frontend/app" src="/rockform/core/frontend/require.min.js"></script>
  <?php } ?>
 <!-- // Rockform -->
-
  
     <script src="/rockform/test/frontend/template/js/dinamic.js"></script>
 </head>

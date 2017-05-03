@@ -2,7 +2,6 @@
 
 /**
 * Rockform - Simple, flexible ajax webform.
-* @version 4.0.0
 */
 
 $debug = 0;

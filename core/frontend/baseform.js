@@ -43,6 +43,7 @@
         });
 
         //capcha
+        
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
         var callback = function(allmutations) {
@@ -62,8 +63,7 @@
             };
 
         mo.observe(document.getElementsByTagName("body")[0], options);
-
-
+  
         var capcha = {
             init: function() {
                 capcha.update();
