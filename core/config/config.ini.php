@@ -6,4 +6,3 @@ mail_to =
 
 ; Заголовок письма
 ; mail_subject =
-
