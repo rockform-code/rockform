@@ -2,7 +2,8 @@
 [config]
 
 ; Почта получателей. Можно несколько через запятую.
-mail_to = 
+mail_to =
 
 ; Заголовок письма
-; mail_subject =  
+; mail_subject =
+
