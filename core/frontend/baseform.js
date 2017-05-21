@@ -22,6 +22,7 @@
             mask_pattern = '',
             mask_placeholder = {};
 
+        //Стилизация загружаемого файла
         $(document).on('change', '.bf-input-file', function(e) {
 
             var $input = $(this),
@@ -42,28 +43,29 @@
             }
         });
 
-        //capcha
-        
-        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        //Отслеживание создания капчи для динамически вставленных форм
+        if (window.MutationObserver || window.WebKitMutationObserver) {
+            var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
-        var callback = function(allmutations) {
+            var callback = function(allmutations) {
 
-                allmutations.map(function(mr) {
+                    allmutations.map(function(mr) {
 
-                    var jq = $(mr.addedNodes);
-                    jq.find('img[data-bf-capcha]').click();
+                        var jq = $(mr.addedNodes);
+                        jq.find('img[data-bf-capcha]').click();
 
-                });
+                    });
 
-            },
-            mo = new MutationObserver(callback),
-            options = {
-                'childList': true,
-                'subtree': true
-            };
+                },
+                mo = new MutationObserver(callback),
+                options = {
+                    'childList': true,
+                    'subtree': true
+                };
+        }
 
         mo.observe(document.getElementsByTagName("body")[0], options);
-  
+
         var capcha = {
             init: function() {
                 capcha.update();
@@ -347,13 +349,27 @@
 
                 tooltip.reset();
 
+                console.log( data.filesize);
+
                 if (data.mail_to) {
 
                     //фокус не работает
                     if (/iPad|iPhone|iPod/g.test(navigator.userAgent)) {
-                        tooltip.init($('input[type="submit"], button:last'), data.mail_to);
+                        tooltip.init($('[type="submit"], [type="image"]', form), data.mail_to);
                     } else {
                         tooltip.init($(':focus', form), data.mail_to);
+                    }
+
+                    return false;
+                }
+
+                if (data.filesize) {
+
+                    //фокус не работает
+                    if (/iPad|iPhone|iPod/g.test(navigator.userAgent)) {
+                        tooltip.init($('[type="submit"], [type="image"]', form), data.filesize);
+                    } else {
+                        tooltip.init($(':focus', form), data.filesize);
                     }
 
                     return false;
@@ -362,6 +378,7 @@
                 $.each(data, function(name, value) {
                     err_msg = '';
 
+                    //устанавливаем токен в форму
                     if (name == 'token') {
                         bf.set_attr_form(form, data.token, 'bf-token');
                     } else {
@@ -413,6 +430,8 @@
                 return err_msg;
             }
         }
+
+        /* popup window */
 
         var popup = {
 
@@ -484,6 +503,8 @@
                 bf.init_form(); //перезапускаем
             }
         };
+
+        /* form sender */
 
         var bf = {
 
@@ -562,15 +583,7 @@
                     $(this).remove();
                 });
 
-                var b = $(document);
-
-                var ua = window.navigator.userAgent;
-                var msie = ua.indexOf("MSIE ");
-                if (msie > 0) {
-                    b = $('html');
-                }
-
-                b.off('submit', 'form[data-bf-config], .bf-modal form')
+                $(document).off('submit', 'form[data-bf-config], .bf-modal form')
                     .on('submit', 'form[data-bf-config], .bf-modal form',
                         function(e) {
                             e.preventDefault();
@@ -584,20 +597,25 @@
 
                             //сериализуем форму
                             var formdata = form.formToArray();
+                            var filesize = [];
 
                             //заменяем объект файла именем файла
                             $.each(formdata, function(index, element) {
                                 if (element.type == 'file') {
-                                    formdata[index].value = element.value.name
+                                    formdata[index].size = element.value.size || '';
+                                    formdata[index].value = element.value.name || '';
+
+                                    filesize.push(formdata[index].size);
                                 }
                             });
 
                             //серверная валидация
                             $.post(
                                 bf.path, {
-                                    'fields': formdata,
-                                    'type': 'validation',
-                                    'bf-config': bf.config
+                                    'fields' : formdata,
+                                    'type' : 'validation',
+                                    'bf-config': bf.config,
+                                    'filesize' : filesize
                                 },
                                 function(data) {
 
@@ -616,13 +634,7 @@
                                         form.ajaxSubmit({
                                             beforeSubmit: function(arr, form, options) {
 
-                                                var ua = window.navigator.userAgent;
-                                                var msie = ua.indexOf("MSIE ");
-                                                if (msie > 0) {
-
-                                                } else {
-                                                    $(':focus', form).prop('disabled', true);
-                                                }
+                                                $(':focus', form).prop('disabled', true);
 
                                             },
                                             success: bf.show_response,

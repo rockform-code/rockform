@@ -9,23 +9,22 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="robots" content="noindex, nofollow" />
-    <title>Rockform - демонстрация работы</title>
+    <title>Демонстрация работы</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel=stylesheet>
     <link href="assets/css/docs.min.css" rel=stylesheet>
 </head>
 
 <body>
- 
-
+    <div class=bs-docs-header id=content tabindex=-1>
+        <div class=container>
+            <h1>Rockform</h1>
+            <p>Документация и демонстрация работы.</p>
+        </div>
+    </div>
     <div class="container bs-docs-container">
         <div class=row>
             <div class=col-md-9 role=main>
-                
-
-                <h1 style="color: teal; font-size: 40px;">Rockform - демонстрация работы</h1>
-
                 <div class=bs-docs-section>
-                 
                     <h1 class="page-header" id="overview">Обзор</h1>
                     <h2 id="description">Описание</h2>
                     <p>Основные характеристики формы:</p>
@@ -203,45 +202,42 @@
                                 <th>Параметр</th>
                                 <th>Значение по умолчанию</th>
                                 <th>Пример</th>
-                              
+                                <th>Обязательное</th>
                                 <th>Описание</th>
                             </tr>
                             <tr>
                                 <td>mail_to</td>
-                           
+                                <td>username@yandex.ru(Первый получатель)</td>
                                 <td></td>
-                                  <td>username@yandex.ru(Первый получатель)</td>
-                                <td>
-
-<b>Поле обязательно.</b>
-                                Почта получателей. Можно несколько через запятую. Имя в скобочках опционально.</td>
+                                <td>Да</td>
+                                <td>Почта получателей. Можно несколько через запятую. Имя в скобочках опционально.</td>
                             </tr>
                             <tr>
                                 <td>mail_subject </td>
                                 <td>Письмо с сайта</td>
                                 <td></td>
-                            
+                                <td></td>
                                 <td>Заголовок письма.</td>
                             </tr>
                             <tr>
                                 <td>mail_from</td>
                                 <td>from@{{SERVER_NAME}}</td>
                                 <td>username@yandex.ru</td>
-                                 
+                                <td></td>
                                 <td>Почта, которая будет указана в качестве адреса отправителя. Совпадает с пользователем SMTP.</td>
                             </tr>
                             <tr>
                                 <td>mail_from_name</td>
                                 <td>Из {{SERVER_NAME}}</td>
                                 <td></td>
-                             
+                                <td></td>
                                 <td>Имя или название источника отправителя.</td>
                             </tr>
                              <tr>
                                 <td>mail_disable_send</td>
                                 <td>0</td>
                                 <td></td>
-                                
+                                <td></td>
                                 <td>Не отправлять на почту (0 или 1)</td>
                             </tr>
 
@@ -249,7 +245,7 @@
                                 <td>mail_add_cc</td>
                                 <td>username@yandex.ru(Первый получатель)</td>
                                 <td></td>
-                                
+                                <td></td>
                                 <td>Добавить получателей точной копии (CC).  Можно несколько через запятую. Имя в скобочках опционально.</td>
                             </tr>
 
@@ -257,7 +253,7 @@
                                 <td>mail_add_bcc</td>
                                 <td>username@yandex.ru(Первый получатель)</td>
                                 <td></td>
-                              
+                                <td></td>
                                 <td>Добавить получателей скрытой копии (BCC).  Можно несколько через запятую. Имя в скобочках опционально.</td>
                             </tr>
 
@@ -265,15 +261,15 @@
                                 <td>mail_reply_to</td>
                                 <td>username@yandex.ru(Первый получатель)</td>
                                 <td></td>
-                               
+                                <td></td>
                                 <td>Добавление адреса для ответа (Reply-To).  Можно несколько через запятую. Имя в скобочках опционально.</td>
                             </tr>
                   
                             <tr>
                                 <td>mail_confirm_reading_to</td>
-                            
+                                <td>username@yandex.ru</td>
                                 <td></td>
-                                    <td>username@yandex.ru</td>
+                                <td></td>
                                 <td>Требование подтверждения прочтения.</td>
                             </tr>
          
@@ -281,35 +277,35 @@
                                 <td>mail_smtp_host</td>
                                 <td></td>
                                 <td>smtp.yandex.ru</td>
-                               
+                                <td></td>
                                 <td><span style="display: none;">Specify main and backup SMTP servers</span> Адрес SMTP сервера</td>
                             </tr>
                             <tr>
                                 <td>mail_smtp_auth</td>
                                 <td></td>
                                 <td>true</td>
-                             
+                                <td></td>
                                 <td><span style="display: none;">Enable SMTP authentication</span>Включение SMTP авторизации </td>
                             </tr>
                             <tr>
                                 <td>mail_smtp_username</td>
                                 <td></td>
                                 <td>your_mail@yandex.ru</td>
-                               
+                                <td></td>
                                 <td><span style="display: none;">SMTP username</span> SMTP пользователь </td>
                             </tr>
                             <tr>
                                 <td>mail_smtp_password</td>
                                 <td></td>
                                 <td></td>
-                            
+                                <td></td>
                                 <td><span style="display: none;">SMTP password </span>SMTP пароль </td>
                             </tr>
                             <tr>
                                 <td>mail_smtp_secure</td>
                                 <td>ssl</td>
                                 <td>ssl</td>
-                          
+                                <td></td>
                                 <td>
                                     Включение шифрования TLS, также доступен `ssl` </td>
                             </tr>
@@ -317,21 +313,21 @@
                                 <td>mail_smtp_port</td>
                                 <td>465</td>
                                 <td>465</td>
-                                
+                                <td></td>
                                 <td> TCP порт</td>
                             </tr>
                                   <tr>
                                 <td>lexicon</td>
                                 <td>default</td>
                                 <td></td>
-                          
+                                <td></td>
                                 <td>Название файла локализации в папке <code>/core/lexicon/</code>.</td>
                             </tr>
                               <tr>
                                 <td>charset</td>
                                 <td>utf-8</td>
                                 <td></td>
-                                
+                                <td></td>
                                 <td>Кодировка</td>
                             </tr>
                     </table>
@@ -549,7 +545,6 @@
 
             <div class=col-md-3 role=complementary>
                 <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm">
-               
                     <ul class="nav bs-docs-sidenav">
                         <li><a href="#overview"> Обзор</a>
                             <ul class=nav>
@@ -591,7 +586,7 @@
         </div>
     </div>
     </div>
-    <footer  role=contentinfo>
+    <footer class=bs-docs-footer role=contentinfo>
         <div class=container>
         </div>
     </footer>

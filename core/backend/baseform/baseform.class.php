@@ -277,7 +277,6 @@ class Baseform extends Events {
 
 		//checks for validation rules
 		$configs = $this->get_validation_configs();
-
 		//events
 		$configs = $this->before_set_validation($configs);
  
@@ -296,14 +295,11 @@ class Baseform extends Events {
 						$detail_params = str_replace(']', '', $detail_params[1]);
 					}
 
-					if(preg_match('~^error_message~', 	$name_params)) {
-
-					} else {
-						$err = $this->set_validation($name, array($name_params, $detail_params));
-						if(!empty($err)) {
-							$out[$name][$name_params] = $err;
-						}
+					$err = $this->set_validation($name, array($name_params, $detail_params));
+					if(!empty($err)) {
+						$out[$name][$name_params] = $err;
 					}
+					 
 				}
 			}
 		}
@@ -315,7 +311,9 @@ class Baseform extends Events {
 			$out['mail_to'] = $this->lexicon['err_isset_email'];
 		}
 
-		$out['token'] = $this->set_token();
+		$out['filesize'] = $this->check_file_uploads();
+
+		$out['token'] = $_SESSION['bf-token'] = md5(uniqid());
 
 		return $out;
 	}
@@ -324,15 +322,18 @@ class Baseform extends Events {
 
 		list($type_name, $type_param) = $type;
 
+
 		$fields = isset($_POST['fields']) ? $_POST['fields'] : array();
  
 		$field_value = '';
+		$field_size = '';
 
  		//get the value of the field to check
 		foreach ($fields as $field) { 
 			if(strcmp($name, $field['name']) == 0) {
 				if(isset($field['value'])) {
-					$field_value = ($field['value']);
+					$field_value = isset($field['value']) ? $field['value'] : 0;
+					$field_size = isset($field['size']) ? $field['size'] : 0;
 				}
 			}
 		}
@@ -424,6 +425,27 @@ class Baseform extends Events {
 							}
 					}
 				}
+
+			break;
+			case 'filesize': 
+ 
+				if(!empty($field_value)) {
+					if(!empty($type_param)) {
+						if($type_param < $field_size) {
+							
+							$size = $this->format_byte_to_megabyte($type_param);
+							$size_user = $this->format_byte_to_megabyte($field_size);
+
+							$out = $this->twig_string->render(
+								$this->lexicon['valid_filesize'],
+								array(
+									'size' => $size,
+									'size_user' =>  $size_user
+								)
+							);
+						}
+					}
+				}
 			break;
 			case 'minlength': //Makes the element require a given minimum length.
 				if(!empty($field_value)) {
@@ -509,13 +531,11 @@ class Baseform extends Events {
 
 		//ajax check
 		if(
-			isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-			strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
+			!isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+			!strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
 		) {
-
-		} else {
 			$out = $this->set_form_data_status(0, $this->lexicon['err_spam']);
-		}
+		}  
 
 		//CSRF check
 		$token = isset($_POST['bf-token']) ? $_POST['bf-token'] : '';
@@ -525,24 +545,71 @@ class Baseform extends Events {
 			$out = $this->set_form_data_status(0, $this->lexicon['err_spam']);
 		}
 
-		//Capcha validation check
-		//Приводим передаваемые данные в масссив - fields
-		$field_post = isset($_POST) ? $_POST : array();
-		unset($_POST);
-		foreach ($field_post as $name => $value) {
-			$_POST['fields'][] = array('name' => $name, 'value' => $value); 
-		}
+		return $out;
+	}
 
-		$v = $this->check_validation(); 
-		if(isset($v['capcha'])) { 
-			$out = $this->set_form_data_status(0, $this->lexicon['err_spam']);
+	protected function check_file_uploads() {
+		$out = '';
+ 
+ 		$filesize = isset($_POST['filesize']) ? $_POST['filesize'] : array();
+
+		if(array_sum($filesize) > 0) {
+
+			//Проверка включена ли поддержка загрузки файлов
+			if(ini_get('file_uploads')) {
+
+				//Проверка, что файлов в форме меньше, чем разрешено на сервере
+ 				if(ini_get('max_file_uploads')) {
+ 					if(ini_get('max_file_uploads') < count($filesize)) {
+ 						$out = $this->lexicon['err_file_uploads_count'];
+ 					}
+				}
+
+				$post_max_size = $this->format_size_to_byte(ini_get('post_max_size'));
+				$upload_max_filesize = $this->format_size_to_byte(ini_get('upload_max_filesize'));
+
+				//размер файлов
+				$max_size = $post_max_size;
+				if($upload_max_filesize < $max_size) {
+					$max_size = $upload_max_filesize;
+				}
+
+				if($max_size < array_sum($filesize)) {
+ 
+ 					$out = $this->twig_string->render(
+						$this->lexicon['err_file_uploads_size'],
+						array(
+							'max_size' => $this->format_byte_to_megabyte($max_size)
+						)
+					);
+				}
+ 
+			} else {
+				$out = $this->lexicon['err_file_uploads_none'];
+			}
 		}
 
 		return $out;
 	}
 
-	private function set_token() {
-		return $_SESSION['bf-token'] = md5(uniqid());
+	private function format_size_to_byte($size = 0){
+		$byte = 0;
+
+		if(preg_match('~G~i', $size)) {
+			$byte = intval($size) * 1024 * 1024 * 1024;
+		} else if(preg_match('~M~i', $size)) {
+			$byte = intval($size) * 1024 * 1024;
+		} else if(preg_match('~K~i', $size)) {
+			$byte = intval($size) * 1024;
+		} else {
+			$byte = intval($size);
+		}
+
+		return $byte;
+	}
+
+	private function format_byte_to_megabyte($byte = 0){
+		return round(($byte / 1024 / 1024), 2);
 	}
 
 	protected function set_mail($config = array()) {
@@ -616,46 +683,37 @@ class Baseform extends Events {
 	private function set_files_on_mail($mail) {
 		$err = array();
  
-		//Проверка включена ли поддержка загрузки файлов
-		if(ini_get('file_uploads')) {
- 
- 
-			//Перебираем поля с атрибутом отправки файла
-			foreach ($_FILES as $name_upload_file => $files) {
+		foreach ($_FILES as $name_upload_file => $files) {
 
-				if(isset($_FILES[$name_upload_file]["name"])) {
-					if(is_array($_FILES[$name_upload_file]['name'])) {
-						foreach ($_FILES[$name_upload_file]['name'] as $key => $name_file) {
-							if ($_FILES[$name_upload_file]['error'][$key] == UPLOAD_ERR_OK) {
-    							$mail->AddAttachment(
-    								$_FILES[$name_upload_file]['tmp_name'][$key],
-    								$_FILES[$name_upload_file]['name'][$key],
+			if(isset($_FILES[$name_upload_file]["name"])) {
+				if(is_array($_FILES[$name_upload_file]['name'])) {
+					foreach ($_FILES[$name_upload_file]['name'] as $key => $name_file) {
+						if ($_FILES[$name_upload_file]['error'][$key] == UPLOAD_ERR_OK) {
+    						$mail->AddAttachment(
+    							$_FILES[$name_upload_file]['tmp_name'][$key],
+    							$_FILES[$name_upload_file]['name'][$key],
     								'base64',
     								$_FILES[$name_upload_file]['type'][$key]
-    							);
-							} else {
-								$err = $this->set_form_data_status(0, $this->lexicon['err_file_uploads']);
-							}
-						} 
-					} else {
-						if ($_FILES[$name_upload_file]['error'] == UPLOAD_ERR_OK) {
-    						$mail->AddAttachment(
-    							$_FILES[$name_upload_file]['tmp_name'],
-    							$_FILES[$name_upload_file]['name'],
-    							'base64',
-    							$_FILES[$name_upload_file]['type']
     						);
 						} else {
 							$err = $this->set_form_data_status(0, $this->lexicon['err_file_uploads']);
 						}
+					} 
+				} else {
+					if ($_FILES[$name_upload_file]['error'] == UPLOAD_ERR_OK) {
+    					$mail->AddAttachment(
+    						$_FILES[$name_upload_file]['tmp_name'],
+    						$_FILES[$name_upload_file]['name'],
+    						'base64',
+    						$_FILES[$name_upload_file]['type']
+    					);
+					} else {
+						$err = $this->set_form_data_status(0, $this->lexicon['err_file_uploads']);
 					}
 				}
 			}
-
-		} else {
-			$err = $this->set_form_data_status(0, $this->lexicon['err_file_uploads_none']);
 		}
- 
+
 		return $err;
 	}
 

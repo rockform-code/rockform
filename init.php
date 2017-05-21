@@ -4,7 +4,7 @@
 * Rockform - Simple, flexible ajax webform.
 */
 
-$debug = 0;
+$debug = 2;
 
 if($debug > 0) {
 	ini_set('error_reporting', E_ALL);
