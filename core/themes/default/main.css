@@ -13,6 +13,7 @@
 .bf-form-control[disabled]{cursor:not-allowed}
 .bf-content .btn{display:inline-block;margin-bottom:0;font-weight:400;vertical-align:middle;-ms-touch-action:manipulation;touch-action:manipulation;cursor:pointer;border:1px solid transparent;padding:6px 12px;border-radius:4px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
 .bf-content .btn:active:focus,.bf-content .btn:focus{outline:dotted thin;outline:-webkit-focus-ring-color auto 5px;outline-offset:-2px}
+.bf-content a:active,.bf-content a:hover,.bf-input-file:focus+label{outline:0}
 .bf-content .btn:focus,.bf-content .btn:hover{color:#333;text-decoration:none}
 .bf-content .btn:active{outline:0;background-image:none;box-shadow:inset 0 3px 5px rgba(0,0,0,.125)}
 .bf-content .btn.disabled,.bf-content .btn[disabled]{cursor:not-allowed;opacity:.65;filter:alpha(opacity=65);box-shadow:none}
@@ -51,9 +52,13 @@ a.bf-content .btn.disabled,fieldset[disabled] a.bf-content .btn{pointer-events:n
 .bf-tooltip-bottom .bf-arrow,.bf-tooltip-top .bf-arrow{left:auto;right:0}
 .bf-input-file{width:.1px;height:.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}
 .bf-input-file+label{width:100%;font-weight:700;text-overflow:ellipsis;cursor:pointer;display:inline-block;overflow:hidden;padding:10px 5px;color:#444;text-align:right}
-.bf-input-file:focus+label{outline:0}
 .bf-input-file+label svg{width:1em;height:1em;vertical-align:middle;fill:currentColor;margin-top:-4px;margin-right:4px}
 .bf-input-file+label:hover,.bf-input-file:focus+label{color:#666}
+.bf-rule{text-align:center;font-size:12px}
+.bf-rule input{vertical-align:middle;display:inline-block;margin:0 10px 0 0}
+.bf-rule a,.bf-rule span{vertical-align:middle;display:inline-block}
+.bf-content a:focus,.bf-content a:hover{color:#23527c;text-decoration:underline}
+.bf-content a{text-decoration:none;color:#337ab7;font-family:Roboto,sans-serif}
 @media (max-width:480px){.bf-content,.bf-row label{width:100%}
 .bf-form-control{width:96%;padding:2%}
 }

@@ -251,6 +251,8 @@ class Baseform extends Events {
 
 	private function set_base_form() {
 		$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array(); 
+		$attributes['SERVER'] = $_SERVER;
+		$attributes['bf_config'] = $this->config;
 
 		//events
 		$attributes = $this->before_show_modal($attributes);
