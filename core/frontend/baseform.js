@@ -1,5 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
+ * @version 4.1.1
  */
 
 // AMD support
@@ -44,7 +45,9 @@
         });
 
         //Отслеживание создания капчи для динамически вставленных форм
-        if (window.MutationObserver || window.WebKitMutationObserver) {
+        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || '';
+
+        if (MutationObserver) {
             var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
             var callback = function(allmutations) {
@@ -62,9 +65,8 @@
                     'childList': true,
                     'subtree': true
                 };
+            mo.observe(document.getElementsByTagName("body")[0], options);
         }
-
-        mo.observe(document.getElementsByTagName("body")[0], options);
 
         var capcha = {
             init: function() {
@@ -349,7 +351,7 @@
 
                 tooltip.reset();
 
-                console.log( data.filesize);
+                console.log(data.filesize);
 
                 if (data.mail_to) {
 
@@ -612,10 +614,10 @@
                             //серверная валидация
                             $.post(
                                 bf.path, {
-                                    'fields' : formdata,
-                                    'type' : 'validation',
+                                    'fields': formdata,
+                                    'type': 'validation',
                                     'bf-config': bf.config,
-                                    'filesize' : filesize
+                                    'filesize': filesize
                                 },
                                 function(data) {
 

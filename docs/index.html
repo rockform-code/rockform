@@ -80,14 +80,14 @@
 
                     <p>Для установки нужно подключить скрипты в указанной последовательности:</p>
                     <pre><code>&lt;!-- Rockform --&gt;
-    &lt;link href="/rockform/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
+    &lt;link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
     &lt;script data-main="/rockform/core/frontend/app" src="/rockform/core/frontend/require.min.js"&gt;&lt;/script&gt;
 &lt;!-- // Rockform --&gt;
 </code></pre>
 
 <p>Альтернативный вызов, например, если метод выше не работает.</p>
    <pre><code>&lt;!-- Rockform --&gt;
-    &lt;link href="/rockform/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
+    &lt;link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
     &lt;script src="/rockform/core/frontend/jquery.min.js"&gt;&lt;/script&gt;
     &lt;script src="/rockform/core/frontend/jquery.mask.min.js"&gt;&lt;/script&gt;
     &lt;script src="/rockform/core/frontend/jquery.form.min.js"&gt;&lt;/script&gt;
@@ -505,7 +505,22 @@
     &lt;/div&gt;
     &lt;input class="capcha bf-form-control" name="bf_capcha" placeholder="Код с картинки" type="text" value="" /&gt;
 &lt;/div&gt;</pre>
+
+ <h2 id="politica">Политика конфиденциальности</h2>
+
+ <p>Для создания всплывающего окна с политикой конфиденциальности достаточно создать отдельный конфиг, где в шаблоне 
+<code>popup.html</code> указать нужный текст. Вызывать его аналогично, как и другие всплывающие формы, т.е через <code>data-bf-config="НАЗВАНИЕ_КОНФИГА"</code>, но также требуется добавить атрибут дополнительного поля, например: <code>data-bf-field_form="НАЗВАНИЕ_КОНФИГА"</code></p> 
+
+<p>Для возврата в конфиг, с которого был переход на политику, надо создать ссылку с атрибутом <code>data-bf-config="{{field_form}}"</code>. Если требуется закрыть окно с политикой, то ссылке надо добавить атрибут <code>data-bf-popup="close"</code>.
+
+
+</p>
+
+ 
+
                 </div>
+
+
                    <div class=bs-docs-section>
                     <h1 class="page-header" id="localization">Локализация</h1>
 <p>Файл для локализаций лежит в <code>/core/lexicon/default.ini</code>. Значения в этом файле можно переопределить на своё усмотрение или скопировать в файл с другим названием. Нaпример в <code>/core/lexicon/en.ini.</code></p>
@@ -586,6 +601,8 @@
                                 <li><a href="#tooltip">Всплывающие подсказки</a></li>
                                 <li><a href="#mask">Маски ввода</a></li>
                                 <li><a href="#capcha">Добавление капчи</a></li>
+                                <li><a href="#politica">Политика конфиденциальности</a></li>
+                                
                             </ul>
                         </li>
                          

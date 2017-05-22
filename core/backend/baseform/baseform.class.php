@@ -34,6 +34,7 @@ class Baseform extends Events {
 		//set default config
 		$params = $this->get_config(BF_PATH.'core/config/config.ini.php');
 		$config = isset($params['config']) ? $params['config'] : array();
+		$this->valid = $params['validation'];
 
 		$config['name'] = $config_name;
  

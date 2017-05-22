@@ -10,4 +10,4 @@ subject = 'Заказ звонка'
 [validation]
 
 phone = required,minlength[18]
- 
+rule = required 
