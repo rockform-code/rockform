@@ -5,7 +5,7 @@
 ; mail_to = 
 
 ; Заголовок письма.
-subject = 'Заказ звонка'
+mail_subject = 'Заказ звонка'
 
 [validation]
 

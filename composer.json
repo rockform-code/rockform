@@ -1,6 +1,6 @@
 {
     "name": "rockncoding/rockform",
-    "description": "Simple form of ajax",
+    "description": "Simple, flexible ajax webform",
     "license": "",
     "type": "project",
     "config": {
@@ -14,7 +14,6 @@
         "url": "https://github.com/rockncoding/kcaptcha"
     }],
     "require": {
-        "php": ">=5.2.7",
         "phpmailer/phpmailer": "^5",
         "twig/twig": "^1",
         "rockncoding/JSON": "^1",

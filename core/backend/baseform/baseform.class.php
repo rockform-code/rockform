@@ -42,6 +42,8 @@ class Baseform extends Events {
  
 			$params_custom = $this->get_config(BF_PATH_CONFIGS.$config['name'].'/config.php');
 
+			//delete main config validation
+			$this->valid = array();
 			if(isset($params_custom['validation']) && is_array($params_custom)) {
 		 		$this->valid = $params_custom['validation'];
 		 	}

@@ -5,7 +5,7 @@
 ; mail_to =  
  
 ; Заголовок письма.
-; subject = 'Сообщение с сайта'
+; mail_subject = 'Сообщение с сайта'
  
 [validation]
 

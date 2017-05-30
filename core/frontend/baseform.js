@@ -1,9 +1,10 @@
 /**
- * Rockform - Simple, flexible ajax webform.
- * @version 4.1.1
- */
+* Rockform - Simple, flexible ajax webform.
+* @author Rock'n'code
+* @version 4.1.2
+*/
 
-// AMD support
+// AMD support 
 ;
 (function(factory) {
         "use strict";
@@ -351,7 +352,7 @@
 
                 tooltip.reset();
 
-                console.log(data.filesize);
+                //console.log(data.filesize);
 
                 if (data.mail_to) {
 
@@ -367,7 +368,6 @@
 
                 if (data.filesize) {
 
-                    //фокус не работает
                     if (/iPad|iPhone|iPod/g.test(navigator.userAgent)) {
                         tooltip.init($('[type="submit"], [type="image"]', form), data.filesize);
                     } else {
@@ -383,6 +383,8 @@
                     //устанавливаем токен в форму
                     if (name == 'token') {
                         bf.set_attr_form(form, data.token, 'bf-token');
+                    } else if(name == 'filesize') {
+
                     } else {
 
                         err_msg = validation.set_err_msg(value);
