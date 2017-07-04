@@ -17,7 +17,9 @@
 }(function($) {
 
     var tooltip = {
+        options: {},
         init: function(el, msg) {
+            var _ = this;
 
             $(document).on('mouseover', '.bf-tooltip', function() {
                 $(this).remove();
@@ -37,7 +39,7 @@
 
             } else {
                 //убираем тултип, если нету сообщения об ошибке
-                var id = el.attr('name');
+                var id = el.attr('name') || '';
                 if (id) {
                     $('[data-bf-tooltip-id="' + id + '"]').remove();
                 }
@@ -45,7 +47,8 @@
         },
         set: function(event) {
 
-            var el, msg;
+            var _ = this,
+                el, msg;
 
             //Выбираем данные при прямой передачи и через событие ресайза
             if (event.data) {
@@ -56,197 +59,149 @@
                 msg = event.msg;
             }
 
-            var id = el.attr('name') || '';
+            var id = el.attr('name') || el.attr('data-name') || '';
 
-            //получаем первый элемент формы для групп с одинаковым именем
-            el = $('[name="' + id + '"]:first', el.parents('form'));
+            if (id.length > 0) {
 
-            var pos = el.attr('data-bf-tooltip');
+                //получаем первый элемент формы для групп с одинаковым именем
+                el = $('[name="' + id + '"]:first', el.parents('form'));
 
-            //генерируем класс для тултипа
-            if (typeof pos != 'undefined') {
-                pos = pos.replace(/[ ]+?/gi, "-");
-            } else {
+                //получаем позицию для вывода
+                var pos = el.attr('data-bf-tooltip') || el.parents('form').attr('data-bf-tooltip') || tooltip.options.pos;
 
-                pos = el.parents('form').attr('data-bf-tooltip');
+                $('[data-bf-tooltip-id="' + id + '"]').remove();
 
-                if (pos === undefined) {
-                    pos = 'top-right';
-                } else {
-                    pos = pos.replace(/[ ]+?/gi, "-");
-                }
+                el.after(
+                    '<span class="bf-tooltip bf-tooltip-' + pos + '" data-bf-tooltip-id="' + id + '"> \
+                         <span class="bf-arrow"></span>' + msg + '</span>'
+                );
+
+                tooltip.position(el, pos);
             }
-
-            $('[data-bf-tooltip-id="' + id + '"]').remove();
-            el.after(
-                '<div class="bf-tooltip bf-tooltip-' + pos + '" data-bf-tooltip-id="' + id + '"> \
-                         <div class="bf-arrow"></div>' + msg + '</div>'
-            );
-
-            tooltip.position(el);
 
         },
         reset: function() {
-            //$(window).off("resize", tooltip.set);
-            $('.bf-tooltip').off().remove();
+            $(window).off("resize", tooltip.set);
+            $('.bf-tooltip').remove();
 
         },
-        response: function(left, w_tooltip, el_offset, el_outer_w, t) {
-            var min_dist = 20;
+        response: function(left, top, w_tooltip, el_offset, w_el, t) {
+            var _ = this;
 
             t.css('white-space', 'nowrap');
-            var pos = left + w_tooltip + min_dist;
-            var pos_min = $(window).outerWidth() - min_dist - w_tooltip;
 
-            if (pos > $(window).outerWidth()) {
-                left = pos_min;
-            }
+            if (t.is('[class*="left"]')) {
 
-            if (pos_min <= el_offset['left']) {
+                if (left <= _.options.min_dist_border_window) {
 
-                t.css('white-space', 'normal');
+                    t.css('white-space', 'normal');
+                    left = _.options.min_dist_border_window;
 
-                left = el_offset['left'];
-                t.width(el_outer_w - min_dist);
-            }
-
-            return left;
-        },
-        position: function(el) {
-
-            var dist_from_input = 5;
-
-            var el_offset = el.offset();
-
-            if (typeof el_offset != 'undefined') {
-
-                var el_outer_h = el.outerHeight();
-                var el_outer_w = el.outerWidth();
-                var id = el.attr('name');
-
-                var t = $('[data-bf-tooltip-id="' + id + '"]');
-                var w_tooltip = t.outerWidth();
-                var h_tooltip = t.outerHeight();
-
-                var pos = el.attr('data-bf-tooltip');
-
-                if (pos === undefined) {
-
-                    var pos = el.parents('form').attr('data-bf-tooltip');
-
-                    if (pos === undefined) {
-                        pos = 'top right';
+                    //добавляем адаптив для левой позиции
+                    if (t.hasClass('bf-tooltip-left')) {
+                        t.removeClass('bf-tooltip-left').addClass('bf-tooltip-bottom-left');
                     }
                 }
 
-                if (pos == 'top right') {
+            } else {
+                var pos = left + w_tooltip + _.options.min_dist_border_window;
+                var pos_min = $(window).outerWidth() - _.options.min_dist_border_window - w_tooltip;
 
-                    var left = el_offset['left'] + el_outer_w / 6 * 5;
-                    left = tooltip.response(left, w_tooltip, el_offset, el_outer_w, t);
+                if (pos > $(window).outerWidth()) {
+                    left = pos_min;
 
-                    h_tooltip = t.outerHeight();
-
-                    var top = parseInt(el_offset['top']) - parseInt(h_tooltip) - dist_from_input;
-
-                    t.offset({
-                        top: top,
-                        left: left
-                    });
-
-                } else if (pos == 'top center') {
-
-                    var position = el_offset['left'] + el_outer_w / 2;
-                    position = tooltip.response(position, w_tooltip, el_offset, el_outer_w, t);
-                    h_tooltip = t.outerHeight();
-                    t.offset({
-                        top: el_offset['top'] - h_tooltip,
-                        left: position
-                    });
-
-                } else if (pos == 'top') {
-
-                    var position = el_offset['left'];
-                    position = tooltip.response(position, w_tooltip, el_offset, el_outer_w, t);
-                    h_tooltip = t.outerHeight();
-                    t.offset({
-                        top: el_offset['top'] - h_tooltip,
-                        left: position
-                    });
-                } else if (pos == 'top left') {
-
-                    var left = el_offset['left'] + el_outer_w / 6 - w_tooltip;
-
-                    h_tooltip = t.outerHeight();
-
-                    var top = parseInt(el_offset['top']) - parseInt(h_tooltip) - dist_from_input;
-
-                    t.offset({
-                        top: top,
-                        left: left
-                    });
-
-                } else if (pos == 'left center') {
-                    var position = el_offset['left'] - w_tooltip;
-                    h_tooltip = t.outerHeight();
-                    t.offset({
-                        top: el_offset['top'] + el_outer_h / 2 - h_tooltip / 2,
-                        left: position
-                    });
-
-                } else if (pos == 'bottom') {
-
-                    var position = el_offset['left'];
-                    position = tooltip.response(position, w_tooltip, el_offset, el_outer_w, t);
-
-                    t.offset({
-                        top: el_offset['top'] + el_outer_h,
-                        left: position
-                    });
-
-                } else if (pos == 'bottom left') {
-
-                    var position = el_offset['left'] + el_outer_w / 6 - w_tooltip;
-
-                    t.offset({
-                        top: el_offset['top'] + el_outer_h,
-                        left: position
-                    });
-
-                } else if (pos == 'bottom center') {
-
-                    var position = el_offset['left'] + el_outer_w / 2;
-                    position = tooltip.response(position, w_tooltip, el_offset, el_outer_w, t);
-
-                    t.offset({
-                        top: el_offset['top'] + el_outer_h,
-                        left: position
-                    });
-
-                } else if (pos == 'bottom right') {
-
-                    var position = el_offset['left'] + el_outer_w / 6 * 5;
-                    position = tooltip.response(position, w_tooltip, el_offset, el_outer_w, t);
-
-                    t.offset({
-                        top: el_offset['top'] + el_outer_h,
-                        left: position
-                    });
-
-                } else if (pos == 'right center') {
-                    var position = el_offset['left'] + el_outer_w;
-
-                    t.offset({
-                        top: el_offset['top'] + el_outer_h / 2 - h_tooltip / 2,
-                        left: position
-                    });
+                    //добавляем адаптив для правой позиции
+                    if (t.hasClass('bf-tooltip-right')) {
+                        t.removeClass('bf-tooltip-right').addClass('bf-tooltip-top-right');
+                    }
                 }
+
+                if (pos_min <= el_offset['left']) {
+
+                    t.css('white-space', 'normal');
+                    left = el_offset['left'];
+                }
+            } 
+
+            return { top: top, left: left };
+        },
+        position: function(el, pos) {
+            var _ = this;
+
+            if (el.length > 0) {
+
+                var el_offset = el.offset();
+                var id = el.attr('name') || el.attr('data-name') || '';
+                var t = $('[data-bf-tooltip-id="' + id + '"]');
+
+                var h_el = el.outerHeight();
+                var w_el = el.outerWidth();
+                var w_tooltip = t.outerWidth();
+                var h_tooltip = t.outerHeight();
+                var top = 0,
+                    left = 0;
+
+                if (pos === 'top') {
+
+                    top = el_offset['top'] - h_tooltip;
+                    left = el_offset['left'] + w_el / 2 - w_tooltip / 2;
+                    
+                } else if (pos == 'top-right') {
+
+                    left = el_offset['left'] + w_el / 6 * 5;
+                    top = parseInt(el_offset['top']) - parseInt(h_tooltip) - _.options.dist_from_item;
+                    
+                } else if (pos === 'top-center') {
+
+                    top = el_offset['top'] - h_tooltip;
+                    left = el_offset['left'] + w_el / 2;
+
+                } else if (pos === 'top-left') {
+
+                    top = parseInt(el_offset['top']) - parseInt(h_tooltip) - _.options.dist_from_item;
+                    left = el_offset['left'] + w_el / 6 - w_tooltip;
+
+                } else if (pos === 'bottom') {
+
+                    top = el_offset['top'] + h_el;
+                    left = el_offset['left'] + w_el / 2 - w_tooltip / 2;
+
+                } else if (pos === 'bottom-left') {
+
+                    top = el_offset['top'] + h_el;
+                    left = el_offset['left'] + w_el / 6 - w_tooltip;
+
+                } else if (pos === 'bottom-center') {
+
+                    top = el_offset['top'] + h_el;
+                    left = el_offset['left'] + w_el / 2;
+
+                } else if (pos === 'bottom-right') {
+
+                    top = el_offset['top'] + h_el;
+                    left = el_offset['left'] + w_el / 6 * 5;
+
+                } else if (pos === 'left') {
+
+                    top = el_offset['top'] + h_el / 2 - h_tooltip / 2;
+                    left = el_offset['left'] - w_tooltip;
+
+                } else if (pos === 'right') {
+
+                    top = el_offset['top'] + h_el / 2 - h_tooltip / 2;
+                    left = el_offset['left'] + w_el;
+                }
+
+                t.offset(tooltip.response(left, top, w_tooltip, el_offset, w_el, t));
             }
         }
     };
 
     // определяем необходимые параметры по умолчанию
     var defaults = {
-
+        'min_dist_border_window': 20, //расстояние до границы после которого начинается адаптив
+        'dist_from_item': 5, //расстояние от элемента
+        'pos': 'top-right'
     };
 
     // наши публичные методы
@@ -255,6 +210,8 @@
         init: function(params) {
             // актуальные настройки, будут индивидуальными при каждом запуске
             var options = $.extend({}, defaults, params);
+
+            tooltip.options = options;
 
             return this.each(function() {
 
@@ -265,10 +222,8 @@
                         tooltip.init($(this), msg);
                     }
                 }
-
             });
         },
-
         reset: function() {
             tooltip.reset(); 
         }
@@ -289,7 +244,7 @@
             return methods.init.apply(this, arguments);
         } else {
             // если ничего не получилось
-            $.error('Метод "' + method + '" не найден');
+            $.error('Method "' + method + '" not find');
         }
     };
 

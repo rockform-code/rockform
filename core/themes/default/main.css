@@ -46,9 +46,9 @@ a.bf-content .btn.disabled,fieldset[disabled] a.bf-content .btn{pointer-events:n
 .bf-tooltip-top-right .bf-arrow{border:10px solid transparent;border-top:10px solid red;top:auto;bottom:-15px;left:2px}
 .bf-tooltip-top-left .bf-arrow{border:10px solid transparent;border-top:10px solid red;top:26px;right:2px;left:auto}
 .bf-tooltip-bottom-left .bf-arrow{left:auto;right:0}
-.bf-tooltip-top .bf-arrow{border:10px solid transparent;border-top:10px solid red;top:26px}
-.bf-tooltip-left-center .bf-arrow{border:10px solid transparent;border-left:10px solid red;right:-16px;top:4px;left:auto}
-.bf-tooltip-right-center .bf-arrow{border:10px solid transparent;border-right:10px solid red;top:4px;left:-16px}
+.bf-tooltip-top .bf-arrow{border:10px solid transparent;border-top:10px solid red;top:auto;bottom:-15px}
+.bf-tooltip-left .bf-arrow{border:10px solid transparent;border-left:10px solid red;right:-16px;top:4px;left:auto}
+.bf-tooltip-right .bf-arrow{border:10px solid transparent;border-right:10px solid red;top:4px;left:-16px}
 .bf-tooltip-bottom .bf-arrow,.bf-tooltip-top .bf-arrow{left:auto;right:0}
 .bf-input-file{width:.1px;height:.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}
 .bf-input-file+label{width:100%;font-weight:700;text-overflow:ellipsis;cursor:pointer;display:inline-block;overflow:hidden;padding:10px 5px;color:#444;text-align:right}

@@ -80,7 +80,6 @@
             }
         };
 
-
         //mask
         var field_mask = {
             init: function() {
@@ -264,8 +263,6 @@
             }
         };
 
-        /* form sender */
-
         var bf = {
 
             config: '',
@@ -326,8 +323,8 @@
                         }
                     });
                 }
-
-                attributes['field_page_h1'] = $('h1').html();
+ 
+                attributes['field_page_h1'] = $('h1:first').text() || ''
                 attributes['field_page_link'] = document.location.href;
 
                 return attributes;

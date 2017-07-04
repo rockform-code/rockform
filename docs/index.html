@@ -14,9 +14,7 @@
 
 <body>
  
- 
-
-    <div   class="container bs-docs-container ">
+    <div class="container bs-docs-container ">
 
         <div class=row>
             <div class=col-md-9 role=main>
@@ -59,12 +57,17 @@
                         <form data-bf-config="order_phone" action="#" method="post">
                             <div class="bf-row">
                                 <label> Имя :</label>
-                                <input placeholder="" class="bf-form-control" name="name"   placeholder="" type="text" value="" />
+                                <input placeholder="" class="bf-form-control" name="name"    type="text" value="" />
                             </div>
                             <div class="bf-row">
                                 <label> Телефон<span>*</span>:</label>
                                 <input   data-bf-mask="+7 (000) 000-00-00" placeholder="+7 (___) ___-__-__" class="bf-form-control" name="phone" type="text" value="" />
                             </div>
+                            <div class="bf-rule">
+            <label for="">
+                <input checked="" name="rule" type="checkbox"><span>Согласен на</span> <a data-bf-field_form="order_phone" data-bf-config="rule" href="#">обработку персональных данных</a>
+            </label>
+        </div>
                             <div class="bf-row">
                                 <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
                             </div>
@@ -82,6 +85,7 @@
     &lt;script src="/rockform/core/frontend/jquery.min.js"&gt;&lt;/script&gt;
     &lt;script src="/rockform/core/frontend/jquery.mask.min.js"&gt;&lt;/script&gt;
     &lt;script src="/rockform/core/frontend/jquery.form.min.js"&gt;&lt;/script&gt;
+     &lt;script src="/rockform/core/frontend/jquery.rtooltip.js"&gt;&lt;/script&gt;
     &lt;script src="/rockform/core/frontend/baseform.min.js"&gt;&lt;/script&gt;
 &lt;!-- // Rockform --&gt;
 </code></pre>    
@@ -410,12 +414,12 @@
                                 <th>Описание</th>
                             </tr>
                             <tr>
-                                <td>top right</td>
+                                <td>top-right</td>
                                
                                 <td>Сверху справа</td>
                             </tr>
                             <tr>
-                                <td>top center</td> 
+                                <td>top-center</td> 
                                 <td>Сверху по центру</td>
                             </tr>
                             
@@ -425,7 +429,7 @@
                             </tr>
 
                             <tr>
-                                <td>top left</td> 
+                                <td>top-left</td> 
                                 <td>Сверху слева</td>
                             </tr>
                             <tr>
@@ -433,28 +437,28 @@
                                 <td>Снизу</td>
                             </tr>
                             <tr>
-                                <td>bottom left</td> 
+                                <td>bottom-left</td> 
                                 <td>Снизу слева</td>
                             </tr>
                                
                             <tr>
-                                <td>bottom right</td> 
+                                <td>bottom-right</td> 
                                 <td>Снизу справа</td>
                             </tr>
 
                              <tr>
-                                <td>bottom center</td> 
+                                <td>bottom-center</td> 
                                 <td>Снизу по центру</td>
                             </tr>
                        
                             <tr>
-                                <td>left center</td> 
+                                <td>left</td> 
                                 <td>Слева</td>
                             </tr>  
                             
                             <tr>
                                 <td>
-                                    right center</td> 
+                                    right</td> 
                                 <td>Справа</td>  
                             </tr>
                     </table>
