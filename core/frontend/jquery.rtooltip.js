@@ -214,7 +214,7 @@
             tooltip.options = options;
 
             return this.each(function() {
-
+             
                 if (params !== undefined) {
                     var msg = params.msg || '';
 
