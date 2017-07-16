@@ -25,32 +25,19 @@
                 dataSettings;
 
             _.defaults = {
-                accessibility: true,
-
+                config: '',
+                path: '/rockform/init.php',
+                timer: 2000
             };
-
-            _.initials = {
-                animating: false,
-                dragging: false,
-
-            };
-
-            $.extend(_, _.initials);
-
-            _.activeBreakpoint = null;
 
             dataSettings = $(element).data('slick') || {};
-
             _.options = $.extend({}, _.defaults, settings, dataSettings);
 
+            _.init();
         }
 
         return baseform;
-
     }());
-
-    var base_name_form = 'rockform';
-
 
     baseform.prototype.fileupload = function(creation) {
         var _ = this;
@@ -248,24 +235,10 @@
         var _ = this;
 
         var bf = {
-
-            config: '',
-            path: '/' + base_name_form + '/init.php',
-            timer: function(form) {
-                var def = 2000;
-
-                var timer = form.data('bf-timer');
-                if (typeof timer != 'undefined') {
-                    if (parseInt(timer) > 0) {
-                        def = timer;
-                    }
-                }
-
-                return def;
-            },
+  
             init: function() {
-                capcha.init();
-                bf_mask.init();
+                _.capcha();
+                _.mask_fields();
 
                 $(document).off('submit', 'form[data-bf-config], .bf-modal form')
                     .on('submit', 'form[data-bf-config], .bf-modal form',
@@ -279,7 +252,7 @@
                                 param = {};
                                 param.config_popup = '';
                             }
-                            bf.config = bf.get_config(param.config_popup, form.data("bf-config"));
+                            _.options.config = bf.get_config(param.config_popup, form.data("bf-config"));
 
                             //сериализуем форму
                             var formdata = form.formToArray();
@@ -300,12 +273,12 @@
                                 bf.path, {
                                     'fields': formdata,
                                     'type': 'validation',
-                                    'bf-config': bf.config,
+                                    'bf-config':  _.options.config,
                                     'filesize': filesize
                                 },
                                 function(data) {
 
-                                    bf.set_attr_form(form, bf.config, 'bf-config');
+                                    bf.set_attr_form(form,  _.options.config, 'bf-config');
 
                                     //вывод ошибок валидации и уведомлений
                                     if (validation.server(form, data, e)) {
@@ -324,7 +297,7 @@
 
                                             },
                                             success: bf.show_response,
-                                            url: bf.path,
+                                            url: _.options.path,
                                             type: 'post',
                                             dataType: 'json',
                                             error: function(jqXHR, textStatus, errorThrown) {
@@ -340,7 +313,7 @@
 
                 //всплывающая форма
                 $.rmodal('[data-bf-config]:not(form)', {
-                    path: bf.path,
+                    path:  _.options.path,
                     before: function(el, option) {
                         //очищаем тултипы
                         $('.bf-tooltip').rtooltip('reset');
@@ -414,7 +387,7 @@
                             setTimeout(
                                 function() {
                                     $.rmodal('reset');
-                                }, bf.timer(form)
+                                }, _.options.timer
                             );
 
                             setTimeout(
@@ -422,7 +395,7 @@
                                     form.show();
                                     form.clearForm();
                                     $('[data-bf-success]').remove();
-                                }, (bf.timer(form) + 1000)
+                                }, (_.options.timer + 1000)
                             );
                         },
                         'html'
