@@ -27,10 +27,15 @@
             _.defaults = {
                 config: '',
                 path: '/rockform/init.php',
-                timer: 2000
+                timer: 2000,
+                before_send_form: function() {},
+                after_send_form: function() {},
+                before_show_modal: function() {},
+                after_show_modal: function() {},
+                close_modal: function() {}
             };
 
-            dataSettings = $(element).data('slick') || {};
+            dataSettings = $(element).data('bf') || {};
             _.options = $.extend({}, _.defaults, settings, dataSettings);
 
             _.init();
@@ -98,7 +103,7 @@
                     });
             },
             update: function() {
-                $('img[data-bf-capcha]').attr('src', bf.path + '?type=capcha&u=' + Math.random());
+                $('img[data-bf-capcha]').attr('src', _.options.path + '?type=capcha&u=' + Math.random());
             }
         };
 
@@ -141,19 +146,20 @@
             }
         }
 
-        mask.init();
+        mask_fields.init();
 
     };
 
-    baseform.prototype.validation = function(creation) {
+    baseform.prototype.validation = function(form, data) {
         var _ = this;
         var validation = {
 
-            server: function(form, data, event) {
+            init: function(form, data) {
 
-                var err_msg;
-                var el;
-                var valid = 0;
+                var err_msg,
+                    el;
+                valid = 0,
+                    data = data || {};
 
                 $('.bf-tooltip').rtooltip('reset');
 
@@ -174,7 +180,7 @@
 
                     //устанавливаем токен в форму
                     if (name == 'token') {
-                        bf.set_attr_form(form, data.token, 'bf-token');
+                        _.set_attr_form(form, data.token, 'bf-token');
                     } else if (name == 'filesize') {
 
                     } else {
@@ -227,7 +233,11 @@
                 return err_msg;
             }
         }
-        return validation;
+        return validation.init(form, data);
+    };
+
+    baseform.prototype.set_attr_form = function(form, value, name) {
+        form.prepend('<input name="' + name + '" class="bf-attr" type="hidden" value="' + value + '" />');
     };
 
     baseform.prototype.init = function(creation) {
@@ -235,8 +245,9 @@
         var _ = this;
 
         var bf = {
-  
+
             init: function() {
+
                 _.capcha();
                 _.mask_fields();
 
@@ -270,18 +281,20 @@
 
                             //серверная валидация
                             $.post(
-                                bf.path, {
+                                _.options.path, {
                                     'fields': formdata,
                                     'type': 'validation',
-                                    'bf-config':  _.options.config,
+                                    'bf-config': _.options.config,
                                     'filesize': filesize
                                 },
                                 function(data) {
 
-                                    bf.set_attr_form(form,  _.options.config, 'bf-config');
+                                    data = data || {};
+
+                                    _.set_attr_form(form, _.options.config, 'bf-config');
 
                                     //вывод ошибок валидации и уведомлений
-                                    if (validation.server(form, data, e)) {
+                                    if (_.validation(form, data)) {
 
                                         //добавляем дополнительные параметры в форму из всплывающего окна
                                         if (typeof param.attributes != 'undefined') {
@@ -308,12 +321,11 @@
                                     }
                                     $('.bf-attr').remove();
                                 });
-
                         });
 
                 //всплывающая форма
                 $.rmodal('[data-bf-config]:not(form)', {
-                    path:  _.options.path,
+                    path: _.options.path,
                     before: function(el, option) {
                         //очищаем тултипы
                         $('.bf-tooltip').rtooltip('reset');
@@ -352,9 +364,6 @@
                 return attributes;
 
             },
-            set_attr_form: function(form, value, name) {
-                form.prepend('<input name="' + name + '" class="bf-attr" type="hidden" value="' + value + '" />');
-            },
             get_config: function(config_popup, config) {
                 if (typeof config_popup == 'undefined' || config_popup.length < 1) {
                     if (typeof config == 'undefined' || config.length < 1) {
@@ -375,7 +384,7 @@
                 if (parseInt(response.status) > 0) {
 
                     $.post(
-                        bf.path, {
+                        _.options.path, {
                             'type': 'form_success',
                             'bf-config': response['bf-config']
                         },
@@ -413,7 +422,20 @@
     $.fn.rockform = function(method) {
         var _ = this,
             opt = arguments[0];
+        console.log(opt);
 
+
+        //_.each(function() {
+
+        if (typeof opt == 'object' || typeof opt == 'undefined') {
+            new baseform(_, opt);
+        } else {
+
+        }
+
+        // });
+
+        /*
         if (methods[method]) {
             //return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (method.length > 0) {
@@ -422,6 +444,47 @@
             $.error('Method "' + method + '" not find');
         }
         return method;
+        */
+        /*
+
+ $.fn.slick = function() {
+        var _ = this,
+            opt = arguments[0],
+            args = Array.prototype.slice.call(arguments, 1),
+            l = _.length,
+            i,
+            ret;
+        for (i = 0; i < l; i++) {
+            if (typeof opt == 'object' || typeof opt == 'undefined')
+                _[i].slick = new Slick(_[i], opt);
+            else
+                ret = _[i].slick[opt].apply(_[i].slick, args);
+            if (typeof ret != 'undefined') return ret;
+        }
+        return _;
+};
+        */
+        return _;
     };
 
 }));
+
+
+
+
+
+(function($) {
+    $(function() {
+        $('a').rockform({
+            config: 'xxx',
+            before_send_form: function() {
+
+                alert(1);
+
+            }
+        });
+
+        //$('[name="phone"]').rtooltip({ 'msg': 'Спасибо' });
+
+    });
+})(jQuery);

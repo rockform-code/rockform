@@ -17,4 +17,4 @@ requirejs(['jquery.rtooltip']);
 requirejs(['jquery.rmodal']); 
 requirejs(['jquery.form.min']); 
 requirejs(['jquery.mask.min']); 
-requirejs(['baseform.min']); 
+requirejs(['baseform']); 

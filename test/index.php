@@ -43,12 +43,15 @@
 
 <?php if(isset($_GET['alt'])) { ?> 
  
-    <link href="/rockform/themes/default/main.css" type="text/css" rel="stylesheet" />
-    <script src="/rockform/core/frontend/lib/jquery.min.js"></script>
-    <script src="/rockform/core/frontend/lib/jquery.mask.min.js"></script>
-    <script src="/rockform/core/frontend/lib/jquery.form.min.js"></script>
-    <script src="/rockform/core/frontend/lib/baseform.min.js"></script>
-
+<!-- Rockform -->
+    <link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" />
+    <script src="/rockform/core/frontend/jquery.min.js"></script>
+    <script src="/rockform/core/frontend/jquery.mask.min.js"></script>
+    <script src="/rockform/core/frontend/jquery.form.min.js"></script>
+    <script src="/rockform/core/frontend/jquery.rtooltip.js"></script>
+    <script src="/rockform/core/frontend/jquery.rmodal.js"></script>
+    <script src="/rockform/core/frontend/baseform.js"></script>
+<!-- // Rockform -->
 
 <?php } else { ?>
  
