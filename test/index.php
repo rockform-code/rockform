@@ -84,6 +84,9 @@
               <li>Проверка конфликтов с jquery</li>
 </ol>
  </div>
+
+<a href="" data-bf='{config: "xxx"}' class="x">test</a>
+
 <?php
 ini_set('error_reporting', E_ALL);
 ini_set ('display_errors', 1);
@@ -112,10 +115,7 @@ foreach ($frontend as $file) {
 }
 
 ?>
-
  
-
-
  
        <br> 
         <br>  <br>  <br>  

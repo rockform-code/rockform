@@ -20,10 +20,9 @@
     baseform = (function() {
 
         function baseform(element, settings) {
-
             var _ = this,
                 dataSettings;
-
+ 
             _.defaults = {
                 config: '',
                 path: '/rockform/init.php',
@@ -35,9 +34,10 @@
                 close_modal: function() {}
             };
 
-            dataSettings = $(element).data('bf') || {};
+            dataSettings = $(element).data('bf') || {}; 
+            dataSettings = JSON.parse('{}');
             _.options = $.extend({}, _.defaults, settings, dataSettings);
-
+            console.log(_.options);
             _.init();
         }
 
@@ -377,9 +377,7 @@
             show_response: function(response, statusText, xhr, form) {
 
                 var focused = $('[type="submit"], [type="image"], [type="button"]', form);
-
                 focused.prop('disabled', false).removeAttr("disabled");
-
 
                 if (parseInt(response.status) > 0) {
 
@@ -416,24 +414,17 @@
             }
         }
         bf.init();
-
     };
 
-    $.fn.rockform = function(method) {
+    $.rockform = function(el) {
         var _ = this,
-            opt = arguments[0];
-        console.log(opt);
+            opt = arguments[0] || {};
+            console.log(el);
+         new baseform(el, opt);
+        return _;
+    };
 
-
-        //_.each(function() {
-
-        if (typeof opt == 'object' || typeof opt == 'undefined') {
-            new baseform(_, opt);
-        } else {
-
-        }
-
-        // });
+}));
 
         /*
         if (methods[method]) {
@@ -464,18 +455,11 @@
         return _;
 };
         */
-        return _;
-    };
-
-}));
-
-
-
-
 
 (function($) {
     $(function() {
-        $('a').rockform({
+ console.log(1);
+        $.rockform('a', {
             config: 'xxx',
             before_send_form: function() {
 
@@ -483,6 +467,8 @@
 
             }
         });
+ 
+        $.rockform('.x');
 
         //$('[name="phone"]').rtooltip({ 'msg': 'Спасибо' });
 
