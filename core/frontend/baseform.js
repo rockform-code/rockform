@@ -21,10 +21,9 @@
 
         function baseform(element, settings) {
             var _ = this,
-                dataSettings,
                 element = element || '[data-bf]',
                 settings = settings || {};
-
+ 
             _.defaults = {
                 config: '',
                 path: '/rockform/init.php',
@@ -37,19 +36,10 @@
                 after_show_modal: function() {},
                 close_modal: function() {}
             };
+ 
+            _.options = $.extend({}, _.defaults);
 
-            dataSettings = $(element).data('bf') || {};
-
-            if (typeof dataSettings === 'object') {
-                //dataSettings = JSON.parse('{}');
-            } else {
-                dataSettings = { 'config': dataSettings };
-            }
-
-            _.options = $.extend({}, _.defaults, dataSettings, settings);
-            // console.log(_.options);
-
-            _.init(element);
+            _.init(element, settings);
         }
 
         return baseform;
@@ -251,13 +241,13 @@
         form.prepend('<input name="' + name + '" class="bf-attr" type="hidden" value="' + value + '" />');
     };
 
-    baseform.prototype.init = function(el) {
+    baseform.prototype.init = function(el, settings) {
 
         var _ = this;
 
         var bf = {
 
-            init: function(el) {
+            init: function(el, settings) {
 
                 _.capcha();
                 _.mask_fields();
@@ -269,13 +259,13 @@
 
                         $('.bf-tooltip').rtooltip('reset');
 
-                        var data = form.data('bf');
-                        //console.log(data);
+                        data = form.data('bf') || '';
+                        if (typeof data === 'string') {
+                            data = { 'config': data };
+                        }
+                        _.options = $.extend({}, _.options, data, settings);
 
-                        _.options.timer = data.timer || _.options.timer;
-                        _.options.config = data.config || '';
-                        data.fields = data.fields || {};
-
+                        //console.log(_.options);
                         //сериализуем форму
                         var formdata = form.formToArray();
                         var filesize = [];
@@ -308,7 +298,7 @@
                                     _.set_attr_form(form, 'bf-config', _.options.config);
 
                                     //добавляем дополнительные параметры в форму из всплывающего окна
-                                    $.each(data.fields, function(name_item, value_item) {
+                                    $.each(_.options.fields, function(name_item, value_item) {
                                         _.set_attr_form(form, 'bf[fields][' + name_item + ']', value_item);
                                     });
 
@@ -332,6 +322,8 @@
                             });
                     });
 
+                console.log(el + ':not(form)');
+
                 //всплывающая форма
                 $.rmodal(el + ':not(form)', {
                     path: _.options.path,
@@ -344,9 +336,7 @@
 
                         //если нет json
                         if (typeof data === 'string') {
-                            var d = {};
-                            d.config = data;
-                            data = d;
+                            data = { 'config': data };
                         }
 
                         //передаём дополнительные поля к форме отправки
@@ -354,8 +344,23 @@
                         data.fields = data.fields || {};
                         data.fields = $.extend({}, data.fields, custom_fields_attributes);
 
+                        settings = settings || '---';
+                        console.log(settings);
+                        data = $.extend({}, _.options, data);
+
+                        if (settings) {
+                            console.log('settings');
+                            data = $.extend({}, data, settings);
+                        }
+
+                        var attr = {};
+
+                        attr.fields = data.fields || {};
+                        attr.config = data.config || {};
+                        attr.timer = data.timer || {};
+
                         var attributes = {
-                            'data': data,
+                            'data': attr,
                             'bf-config': data.config,
                             'type': 'form'
                         }
@@ -369,7 +374,6 @@
                         wrap_form.find('form').attr('data-bf', data);
                     }
                 });
-
             },
             get_custom_fields_attributes: function(button) {
 
@@ -439,14 +443,21 @@
                 }
             }
         }
-        bf.init(el);
+        bf.init(el, settings);
     };
 
     $.bf = function(el) {
         var _ = this,
             opt = arguments[1] || {};
 
-        new baseform(el, opt);
+            //console.log(el);
+            //console.log(opt);
+
+            //$(document).on('click', el, function(){
+                //opt.before_send_form();
+            //});
+
+            new baseform(el, opt);
         return _;
     };
 

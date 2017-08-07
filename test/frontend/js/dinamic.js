@@ -6,10 +6,26 @@
          $(function() {
 
              $.bf('#go', {
-                 config: 'capcha',
+                 config: 'test1',
                  before_send_form: function(form) {
 
                      alert(1);
+
+                 }
+             });
+             $.bf('#go2', {
+                 config: 'test2',
+                 before_send_form: function(form) {
+
+                     alert(2);
+
+                 }
+             });
+             $.bf('#go1', {
+                 config: 'test3',
+                 before_send_form: function(form) {
+
+                     alert(3);
 
                  }
              });
