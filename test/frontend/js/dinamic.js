@@ -13,6 +13,14 @@
 
                  }
              });
+            $.bf('#go1', {
+                 config: 'test3',
+                 before_send_form: function(form) {
+
+                     alert(3);
+
+                 }
+             });
              $.bf('#go2', {
                  config: 'test2',
                  before_send_form: function(form) {
@@ -21,14 +29,7 @@
 
                  }
              });
-             $.bf('#go1', {
-                 config: 'test3',
-                 before_send_form: function(form) {
-
-                     alert(3);
-
-                 }
-             });
+ 
 
          });
      })(jQuery);

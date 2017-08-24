@@ -16,52 +16,60 @@
     }
 }(function($) {
 
-    var rmodal = { 
-        init: function(delegate, arguments) {
+    var rmodal = {
+        options: {},
+        init: function(delegate, data) {
 
             var _ = this;
-            _.options = arguments;
+           
+          //  _.options = defaults; $.extend({}, defaults);
 
-            $(document).off('click', delegate).on('click', delegate, function(e) {
-                e.preventDefault();
+            $(document)
+                .off('click', delegate)
+                .on('click', delegate, data, function(e) {
+                    e.preventDefault();
 
-                 _.reset();
+                    _.reset();
 
-                var el = $(this);
+                    var el = $(this);
 
-                _.options = _.options.before(el, _.options) || _.options;
-                //console.log(_.options.attributes);
-                $.ajax({
-                    url: _.options.path,
-                    data: _.options.attributes,
-                    method: _.options.method || "post",
-                    dataType: _.options.datatype || "html",
-                    beforeSend: function(xhr) {
-                        _.loader_on();
-                    },
-                    success: function(xhr) {
+                    _.options = $.extend({}, defaults, e.data);
+                    var params = _.options.before(el, e.data.params);
 
-                        _.set_template();
-                        _.set_close_event();
+                     console.log(params);
 
-                        $('.bf-modal, .bf-fixed-overlay').css('opacity', '0');
+                    $.ajax({
+                        url: _.options.path,
+                        data: params,
+                        method: _.options.method || "post",
+                        dataType: _.options.datatype || "html",
+                        beforeSend: function(xhr) {
+                            _.loader_on();
+                        },
+                        success: function(xhr) {
 
-                        $('.bf-modal-box').html(xhr);
-                        _.loader_off();
+                            _.set_template();
+                            _.set_close_event();
 
-                        $('.bf-modal, .bf-fixed-overlay').animate({ 'opacity': "1" }, 500);
-                        
-                        _.options.after(el, $('.bf-modal-box'), _.options);
+                            $('.bf-modal, .bf-fixed-overlay').css('opacity', '0');
 
-                    }
+                            $('.bf-modal-box').html(xhr);
+                            _.loader_off();
+
+                            $('.bf-modal, .bf-fixed-overlay').animate({ 'opacity': "1" }, 500);
+
+                            _.options.after(el, $('.bf-modal-box'), params);
+
+                        }
+                    });
+
                 });
-
-            });
         },
         set_template: function() {
+            var _ = this;
 
             $('[data-rmodal="wrap"]').remove();
-            $('body').append(this.options.template);
+            $('body').append(_.options.template);
 
         },
         loader_on: function() {
@@ -82,8 +90,8 @@
                 e.stopImmediatePropagation();
             });
         },
-        reset : function() {
-            $(".bf-fixed-overlay").remove(); 
+        reset: function() {
+            $(".bf-fixed-overlay").remove();
         }
     };
 
@@ -100,20 +108,19 @@
                             </div> \
                             <small class="bf-modal-after"></small> \
                         </div>',
-        before: function(el, opt) {
-            return opt;
+        before: function(el, option) {
+            return option;
         },
         after: function(el, wrap_form, opt) {
-           
+
         },
         reset: function(el, opt) {
-            
+
         }
     };
 
     var methods = {
         init: function(delegate, arguments) {
-            var arguments = $.extend({}, defaults, arguments);
             return rmodal.init(delegate, arguments);
         },
         reset: function() {
@@ -122,9 +129,9 @@
     };
 
     $.rmodal = function(delegate) {
-        
+
         if (methods[delegate]) {
-             return methods[delegate].apply(this, Array.prototype.slice.call(arguments, 1));
+            return methods[delegate].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (delegate.length > 0) {
             return methods.init.apply(this, arguments);
         } else {

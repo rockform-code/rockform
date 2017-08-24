@@ -23,7 +23,7 @@
             var _ = this,
                 element = element || '[data-bf]',
                 settings = settings || {};
- 
+
             _.defaults = {
                 config: '',
                 path: '/rockform/init.php',
@@ -36,8 +36,8 @@
                 after_show_modal: function() {},
                 close_modal: function() {}
             };
- 
-            _.options = $.extend({}, _.defaults);
+
+            _.options = $.extend({}, _.defaults, settings);
 
             _.init(element, settings);
         }
@@ -248,140 +248,145 @@
         var bf = {
 
             init: function(el, settings) {
-
                 _.capcha();
                 _.mask_fields();
 
-                $(document).off('submit', 'form' + el).on('submit', 'form' + el,
-                    function(e) {
-                        e.preventDefault();
-                        var form = $(this);
+                $(document).off('submit', 'form' + el)
+                    .on('submit', 'form' + el, _.options,
+                        function(e) {
+                            e.preventDefault();
+                            var form = $(this);
 
-                        $('.bf-tooltip').rtooltip('reset');
+                            $('.bf-tooltip').rtooltip('reset');
 
-                        data = form.data('bf') || '';
-                        if (typeof data === 'string') {
-                            data = { 'config': data };
-                        }
-                        _.options = $.extend({}, _.options, data, settings);
-
-                        //console.log(_.options);
-                        //сериализуем форму
-                        var formdata = form.formToArray();
-                        var filesize = [];
-
-                        //заменяем объект файла именем файла
-                        $.each(formdata, function(index, element) {
-                            if (element.type == 'file') {
-                                formdata[index].size = element.value.size || '';
-                                formdata[index].value = element.value.name || '';
-
-                                //вычисляем размер файлов для загрузки
-                                filesize.push(formdata[index].size);
+                            //получаем дата-атрибуты с элемента
+                            data = form.data('bf') || '';
+                            if (typeof data === 'string') {
+                                if (data.length > 0) {
+                                    data = { 'config': data };
+                                }
                             }
+
+                            _.options = $.extend({}, _.options, e.data, data);
+
+                            //сериализуем форму
+                            var formdata = form.formToArray();
+                            var filesize = [];
+
+                            //заменяем объект файла именем файла
+                            $.each(formdata, function(index, element) {
+                                if (element.type == 'file') {
+                                    formdata[index].size = element.value.size || '';
+                                    formdata[index].value = element.value.name || '';
+
+                                    //вычисляем размер файлов для загрузки
+                                    filesize.push(formdata[index].size);
+                                }
+                            });
+
+                            //console.log(_.options.config);
+
+                            //серверная валидация
+                            $.post(
+                                _.options.path, {
+                                    'fields': formdata,
+                                    'type': 'validation',
+                                    'bf-config': _.options.config,
+                                    'filesize': filesize
+                                },
+                                function(response) {
+
+                                    response = response || {};
+                                    //отправка формы, если валидация прошла
+                                    if (_.validation(form, response)) {
+
+                                        _.set_attr_form(form, 'bf-config', _.options.config);
+
+                                        //добавляем дополнительные параметры в форму из всплывающего окна
+                                        $.each(_.options.fields, function(name_item, value_item) {
+                                            _.set_attr_form(form, 'bf[fields][' + name_item + ']', value_item);
+                                        });
+
+                                        form.ajaxSubmit({
+                                            beforeSubmit: function(arr, form, options) {
+                                                //событие перед отправкой формы
+                                                _.options.before_send_form(form);
+                                                $(_.options.submit_selector, form).prop('disabled', true);
+                                            },
+                                            url: _.options.path,
+                                            type: 'post',
+                                            dataType: 'json',
+                                            success: bf.show_response,
+                                            error: function(jqXHR, textStatus, errorThrown) {
+                                                alert('Server: ' + textStatus);
+                                            }
+                                        });
+
+                                    }
+                                    $('.bf-attr').remove();
+                                });
                         });
 
-                        //серверная валидация
-                        $.post(
-                            _.options.path, {
-                                'fields': formdata,
-                                'type': 'validation',
-                                'bf-config': _.options.config,
-                                'filesize': filesize
-                            },
-                            function(response) {
+                var modal_options = {
+                    config: _.options.config,
+                    timer: _.options.timer,
+                    fields: _.options.fields
+                }
 
-                                response = response || {};
-                                //отправка формы, если валидация прошла
-                                if (_.validation(form, response)) {
-
-                                    _.set_attr_form(form, 'bf-config', _.options.config);
-
-                                    //добавляем дополнительные параметры в форму из всплывающего окна
-                                    $.each(_.options.fields, function(name_item, value_item) {
-                                        _.set_attr_form(form, 'bf[fields][' + name_item + ']', value_item);
-                                    });
-
-                                    form.ajaxSubmit({
-                                        beforeSubmit: function(arr, form, options) {
-                                            //событие перед отправкой формы
-                                            _.options.before_send_form(form);
-                                            $(_.options.submit_selector, form).prop('disabled', true);
-                                        },
-                                        url: _.options.path,
-                                        type: 'post',
-                                        dataType: 'json',
-                                        success: bf.show_response,
-                                        error: function(jqXHR, textStatus, errorThrown) {
-                                            alert('Server: ' + textStatus);
-                                        }
-                                    });
-
-                                }
-                                $('.bf-attr').remove();
-                            });
-                    });
-
-                console.log(el + ':not(form)');
-
-                //всплывающая форма
                 $.rmodal(el + ':not(form)', {
-                    path: _.options.path,
-                    before: function(el, option) {
+                    path: _.options.path, 
+                    params: modal_options,
+                    before: function(el, params) {
                         //очищаем тултипы
                         $('.bf-tooltip').rtooltip('reset');
 
-                        //получаем данные конфигурации
-                        var data = $(el).data("bf") || '';
-
-                        //если нет json
+                        //получаем дата-атрибуты с элемента
+                        data = el.data('bf') || '';
                         if (typeof data === 'string') {
-                            data = { 'config': data };
+                            if (data.length > 0) {
+                                data = { 'config': data };
+                            }
                         }
 
                         //передаём дополнительные поля к форме отправки
-                        var custom_fields_attributes = bf.get_custom_fields_attributes(el);
+                        var custom_fields = bf.get_custom_fields(el);
+                        //проверяем если есть поля переданные в вызове конфига
                         data.fields = data.fields || {};
-                        data.fields = $.extend({}, data.fields, custom_fields_attributes);
+                        data.fields = $.extend({}, data.fields, custom_fields);
 
-                        settings = settings || '---';
-                        console.log(settings);
-                        data = $.extend({}, _.options, data);
-
-                        if (settings) {
-                            console.log('settings');
-                            data = $.extend({}, data, settings);
-                        }
-
-                        var attr = {};
-
-                        attr.fields = data.fields || {};
-                        attr.config = data.config || {};
-                        attr.timer = data.timer || {};
-
+                        params = $.extend({}, params, data);
+ 
                         var attributes = {
-                            'data': attr,
-                            'bf-config': data.config,
-                            'type': 'form'
+                            'data': params.fields,
+                            'bf-config': params.config,
+                            'timer': params.timer,
+                            'config' : params.config,
+                            'type': 'form' 
                         }
-                        option.attributes = attributes;
-                        // console.log(attributes);
-                        return option;
+
+                        return attributes;
                     },
-                    after: function(el, wrap_form, option) {
+                    after: function(el, wrap_form, params) {
                         //передаём в новую форму параметры с кнопки
-                        var data = JSON.stringify(option.attributes.data);
+
+                        var option = {};
+                        option.fields  = params.fields || {};
+                        option.timer  = params.timer || {};
+                        option.config  = params.config || {};
+                         
+                        var data = JSON.stringify(option);
+                         
                         wrap_form.find('form').attr('data-bf', data);
                     }
                 });
             },
-            get_custom_fields_attributes: function(button) {
+            get_custom_fields: function(el) {
 
                 var attributes = {};
                 var attr_el = '';
 
-                if (button.length) {
-                    $.each(button[0].attributes, function(index, attr) {
+                if (el.length) {
+                    $.each(el[0].attributes, function(index, attr) {
                         attr_el = attr.name;
                         if (/data\-bf\-field/.test(attr_el)) {
                             attr_el = attr_el.replace(/data\-bf\-field(\-|_)/, '');
@@ -449,15 +454,7 @@
     $.bf = function(el) {
         var _ = this,
             opt = arguments[1] || {};
-
-            //console.log(el);
-            //console.log(opt);
-
-            //$(document).on('click', el, function(){
-                //opt.before_send_form();
-            //});
-
-            new baseform(el, opt);
+        new baseform(el, opt);
         return _;
     };
 
