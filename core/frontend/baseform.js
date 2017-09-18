@@ -251,8 +251,67 @@
                 _.capcha();
                 _.mask_fields();
 
+                bf.set_form(el);
+
+                var modal_options = {
+                    config: _.options.config,
+                    timer: _.options.timer,
+                    fields: _.options.fields
+                }
+
+                $.rmodal(el + ':not(form)', {
+                    path: _.options.path,
+                    params: modal_options,
+                    before: function(el, params) {
+                        //очищаем тултипы
+                        $('.bf-tooltip').rtooltip('reset');
+
+                        //получаем дата-атрибуты с элемента
+                        data = el.data('bf') || '';
+                        if (typeof data === 'string') {
+                            if (data.length > 0) {
+                                data = { 'config': data };
+                            }
+                        }
+
+                        //передаём дополнительные поля к форме отправки
+                        var custom_fields = bf.get_custom_fields(el);
+                        //проверяем если есть поля переданные в вызове конфига
+                        data.fields = data.fields || {};
+                        data.fields = $.extend({}, data.fields, custom_fields);
+
+                        params = $.extend({}, params, data);
+
+                        var attributes = {
+                            'data': params.fields,
+                            'bf-config': params.config,
+                            'timer': params.timer,
+                            'config': params.config,
+                            'type': 'form'
+                        }
+
+                        return attributes;
+                    },
+                    after: function(el, wrap_form, params) {
+                        //передаём в новую форму параметры с кнопки
+
+                        var option = {};
+                        option.fields = params.fields || {};
+                        option.timer = params.timer || {};
+                        option.config = params.config || {};
+
+                        var data = JSON.stringify(option); 
+                        //bf.set_form('', data);
+                        //wrap_form.find('form').attr('data-bf', data);
+                    }
+                });
+            },
+            set_form: function(el, params) {
+
+                params = params || _.options;
+
                 $(document).off('submit', 'form' + el)
-                    .on('submit', 'form' + el, _.options,
+                    .on('submit', 'form' + el, params,
                         function(e) {
                             e.preventDefault();
                             var form = $(this);
@@ -326,59 +385,6 @@
                                     $('.bf-attr').remove();
                                 });
                         });
-
-                var modal_options = {
-                    config: _.options.config,
-                    timer: _.options.timer,
-                    fields: _.options.fields
-                }
-
-                $.rmodal(el + ':not(form)', {
-                    path: _.options.path, 
-                    params: modal_options,
-                    before: function(el, params) {
-                        //очищаем тултипы
-                        $('.bf-tooltip').rtooltip('reset');
-
-                        //получаем дата-атрибуты с элемента
-                        data = el.data('bf') || '';
-                        if (typeof data === 'string') {
-                            if (data.length > 0) {
-                                data = { 'config': data };
-                            }
-                        }
-
-                        //передаём дополнительные поля к форме отправки
-                        var custom_fields = bf.get_custom_fields(el);
-                        //проверяем если есть поля переданные в вызове конфига
-                        data.fields = data.fields || {};
-                        data.fields = $.extend({}, data.fields, custom_fields);
-
-                        params = $.extend({}, params, data);
- 
-                        var attributes = {
-                            'data': params.fields,
-                            'bf-config': params.config,
-                            'timer': params.timer,
-                            'config' : params.config,
-                            'type': 'form' 
-                        }
-
-                        return attributes;
-                    },
-                    after: function(el, wrap_form, params) {
-                        //передаём в новую форму параметры с кнопки
-
-                        var option = {};
-                        option.fields  = params.fields || {};
-                        option.timer  = params.timer || {};
-                        option.config  = params.config || {};
-                         
-                        var data = JSON.stringify(option);
-                         
-                        wrap_form.find('form').attr('data-bf', data);
-                    }
-                });
             },
             get_custom_fields: function(el) {
 
@@ -461,3 +467,4 @@
     new baseform();
 
 }));
+ 

@@ -1,39 +1,41 @@
- $(function() {
+ //test custom init
 
-     //test custom init
+ (function($) {
+     $(function() {
 
-     (function($) {
-         $(function() {
+         $.bf('#go', {
+             config: 'test1',
+             before_send_form: function(form) {
 
-             $.bf('#go', {
-                 config: 'test1',
-                 before_send_form: function(form) {
+                 alert(1);
 
-                     alert(1);
-
-                 }
-             });
-            $.bf('#go1', {
-                 config: 'test3',
-                 before_send_form: function(form) {
-
-                     alert(3);
-
-                 }
-             });
-             $.bf('#go2', {
-                 config: 'test2',
-                 before_send_form: function(form) {
-
-                     alert(2);
-
-                 }
-             });
- 
-
+             }
          });
-     })(jQuery);
 
+         $.bf('#go1', {
+             config: 'test3',
+             before_send_form: function(form) {
+
+                 alert(3);
+
+             }
+         });
+
+         $.bf('#go2', {
+             config: 'test2',
+             before_send_form: function(form) {
+
+                 alert(2);
+
+             }
+         });
+
+
+     });
+ })(jQuery);
+
+
+ $(function() {
      //test dinamic
      $('#create_dinamic').click(function() {
          console.log('create_dinamic');
