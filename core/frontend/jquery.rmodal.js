@@ -21,9 +21,7 @@
         init: function(delegate, data) {
 
             var _ = this;
-           
-          //  _.options = defaults; $.extend({}, defaults);
-
+ 
             $(document)
                 .off('click', delegate)
                 .on('click', delegate, data, function(e) {
@@ -33,10 +31,12 @@
 
                     var el = $(this);
 
+                    //console.log(e.data);
+
                     _.options = $.extend({}, defaults, e.data);
                     var params = _.options.before(el, e.data.params);
 
-                     console.log(params);
+                     //console.log(params);
 
                     $.ajax({
                         url: _.options.path,
@@ -44,7 +44,7 @@
                         method: _.options.method || "post",
                         dataType: _.options.datatype || "html",
                         beforeSend: function(xhr) {
-                            _.loader_on();
+                            $('body').append('<div class="bf-loading"></div>');
                         },
                         success: function(xhr) {
 
@@ -52,10 +52,8 @@
                             _.set_close_event();
 
                             $('.bf-modal, .bf-fixed-overlay').css('opacity', '0');
-
                             $('.bf-modal-box').html(xhr);
-                            _.loader_off();
-
+                            $('.bf-loading').remove();
                             $('.bf-modal, .bf-fixed-overlay').animate({ 'opacity': "1" }, 500);
 
                             _.options.after(el, $('.bf-modal-box'), params);
@@ -71,13 +69,7 @@
             $('[data-rmodal="wrap"]').remove();
             $('body').append(_.options.template);
 
-        },
-        loader_on: function() {
-            $('body').append('<div class="bf-loading"></div>');
-        },
-        loader_off: function() {
-            $('.bf-loading').remove();
-        },
+        }, 
         set_close_event: function() {
             var _ = this;
 

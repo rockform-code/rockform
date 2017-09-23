@@ -3,15 +3,16 @@
   "version": "3.16.0",
   "license": "Apache2",
   "devDependencies": {
+    "es6-promise": "~3.1.2",
     "gulp": "~3.9.1",
     "gulp-autoprefixer": "~3.1.0",
+    "gulp-concat": "^2.6.1",
     "gulp-concat-css": "~2.2.0",
     "gulp-less": "~3.0.5",
+    "gulp-livereload": "~3.8.1",
     "gulp-minify-css": "~1.2.4",
     "gulp-rename": "~1.2.2",
     "gulp-uglify": "~1.5.3",
-    "es6-promise": "~3.1.2",
-    "gulp-livereload": "~3.8.1",
     "main-bower-files": "~2.11.1"
   },
   "description": "Документация в папке /docs",

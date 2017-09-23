@@ -21,7 +21,7 @@
 
         function baseform(element, settings) {
             var _ = this,
-                element = element || '[data-bf]',
+                element = element || '',
                 settings = settings || {};
 
             _.defaults = {
@@ -251,7 +251,24 @@
                 _.capcha();
                 _.mask_fields();
 
-                bf.set_form(el);
+                var init_custom = '',
+                    form_el = '',
+                    modal_el = '';
+
+                if (el.length > 0) {
+                    init_custom = el;
+                    form_el = 'form' + el + ',form[data-delegate="' + el + '"]';
+                } else {
+                    form_el = 'form[data-bf]';
+                }
+
+                bf.set_form(form_el);
+
+                if (el.length > 0) {
+                    modal_el = el + ':not(form)'
+                } else {
+                    modal_el = '[data-bf]:not(form)';
+                }
 
                 var modal_options = {
                     config: _.options.config,
@@ -259,15 +276,15 @@
                     fields: _.options.fields
                 }
 
-                $.rmodal(el + ':not(form)', {
+                $.rmodal(modal_el, {
                     path: _.options.path,
                     params: modal_options,
-                    before: function(el, params) {
+                    before: function(this_el, params) {
                         //очищаем тултипы
                         $('.bf-tooltip').rtooltip('reset');
 
                         //получаем дата-атрибуты с элемента
-                        data = el.data('bf') || '';
+                        data = this_el.data('bf') || '';
                         if (typeof data === 'string') {
                             if (data.length > 0) {
                                 data = { 'config': data };
@@ -275,7 +292,7 @@
                         }
 
                         //передаём дополнительные поля к форме отправки
-                        var custom_fields = bf.get_custom_fields(el);
+                        var custom_fields = bf.get_custom_fields(this_el);
                         //проверяем если есть поля переданные в вызове конфига
                         data.fields = data.fields || {};
                         data.fields = $.extend({}, data.fields, custom_fields);
@@ -292,17 +309,22 @@
 
                         return attributes;
                     },
-                    after: function(el, wrap_form, params) {
+                    after: function(this_el, wrap_form, params) {
                         //передаём в новую форму параметры с кнопки
 
                         var option = {};
-                        option.fields = params.fields || {};
+                        option.fields = params.data || {};
                         option.timer = params.timer || {};
                         option.config = params.config || {};
 
-                        var data = JSON.stringify(option); 
-                        //bf.set_form('', data);
-                        //wrap_form.find('form').attr('data-bf', data);
+                        var data = JSON.stringify(option);
+
+                        if (init_custom.length > 0) {
+                            wrap_form.find('form').attr('data-delegate', init_custom);
+                        } else {
+                            wrap_form.find('form').attr('data-bf', data);
+                        }
+
                     }
                 });
             },
@@ -310,81 +332,80 @@
 
                 params = params || _.options;
 
-                $(document).off('submit', 'form' + el)
-                    .on('submit', 'form' + el, params,
-                        function(e) {
-                            e.preventDefault();
-                            var form = $(this);
+                $(document).off('submit', el)
+                    .on('submit', el, params, function(e) {
+                        e.preventDefault();
+                        var form = $(this);
 
-                            $('.bf-tooltip').rtooltip('reset');
+                        $('.bf-tooltip').rtooltip('reset');
 
-                            //получаем дата-атрибуты с элемента
-                            data = form.data('bf') || '';
-                            if (typeof data === 'string') {
-                                if (data.length > 0) {
-                                    data = { 'config': data };
-                                }
+                        //получаем дата-атрибуты с элемента
+                        data = form.data('bf') || '';
+                        if (typeof data === 'string') {
+                            if (data.length > 0) {
+                                data = { 'config': data };
                             }
+                        }
 
-                            _.options = $.extend({}, _.options, e.data, data);
+                        _.options = $.extend({}, _.options, e.data, data);
 
-                            //сериализуем форму
-                            var formdata = form.formToArray();
-                            var filesize = [];
+                        //сериализуем форму
+                        var formdata = form.formToArray();
+                        var filesize = [];
 
-                            //заменяем объект файла именем файла
-                            $.each(formdata, function(index, element) {
-                                if (element.type == 'file') {
-                                    formdata[index].size = element.value.size || '';
-                                    formdata[index].value = element.value.name || '';
+                        //заменяем объект файла именем файла
+                        $.each(formdata, function(index, element) {
+                            if (element.type == 'file') {
+                                formdata[index].size = element.value.size || '';
+                                formdata[index].value = element.value.name || '';
 
-                                    //вычисляем размер файлов для загрузки
-                                    filesize.push(formdata[index].size);
-                                }
-                            });
-
-                            //console.log(_.options.config);
-
-                            //серверная валидация
-                            $.post(
-                                _.options.path, {
-                                    'fields': formdata,
-                                    'type': 'validation',
-                                    'bf-config': _.options.config,
-                                    'filesize': filesize
-                                },
-                                function(response) {
-
-                                    response = response || {};
-                                    //отправка формы, если валидация прошла
-                                    if (_.validation(form, response)) {
-
-                                        _.set_attr_form(form, 'bf-config', _.options.config);
-
-                                        //добавляем дополнительные параметры в форму из всплывающего окна
-                                        $.each(_.options.fields, function(name_item, value_item) {
-                                            _.set_attr_form(form, 'bf[fields][' + name_item + ']', value_item);
-                                        });
-
-                                        form.ajaxSubmit({
-                                            beforeSubmit: function(arr, form, options) {
-                                                //событие перед отправкой формы
-                                                _.options.before_send_form(form);
-                                                $(_.options.submit_selector, form).prop('disabled', true);
-                                            },
-                                            url: _.options.path,
-                                            type: 'post',
-                                            dataType: 'json',
-                                            success: bf.show_response,
-                                            error: function(jqXHR, textStatus, errorThrown) {
-                                                alert('Server: ' + textStatus);
-                                            }
-                                        });
-
-                                    }
-                                    $('.bf-attr').remove();
-                                });
+                                //вычисляем размер файлов для загрузки
+                                filesize.push(formdata[index].size);
+                            }
                         });
+
+                        //console.log(_.options.config);
+
+                        //серверная валидация
+                        $.post(
+                            _.options.path, {
+                                'fields': formdata,
+                                'type': 'validation',
+                                'bf-config': _.options.config,
+                                'filesize': filesize
+                            },
+                            function(response) {
+
+                                response = response || {};
+                                //отправка формы, если валидация прошла
+                                if (_.validation(form, response)) {
+
+                                    _.set_attr_form(form, 'bf-config', _.options.config);
+
+                                    //добавляем дополнительные параметры в форму из всплывающего окна
+                                    $.each(_.options.fields, function(name_item, value_item) {
+                                        _.set_attr_form(form, 'bf[fields][' + name_item + ']', value_item);
+                                    });
+
+                                    form.ajaxSubmit({
+                                        beforeSubmit: function(arr, form, options) {
+                                            //событие перед отправкой формы
+                                            _.options.before_send_form(form);
+                                            $(_.options.submit_selector, form).prop('disabled', true);
+                                        },
+                                        url: _.options.path,
+                                        type: 'post',
+                                        dataType: 'json',
+                                        success: bf.show_response,
+                                        error: function(jqXHR, textStatus, errorThrown) {
+                                            alert('Server: ' + textStatus);
+                                        }
+                                    });
+
+                                }
+                                $('.bf-attr').remove();
+                            });
+                    });
             },
             get_custom_fields: function(el) {
 
@@ -467,4 +488,3 @@
     new baseform();
 
 }));
- 
