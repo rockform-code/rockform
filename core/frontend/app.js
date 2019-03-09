@@ -13,6 +13,7 @@ requirejs.config({
     }
 });
 
+requirejs(['jquery.rtooltip']); 
 requirejs(['jquery.form.min']); 
 requirejs(['jquery.mask.min']); 
 requirejs(['baseform.min']); 
