@@ -25,7 +25,7 @@ class Baseform extends Events {
  
 	}
 
-	private function set_config($config_name = '') {
+	function set_config($config_name = '') {
 
 		$config = array();
 		$lexicon = array();
@@ -87,7 +87,7 @@ class Baseform extends Events {
 		$this->config = $config; 
 	}
 
-	private function get_lexicon($lexicon = '') {
+	function get_lexicon($lexicon = '') {
 		$out = array();
 		if(file_exists(BF_PATH.'core/lexicon/'.$lexicon.'.ini')) {
 			$lexicon = file_get_contents(BF_PATH.'core/lexicon/'.$lexicon.'.ini');
@@ -96,7 +96,7 @@ class Baseform extends Events {
 		return $out;
 	}
 
-	private function get_config($path = '') {
+	function get_config($path = '') {
 		$out = array();
 
 		if(file_exists($path) && !empty($path)) {
@@ -108,7 +108,7 @@ class Baseform extends Events {
 		return $out; 
 	}
 
-	private function parse_config($str = '', $flag = true) {
+	function parse_config($str = '', $flag = true) {
 
 		$inside_section = false;
 		$ret = array();
@@ -204,7 +204,7 @@ class Baseform extends Events {
 		$_SESSION['captcha_keystring'] = $captcha->getKeyString();
 	}
 
-	private function set_form_data() {
+	function set_form_data() {
 
 		$out = array();
 
@@ -248,11 +248,11 @@ class Baseform extends Events {
 		return $out;
 	}
 
-	private function set_report_form() {
+	function set_report_form() {
 		return $this->twig->render($this->config['tmp_report'], $this->fields);
 	}
 
-	private function set_base_form() {
+	function set_base_form() {
 		$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array(); 
 		$attributes['SERVER'] = $_SERVER;
 		$attributes['bf_config'] = $this->config;
@@ -263,14 +263,14 @@ class Baseform extends Events {
 		return $this->twig->render($this->config['tmp_popup'], $attributes);
 	}
 
-	private function set_form_success($attributes = array()) { 
+	function set_form_success($attributes = array()) { 
 
 		$attributes = $this->before_success_modal($attributes);
 
 		return $this->twig->render($this->config['tmp_success'], $attributes);
 	}
 
-	private function set_form_data_status($status = 0, $value = '') {
+	function set_form_data_status($status = 0, $value = '') {
 		return array(
 			'status' => $status, 
 			'value' => $value, 
@@ -278,7 +278,7 @@ class Baseform extends Events {
 		);
 	}
 
-	private function check_validation() {
+	function check_validation() {
 
 		//checks for validation rules
 		$configs = $this->get_validation_configs();
@@ -323,7 +323,7 @@ class Baseform extends Events {
 		return $out;
 	}
 
-	private function set_validation($name = '', $type = '') {
+	function set_validation($name = '', $type = '') {
 
 		list($type_name, $type_param) = $type;
 
@@ -517,7 +517,7 @@ class Baseform extends Events {
 		return $out;
 	}
 
-	private function get_validation_configs() {
+	function get_validation_configs() {
 		$out = array();
 		 
 		$configs = $this->valid;
@@ -531,7 +531,7 @@ class Baseform extends Events {
 		return $out;
 	}
 
-	private function check_spam() {
+	function check_spam() {
 		$out = '';
 
 		//ajax check
@@ -597,7 +597,7 @@ class Baseform extends Events {
 		return $out;
 	}
 
-	private function format_size_to_byte($size = 0){
+	function format_size_to_byte($size = 0){
 		$byte = 0;
 
 		if(preg_match('~G~i', $size)) {
@@ -613,7 +613,7 @@ class Baseform extends Events {
 		return $byte;
 	}
 
-	private function format_byte_to_megabyte($byte = 0){
+	function format_byte_to_megabyte($byte = 0){
 		return round(($byte / 1024 / 1024), 2);
 	}
 
@@ -669,7 +669,7 @@ class Baseform extends Events {
 		return $mail->send();
 	}
 
-	private function parser_option_mail($option = '') {
+	function parser_option_mail($option = '') {
 		$out = array();
 		$option = explode(',', $option);
 
@@ -685,7 +685,7 @@ class Baseform extends Events {
 		return $out;
 	}
 
-	private function set_files_on_mail($mail) {
+	function set_files_on_mail($mail) {
 		$err = array();
  
 		foreach ($_FILES as $name_upload_file => $files) {

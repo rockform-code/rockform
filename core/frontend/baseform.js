@@ -4,16 +4,13 @@
 * @version 4.1.2
 */
 
-// AMD support 
 ;
 (function(factory) {
         "use strict";
         if (typeof define === 'function' && define.amd) {
-            // using AMD; register as anon module
             define(['jquery', 'jquery.form.min', 'jquery.mask.min'], factory);
         } else {
-            // no AMD; invoke directly
-            factory((typeof(jQuery) != 'undefined') ? jQuery : window.Zepto);
+            factory(jQuery);
         }
     }
 
@@ -167,9 +164,7 @@
                         pos = 'top-right';
                     } else {
                         pos = pos.replace(/[ ]+?/gi, "-");
-
                     }
-
                 }
 
                 $('[data-bf-tooltip-id="' + id + '"]').remove();

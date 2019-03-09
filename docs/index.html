@@ -5,29 +5,27 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
+ 
     <meta name="robots" content="noindex, nofollow" />
-    <title>Rockform - демонстрация работы</title>
+    <title>Rockform: форма обратной связи</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel=stylesheet>
     <link href="assets/css/docs.min.css" rel=stylesheet>
 </head>
 
 <body>
  
+ 
 
-    <div class="container bs-docs-container">
+    <div   class="container bs-docs-container ">
+
         <div class=row>
             <div class=col-md-9 role=main>
-                
-
-                <h1 style="color: teal; font-size: 40px;">Rockform - демонстрация работы</h1>
+  
 
                 <div class=bs-docs-section>
-                 
-                    <h1 class="page-header" id="overview">Обзор</h1>
-                    <h2 id="description">Описание</h2>
+                 <h1 class="page-header" id="overview">Rockform: форма обратной связи</h1>
+                    
+                    <h3 id="description">Описание</h3>
                     <p>Основные характеристики формы:</p>
                     <ol>
                         <li>Встроенная защита от спама, поддержка капчи.</li>
@@ -35,7 +33,7 @@
                         <li>Поддержка всплывающей формы.</li> 
                         <li>Поддержка валидации, тултипы, настройка масок ввода.</li> 
                     </ol>
-                    <h2 id="system-requirements">Системные требования</h2>
+                    <h3 id="system-requirements">Системные требования</h3>
                     <ul>
                             <li>Работает с PHP 5.2 и выше.</li>
                             <li>Jquery >= 1.7+</li>
@@ -43,7 +41,7 @@
                     </ul>
                 </div>
                 <div class=bs-docs-section>
-                    <h1 class="page-header" id="example">Примеры</h1>
+                    <h2 class="page-header" id="example">Примеры</h2>
                     <h3>Простое модальное окно</h3>
                     <p>
                         <a class="btn btn-lg btn-default" data-bf-config="" href="#">Запустить пример</a>
@@ -75,33 +73,33 @@
                     <div style="clear: both;"></div>
                 </div>
                 <div class=bs-docs-section>
-                    <h1 class="page-header" id="install">Установка</h1>
-                    <h2 id="how-install">Как подключить скрипт</h2>
+                    <h2 class="page-header" id="install">Установка</h2>
+                    <h3 id="how-install">Как подключить скрипт</h3>
 
                     <p>Для установки нужно подключить скрипты в указанной последовательности:</p>
-                    <pre><code>&lt;!-- Rockform --&gt;
-    &lt;link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
-    &lt;script data-main="/rockform/core/frontend/app" src="/rockform/core/frontend/require.min.js"&gt;&lt;/script&gt;
-&lt;!-- // Rockform --&gt;
-</code></pre>
-
-<p>Альтернативный вызов, например, если метод выше не работает.</p>
-   <pre><code>&lt;!-- Rockform --&gt;
+                <pre><code>&lt;!-- Rockform --&gt;
     &lt;link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
     &lt;script src="/rockform/core/frontend/jquery.min.js"&gt;&lt;/script&gt;
     &lt;script src="/rockform/core/frontend/jquery.mask.min.js"&gt;&lt;/script&gt;
     &lt;script src="/rockform/core/frontend/jquery.form.min.js"&gt;&lt;/script&gt;
     &lt;script src="/rockform/core/frontend/baseform.min.js"&gt;&lt;/script&gt;
 &lt;!-- // Rockform --&gt;
+</code></pre>    
+
+<p>Альтернативный вызов, например, если метод выше не работает.</p>
+   <pre><code>&lt;!-- Rockform --&gt;
+    &lt;link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
+    &lt;script data-main="/rockform/core/frontend/app" src="/rockform/core/frontend/require.min.js"&gt;&lt;/script&gt;
+&lt;!-- // Rockform --&gt;
 </code></pre>
   
 
-                    <h2 id="built-form">Для встроенной формы</h2>
+                    <h3 id="built-form">Для встроенной формы</h3>
                     <p>Для подключения существующей формы на странице достаточно тегу <code>form</code> добавить атрибут с названием конфигурации <code>data-bf-config="Название_конфигурации"</code>. </p>
                     <p> Можно оставить пустым, тогда конфигурация возьмётся из настроек по умолчанию:
                         <code>/core/config/config.ini.php</code>. </p>
 
-                    <h2 id="popup-form">Для всплывающего окна</h2>
+                    <h3 id="popup-form">Для всплывающего окна</h3>
 
                     <p>Для начала нужно настроить шаблон, который можно найти в папке <code>/configs/example/templates/popup.html</code>. В него можно передать любой html-код с формой, он подхватится автоматически. Работает с поддержкой шаблонизатора Twig.</p>
 
@@ -118,9 +116,9 @@
 
                 </div>
                 <div class=bs-docs-section>
-                    <h1 class="page-header" id="template">Шаблоны</h1>
+                    <h2 class="page-header" id="template">Шаблоны</h2>
 
-                    <h2 id="template-on-mail"> Шаблон отправки на почту</h2>
+                    <h3 id="template-on-mail"> Шаблон отправки на почту</h3>
 
                     <p>Шаблон лежит в папке выбранного конфига <code>/templates/report.html</code>.</p>
                     <p>В качестве шаблона для полей используется конструкция <code>{{название_поля_ввода}}</code>. Поддерживает работу с шаблонизатором Twig.</p>
@@ -147,7 +145,7 @@
                     </div>
 
 
-                    <h2 id="template-popup">Шаблон всплывающего окна</h2>
+                    <h3 id="template-popup">Шаблон всплывающего окна</h3>
                     <p>Шаблон лежит в папке выбранного конфига <code>/templates/popup.html</code>.</p>
 
 <!--
@@ -156,8 +154,8 @@
                     </div>
 -->
 
-                    <h2 id="template-success">Шаблон ответа об успешной отправке
-                    </h2>
+                    <h3 id="template-success">Шаблон ответа об успешной отправке
+                    </h3>
                     <p>Шаблон лежит в папке выбранного конфига
                         <code>/templates/success.html</code>.
                     </p>
@@ -168,9 +166,9 @@
          
                 </div>
                 <div class=bs-docs-section>
-                    <h1 class="page-header" id="settings">Настройки</h1>
+                    <h2 class="page-header" id="settings">Настройки</h2>
 
-                    <h2 id="settings-how">Как задать настройки</h2>
+                    <h3 id="settings-how">Как задать настройки</h3>
 
                     <p>Настройки хранятся в формате <code>.ini</code>. По умолчанию, при пустом вызове, настройки берутся из <code>/config/config.ini.php</code>.</p>
                     <figure class=" ">
@@ -191,7 +189,7 @@
                     </div>
 
 
-                    <h2 id="settings-available"> Доступные настройки</h2>
+                    <h3 id="settings-available"> Доступные настройки</h3>
                     
                     <p>Для настроек можно использовать названия полей из формы и суперглобальный массив <a href="http://php.net/manual/ru/reserved.variables.server.php">$_SERVER</a>.</p>
 
@@ -335,7 +333,7 @@
                                 <td>Кодировка</td>
                             </tr>
                     </table>
-                    <h2 id="validation"> Валидация </h2>
+                    <h3 id="validation"> Валидация </h3>
                     <p>Для включения валидации полей, надо в конфигурационом файле добавить секцию <code>[validation]</code>.</p>
                     <p>Затем перечислить названия полей и атрибуты валидации к ним.</p>
                     <p>Пример: <code>name_user = 'required,minlength[3],words'</code>. Это будет означать, что атрибут <code>name</code> со значением - <code>name_user</code> будет обязателен для заполнения, минимальное допустимое число символов будет 3 и на вход должны быть переданы только слова.</p>
@@ -401,7 +399,7 @@
                                 <td>Допустимые расширения файлов. В скобочках расширения через запятую.</td>
                             </tr>
                     </table>
-                    <h2 id="tooltip"> Всплывающие подсказки </h2>
+                    <h3 id="tooltip"> Всплывающие подсказки </h3>
                     <p>Существует поддержка настройки позиции всплывающих подсказок. Атрибут <code>data-bf-tooltip=""</code> 
                     можно задать, как глобально для тега <code>form</code>, так и индивидуально для каждого элемента полей ввода.</p>
                     <table class="table table-bordered ">
@@ -460,7 +458,7 @@
                                 <td>Справа</td>  
                             </tr>
                     </table>
-                    <h2 id="mask"> Маски ввода </h2>
+                    <h3 id="mask"> Маски ввода </h3>
                     <p>В форме доступны два атрибута для настроек масок: </p>
                     <p>1. <code>data-bf-mask</code> принимает на вход выражения из таблицы ниже.
                         <table class="table table-bordered">
@@ -493,7 +491,7 @@
                         <p>Для работы используется плагин <a href="https://igorescobar.github.io/jQuery-Mask-Plugin/">jQuery-Mask-Plugin</a></p>
 
 
-                        <h2 id="capcha">Добавление капчи</h2>
+                        <h3 id="capcha">Добавление капчи</h3>
                         <p>1. Для добавления капчи нужно картинке присвоить атрибут -
                             <code>data-bf-capcha</code>.</p>
                         <p>2. В конфигурационном файле указать в секции <code>[validation]</code> параметр
@@ -506,7 +504,7 @@
     &lt;input class="capcha bf-form-control" name="bf_capcha" placeholder="Код с картинки" type="text" value="" /&gt;
 &lt;/div&gt;</pre>
 
- <h2 id="politica">Политика конфиденциальности</h2>
+ <h3 id="politica">Политика конфиденциальности</h3>
 
  <p>Для создания всплывающего окна с политикой конфиденциальности достаточно создать отдельный конфиг, где в шаблоне 
 <code>popup.html</code> указать нужный текст. Вызывать его аналогично, как и другие всплывающие формы, т.е через <code>data-bf-config="НАЗВАНИЕ_КОНФИГА"</code>, но также требуется добавить атрибут дополнительного поля, например: <code>data-bf-field_form="НАЗВАНИЕ_КОНФИГА"</code></p> 
@@ -522,7 +520,7 @@
 
 
                    <div class=bs-docs-section>
-                    <h1 class="page-header" id="localization">Локализация</h1>
+                    <h2 class="page-header" id="localization">Локализация</h2>
 <p>Файл для локализаций лежит в <code>/core/lexicon/default.ini</code>. Значения в этом файле можно переопределить на своё усмотрение или скопировать в файл с другим названием. Нaпример в <code>/core/lexicon/en.ini.</code></p>
 
 <p>Установить новый файл локализаций можно через опцию <code>lexicon</code> в конфигурации, передав название нового файла. Для примера выше, это будет выглядеть так: <code>lexicon = en</code>.</p> 
@@ -532,7 +530,7 @@
 
 
                 <div class=bs-docs-section>
-                    <h1 class="page-header" id="expansion">Класс расширения PHP</h1>
+                    <h2 class="page-header" id="expansion">Класс расширения PHP</h2>
 
                     <p>Для расширения фунциональности, например для записи данных из формы в базу данных, существует класс расширения.</p>
                     <p>Класс примера можно найти в <code>/configs/example/events.php</code> (файл можно скопировать в любой другой конфиг).</p>
