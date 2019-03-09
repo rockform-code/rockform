@@ -72,10 +72,10 @@ $test->init();
   <ol>
     <li><a href="frontend/tooltip.html">Проверка тултипов</a></li>
      <li><a href="frontend/dinamic.html">Проверка работы с динамически созданными тегами</a></li>
-      <li><a href="frontend/set_prams.html">Передача параметра в всплывающую форму</a></li>
+      <li><a href="frontend/set_params.html">Передача параметра в всплывающую форму</a></li>
       <li><a href="frontend/success.html">Проверка шаблона ответа об успешной отправке</a></li>
- <li><a href="frontend/capcha.html">Проверка добавления капчи</a></li>
-
+      <li><a href="frontend/capcha.html">Проверка добавления капчи</a></li>
+      <li><a href="frontend/set_file_upload.html">Проверка прикрепления файла</a></li>
      <li>Тестирование валидации</li>
      <li>Тестирование наследования конфигураций</li>
       <li>Проверка вызова нескольких форм на странице</li>

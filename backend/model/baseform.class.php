@@ -232,11 +232,13 @@ class Baseform {
 		if(empty($error_check_spam)) {
 			if(empty($config['disable_mail_send'])) {
 
-					if($this->set_mail($config)) {
-						$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
-					} else {
-						$out = $this->set_form_data_status(0, $this->lexicon['email_send']);
-					}
+				$mail_out = $this->set_mail($config);
+
+				if($mail_out) {
+					$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
+				} else {
+					$out = $this->set_form_data_status(0, $this->lexicon['email_send']);
+				}
 			} else {
 				$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
 			}
@@ -577,31 +579,85 @@ class Baseform {
 	}
 
 	private function set_files_on_mail($mail) {
+		$err = array();
+ 
+		//Проверка включена ли поддержка загрузки файлов
+		if(ini_get('file_uploads')) {
+ 			
+ 			/*
+ 			//upload_max_filesize = 1M
+			//post_max_size = 1M
+			
+			//Максимальный размер загружаемого файла
+			if($this->get_filesize() > ini_get('upload_max_filesize')) {
+				return $this->set_form_data_status(0, $this->lexicon['err_file_uploads_size']);
+			}
+			*/
+ 
+			//Перебираем поля с атрибутом отправки файла
+			foreach ($_FILES as $name_upload_file => $files) {
+
+				if(isset($_FILES[$name_upload_file]["name"])) {
+					if(is_array($_FILES[$name_upload_file]['name'])) {
+						foreach ($_FILES[$name_upload_file]['name'] as $key => $name_file) {
+							if ($_FILES[$name_upload_file]['error'][$key] == UPLOAD_ERR_OK) {
+    							$mail->AddAttachment(
+    								$_FILES[$name_upload_file]['tmp_name'][$key],
+    								$_FILES[$name_upload_file]['name'][$key],
+    								'base64',
+    								$_FILES[$name_upload_file]['type'][$key]
+    							);
+							} else {
+								$err = $this->set_form_data_status(0, $this->lexicon['err_file_uploads']);
+							}
+						} 
+					} else {
+						if ($_FILES[$name_upload_file]['error'] == UPLOAD_ERR_OK) {
+    						$mail->AddAttachment(
+    							$_FILES[$name_upload_file]['tmp_name'],
+    							$_FILES[$name_upload_file]['name'],
+    							'base64',
+    							$_FILES[$name_upload_file]['type']
+    						);
+						} else {
+							$err = $this->set_form_data_status(0, $this->lexicon['err_file_uploads']);
+						}
+					}
+				}
+			}
+
+		} else {
+			$err = $this->set_form_data_status(0, $this->lexicon['file_uploads_none']);
+		}
+ 
+		return $err;
+	}
+
+
+	//размер загружаемых файлов на сервер
+	function get_filesize() {
+
+		$size = 0;
+
 		foreach ($_FILES as $name_upload_file => $files) {
+
 			if(isset($_FILES[$name_upload_file]["name"])) {
 				if(is_array($_FILES[$name_upload_file]['name'])) {
 					foreach ($_FILES[$name_upload_file]['name'] as $key => $name_file) {
 						if ($_FILES[$name_upload_file]['error'][$key] == UPLOAD_ERR_OK) {
-    						$mail->AddAttachment(
-    							$_FILES[$name_upload_file]['tmp_name'][$key],
-    							$_FILES[$name_upload_file]['name'][$key],
-    							'base64',
-    							$_FILES[$name_upload_file]['type'][$key]
-    						);
-						}
+    						$size = $size + $_FILES[$name_upload_file]['size'][$key];
+						}  
 					}
 				} else {
 					if ($_FILES[$name_upload_file]['error'] == UPLOAD_ERR_OK) {
-    					$mail->AddAttachment(
-    						$_FILES[$name_upload_file]['tmp_name'],
-    						$_FILES[$name_upload_file]['name'],
-    						'base64',
-    						$_FILES[$name_upload_file]['type']
-    					);
+    					$size = $size + $_FILES[$name_upload_file]['size'];
 					}
 				}
-			}
+			} 
+
 		}
+
+		return $size;
 	}
 
 	protected function set_json_encode($value) {

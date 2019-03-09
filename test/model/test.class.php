@@ -54,7 +54,7 @@ class Test {
       $reflectionMethod = new ReflectionMethod('Baseform', 'parse_config');
       $reflectionMethod->setAccessible(true);
 
-      $result = $reflectionMethod->invokeArgs($this->baseform , [$data, true]);
+      $result = $reflectionMethod->invokeArgs($this->baseform , array($data, true));
 
       if(strcmp(serialize($result), serialize($origin)) == 0) {
           return true;

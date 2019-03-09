@@ -5,10 +5,10 @@
 mail_to =
 
 ; Заголовок письма.
-subject = 'Сообщение с сайта'
+subject = 'Прикрепление файла'
 
 disable_mail_send = 1
 
 [validation]
 
-bf_capcha = capcha;
+file = required;

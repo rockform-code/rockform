@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.12.0
+ * @version 3.13.0
  */
 
 // AMD support
@@ -561,8 +561,6 @@
 
                         },
                         success: function(content) {
-
-                            console.log(content);
 
                             form.after(content);
 
