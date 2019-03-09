@@ -39,64 +39,12 @@
             <a class="btn btn-lg btn-default"  data-bf-config="order_phone" href="#">Заказать звонок</a>
         </p>
         <hr>
+ 
+
         <h3>Встроенная форма с клиентской валидацией</h3>
 
         <br />
-        <div class="bf-content">
-            <div class="bf-header">
-                Форма отправки сообщения!
-            </div>
-            <form  data-bf-config="123" action="" method="post">
-                <div class="bf-row">
-                    <label>Имя:</label>
-                    <input    class="bf-form-control"  name="name" placeholder="Обязательное поле" type="text" value="" />
-                </div>
-                <div class="bf-row">
-                    <label>Телефон:</label>
-                    <input     class="bf-form-control"  name="phone" placeholder="Обязательное поле" type="text" value="" />
-                </div>
 
-                <div class="bf-row">
-                    <div class="bf-info-img">
-                        <img width="110" height="60" title="Обновить картинку" class="bf-img-capcha" src="/rockform/init.php?type=capcha" alt="" />
-                    </div>
-                    <input class="capcha bf-form-control" name="capcha" placeholder="Код с картинки" type="text" value="" />
-                </div>
-                <div class="bf-row">
-                    <input class="btn btn-default bf-right"   type="submit" value="Отправить" />
-                </div>
-            </form>
-        </div>
-        <hr style="clear:both;">
-        <br />
-        <div class="bf-content">
-            <div class="bf-header">
-                Форма отправки сообщения!
-            </div>
-            <form  data-bf-config="123" action="" method="post">
-                <div class="bf-row">
-                    <label>Имя:</label>
-                    <input    class="bf-form-control"  name="name" placeholder="Обязательное поле" type="text" value="" />
-                </div>
-                <div class="bf-row">
-                    <label>Телефон:</label>
-                    <input     class="bf-form-control"  name="phone" placeholder="Обязательное поле" type="text" value="" />
-                </div>
-
-                <div class="bf-row">
-                    <div class="bf-info-img">
-                        <img width="110" height="60" title="Обновить картинку" class="bf-img-capcha" src="/rockform/init.php?type=capcha" alt="" />
-                    </div>
-                    <input class="capcha bf-form-control" name="capcha" placeholder="Код с картинки" type="text" value="" />
-                </div>
-                <div class="bf-row">
-                    <input class="btn btn-default bf-right"   type="submit" value="Отправить" />
-                </div>
-            </form>
-        </div>
-        <hr style="clear:both;">
-
-        <br />
         <div class="bf-content">
             <div class="bf-header">
                 Форма отправки сообщения!
@@ -142,10 +90,11 @@
             <li><a href="#d4"> Вызов для встроенной формы на странице</a></li>
             <li><a href="#d5"> Вызов для всплывающего окна</a></li>
             <li><a href="#d6"> Шаблон отправки на почту</a></li>
-            <li><a href="#d6"> Валидация</a></li>
-            <li><a href="#d7"> Пользовательский класс расширения функциональности</a></li>
-            <li><a href="#d8"> Системные требования</a></li>
-            <li><a href="#d9"> Отправка через SMTP</a></li>
+            <li><a href="#d71"> Валидация на сервере</a></li>
+            <li><a href="#d7"> Валидация на клиенте</a></li>
+            <li><a href="#d8"> Пользовательский класс расширения функциональности</a></li>
+            <li><a href="#d9"> Системные требования</a></li>
+            <li><a href="#d10"> Отправка через SMTP</a></li>
 
         </ul>
 
@@ -207,11 +156,9 @@
      <th>Обязательное</th>
     <th>Описание</th>
   </tr>
- ; Заголовок письма.
-
 
   <tr>
-    <td>to</td>
+    <td>email_to_send</td>
     <td></td>
      <td>Да</td>
     <td>Почта получателей. Можно несколько через запятую.</td>
@@ -240,14 +187,14 @@
 
       <tr>
     <td>used_lexicon</td>
-    <td></td>
+    <td>default</td>
      <td></td>
     <td>Лексикон</td>
     <tr>
 
       <tr>
     <td>disable_mail_send</td>
-    <td></td>
+    <td>0</td>
      <td></td>
     <td>Не отправлять почту</td>
     <tr>
@@ -337,9 +284,75 @@
 
         <p>Также доступны две системные перенные:  </p>
         <ul>
-    <li><b>{{bf_page_link}}</b> - адрес страницы оформления формы.</li>
-    <li><b><strong>h1</strong></b> - тег <strong>h1</strong> страницы оформления формы.</li>
+    <li><b>{{field_page_link}}</b> - адрес страницы оформления формы.</li>
+    <li><b>{{field_page_h1}}</b> - тег <strong>h1</strong> страницы оформления формы.</li>
 </ul>
+
+<h3 id="d71"> Валидация на сервере</h3>
+
+<p>Для включения валидации полей, надо в конфигурационом файле добавить название поле с символом - "@" в начале.</p>
+<p>Затем передать ему через запятую аттрибуты валидации.</p>
+<p>Пример: <b>@name = 'required,minlength[3],words'</b>. Это будет означать, что поле с названием - "name"
+  будет обязательно для заполнения, минимальное допустимое число символов 3 и на вход должны быть переданы только слова.</p>
+
+<table class="table table-bordered">
+
+<caption>Доступны следующие аттрибуты валидации</caption>
+  <tbody><tr>
+    <th>Выражение</th>
+    <th>Описание</th>
+  </tr>
+  <tr>
+    <td>required</td>
+    <td>Поле становится обязательным для заполнения</td>
+  </tr>
+  <tr>
+    <td>minlength[1]</td>
+    <td>Минимальное число символов, в скобочках указывается значение</td>
+  </tr>
+  <tr>
+    <td>maxlength[10]</td>
+    <td>Максимально число символов, в скобочках указывается значение</td>
+  </tr>
+  <tr>
+    <td>rangelength[1,10]</td>
+    <td>Диапозон числа символов, в скобочках указывается значение</td>
+  </tr>
+  <tr>
+    <td>email</td>
+    <td>Электронная почта</td>
+  </tr>
+  <tr>
+    <td>url</td>
+    <td>Ссылка</td>
+  </tr>
+  <tr>
+    <td>ip</td>
+    <td>ip-адрес</td>
+  </tr>
+  <tr>
+    <td>number</td>
+    <td>Дробные числа</td>
+  </tr>
+  <tr>
+    <td>digits</td>
+    <td>Только цифры</td>
+  </tr>
+  <tr>
+    <td>letter</td>
+    <td>Только буквы</td>
+  </tr>
+  <tr>
+    <td>words</td>
+    <td>Ввод слов</td>
+  </tr>
+  <tr>
+    <td>file[.jpg,.png]</td>
+    <td>Допустимые расширения файлов, в скобочках расширения через запятую</td>
+  </tr>
+
+</table>
+
 
 <h3 id="d7"> Валидация на клиенте</h3>
 

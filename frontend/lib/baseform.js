@@ -28,62 +28,64 @@
     }
 
     var tooltip = {
-      init: function(el, form, err_msg) {
+      init: function(el, err_msg) {
 
         if (err_msg.length > 0) {
 
-          tooltip.set(el, form, err_msg);
+          tooltip.set(el, err_msg);
 
           $(window).resize(function() {
-            tooltip.set(el, form, err_msg);
+            tooltip.set(el, err_msg);
           });
-        } else {
+        } else { //close view
+
           var id = el.attr('name');
           if (id) {
+
             id = id.replace('[', '').replace(']', '');
             $('.bf-tooltip-' + id).remove();
           }
         }
       },
-      set: function(el, form, err_msg) {
+      set: function(el, err_msg) {
 
-        var min_dist = 20;
+        if (el.attr('name')) {
+          var min_dist = 20;
 
-        var id = el.attr('name').replace('[', '').replace(']', '');
-        $('.bf-tooltip-' + id).remove();
+          var id = el.attr('name').replace('[', '').replace(']', '');
+          $('.bf-tooltip-' + id).remove();
 
-        var o = el.offset();
-        var h = el.outerHeight();
-        var w = el.outerWidth();
+          var o = el.offset();
+          var h = el.outerHeight();
+          var w = el.outerWidth();
 
-        el.after(
-          '<div class="bf-tooltip bf-tooltip-' + id + '"> \
+          el.after(
+            '<div class="bf-tooltip bf-tooltip-' + id + '"> \
           <div class="bf-arrow"></div>' + err_msg + '</div>'
-        );
+          );
 
-        var popup_el = $('.bf-tooltip-' + id);
-        var w_tooltip = popup_el.outerWidth();
-        var default_position = o['left'] + w / 4 * 3;
+          var popup_el = $('.bf-tooltip-' + id);
+          var w_tooltip = popup_el.outerWidth();
+          var default_position = o['left'] + w / 4 * 3;
 
-        var pos = default_position + w_tooltip + min_dist;
-        var pos_min = $(window).outerWidth() - min_dist - w_tooltip;
+          var pos = default_position + w_tooltip + min_dist;
+          var pos_min = $(window).outerWidth() - min_dist - w_tooltip;
 
-        if (pos > $(window).outerWidth()) {
-          default_position = pos_min;
+          if (pos > $(window).outerWidth()) {
+            default_position = pos_min;
+          }
+
+          if (pos_min <= o['left']) {
+            default_position = o['left'];
+            popup_el.width(w - min_dist);
+          }
+
+          popup_el.offset({
+            top: o['top'] + h,
+            left: default_position
+          });
+
         }
-
-        if (pos_min <= o['left']) {
-          default_position = o['left'];
-          popup_el.width(w - min_dist);
-        }
-
-        //console.log(($(window).width() - min_dist) +', '+ w  );
-
-        popup_el.offset({
-          top: o['top'] + h,
-          left: default_position
-        });
-
       },
       delete: function() {
         $('.bf-tooltip').remove();
@@ -91,43 +93,7 @@
     }
 
     var validation = {
-      server: function(config_popup) {
 
-        var elements = $('form[data-bf-config] select, \
-                        form[data-bf-config] input, \
-                        form[data-bf-config] textarea, \
-                        .bf-modal form select, \
-                        .bf-modal form input, \
-                        .bf-modal form textarea');
-
-        elements.off('keyup');
-        elements.on('keyup', function(e) {
-          e.preventDefault();
-          var el = $(this);
-          var form = el.parents('form');
-          bf.config = bf.get_config(config_popup, form.data("bf-config"));
-          /*
-          console.log('config_popup:' + config_popup);
-          console.log('config:' + form.data("bf-config"));
-          console.log(bf.config);
-
-          if (el.val()) {
-              $.post(
-                  bf.path, {
-                      'type': 'validation',
-                      'bf-config': config
-                  },
-                  function(data) {
-
-
-                  }
-              );
-          }
-          */
-
-        });
-
-      },
       client: function(form) {
 
         var valid = 0;
@@ -174,7 +140,7 @@
             }
           }
 
-          tooltip.init(el, form, err_msg);
+          tooltip.init(el, err_msg);
           if (err_msg.length > 0) {
             valid = valid + 1;
           }
@@ -186,6 +152,91 @@
         } else {
           return true;
         }
+      },
+      server: function(form, data) {
+
+        var err_msg;
+        var el;
+        var valid = 0;
+
+        $('.bf-status').remove();
+
+        if (data.email_to_send) {
+          console.log(data.email_to_send);
+          form.before(
+            '<div class="bf-status bf-status-0">' + data.email_to_send + '</div>'
+          );
+          return false;
+        }
+
+        $.each(data, function(name, value) {
+          err_msg = '';
+
+          if (name == 'token') {
+            form.prepend(
+              '<input name="bf-token" type="hidden" value="' + data['token'] + '" />'
+            );
+          } else if (name == 'capcha') {
+
+            tooltip.init($('[name="capcha"]', form), value);
+
+            if (value.length > 0) {
+              valid = +1;
+            }
+          } else {
+            err_msg = validation.server_set_err_msg(value);
+
+            if ($('[name="' + name + '"]', form).attr('name')) {
+              el = $('[name="' + name + '"]', form);
+            } else if ($('[name="' + name + '\[\]"]', form).attr('name')) {
+              el = $('[name="' + name + '\[\]"]', form);
+            }
+
+            tooltip.init(el, err_msg);
+
+            if (err_msg.length > 0) {
+              valid = +1;
+            }
+          }
+
+
+        });
+
+        if (parseInt(valid) > 0) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      server_set_err_msg: function(err) {
+        var err_msg = '';
+        if (err.required) {
+          err_msg = err.required;
+        } else {
+          if (err.rangelength) {
+            err_msg = err.rangelength;
+          } else if (err.minlength) {
+            err_msg = err.minlength;
+          } else if (err.maxlength) {
+            err_msg = err.maxlength;
+          } else {
+            $.each(err, function(name, msg) {
+              if (
+                name == 'required' ||
+                name == 'rangelength' ||
+                name == 'minlength' ||
+                name == 'maxlength'
+              ) {
+
+              } else {
+                err_msg = msg;
+                return false;
+              }
+            });
+          }
+        }
+
+        return err_msg;
       }
     }
 
@@ -303,43 +354,53 @@
       },
       init_form: function(config_popup, attributes) {
         bf.init_capcha();
-        //bf.validation_server(config_popup);
         $('form[data-bf-config], .bf-modal form').off('submit');
         $('form[data-bf-config], .bf-modal form').on('submit', function(e) {
           e.preventDefault();
-
-          var options = {
-            success: bf.show_response,
-            url: bf.path,
-            type: 'post',
-            dataType: 'json'
-          };
 
           var form = $(this);
           bf.config = bf.get_config(config_popup, form.data("bf-config"));
 
           if (validation.client(form)) {
+
+            var formdata = form.formToArray(); //get serialized form
+            //replace file object with name file
+            $.each(formdata, function(index, element) {
+              if (element.type == 'file') {
+                formdata[index].value = element.value.name
+              }
+            });
+
             $.post(
               bf.path, {
+                'fields': formdata,
                 'type': 'validation',
                 'bf-config': bf.config
               },
               function(data) {
-
-                if (typeof attributes != 'undefined') {
-                  $('.bf-attr').remove();
-                  $.each(attributes, function(index, attr) {
-                    form.prepend('<input class="bf-attr" name="' + index + '" type="hidden" value="' + attr + '" />');
-                  });
-                }
-
                 $('[name="bf-config"], [name="bf-token"]').remove();
                 form.prepend('<input name="bf-config" type="hidden" value="' + bf.config + '" />');
-                form.prepend('<input name="bf-token" type="hidden" value="' + data['token'] + '" />');
 
-                form.ajaxSubmit(options); //set submit form
-              }
-            );
+                if (validation.server(form, data)) {
+                  //set add params from popup
+                  if (typeof attributes != 'undefined') {
+                    $('.bf-attr').remove();
+                    $.each(attributes, function(index, attr) {
+                      form.prepend(
+                        '<input class="bf-attr" name="' + index + '" type="hidden" value="' + attr + '" />'
+                      );
+                    });
+                  }
+
+
+                  form.ajaxSubmit({
+                    success: bf.show_response,
+                    url: bf.path,
+                    type: 'post',
+                    dataType: 'json'
+                  });
+                }
+              });
           }
         });
       },
@@ -378,5 +439,4 @@
       }
     }
     bf.init();
-  })
-);
+  }));

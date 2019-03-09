@@ -31,28 +31,34 @@ class Baseform {
 		$config = array();
 		$lexicon = array();
 
-		$config_name = $this->get_config_name();
-		$config = $this->parse_config_ini_file($config_name);
-		$config['name'] = $config_name;
+		$config = $this->parse_config_ini_file();
+		$config['name'] = $this->get_config_name();
 
 		if(!preg_match('~^default$~', $config['name'])) {
+
+			//delete default validation
+			foreach ($config as $key => $value) {
+				if(preg_match('~^@~', $key)) {
+					unset($config[$key]);
+				}
+			}
+
 			$config_custom = $this->parse_config_ini_file($config['name']);
+		//	print_r($config_custom);
 			if(!empty($config_custom) && is_array($config_custom)) {
 				//replace default value
-				foreach ($config_custom as $key => $value) {
-					if(!empty($value)) {
-						$config[$key] = $value;
-					}
+				foreach ($config_custom as $k => $value) {
+					//if(!empty($value)) {
+						$config[$k] = $value;
+					//}
 				}
 			}
 		}
 
 		//set lexicon
-
 		if(empty($config['used_lexicon'])) {
 			$config['used_lexicon'] = 'default';
 		}
-
 		$config_ini = parse_ini_file(BASE_FORM_PATH.'backend/lexicon/'.$config['used_lexicon'].'.ini');
 
 		foreach ($config_ini as $key => $value) {
@@ -60,9 +66,9 @@ class Baseform {
 							$lexicon[$key] = $value;
 					}
 		}
-
 		$this->lexicon = $lexicon;
 
+		$config['email_to_send'] = empty($config['email_to_send']) ? '' : $config['email_to_send'];
  		$config['subject'] = empty($config['subject']) ? $lexicon['subject'] : $config['subject'];
  		$config['from_email'] = empty($config['from_email']) ? $lexicon['from_email'] : $config['from_email'];
  		$config['from_name'] = empty($config['from_name']) ? $lexicon['from_name'] : $config['from_name'];
@@ -76,7 +82,9 @@ class Baseform {
  	 	$config['SMTPSecure'] = empty($config['SMTPSecure']) ? 'ssl' : $config['SMTPSecure'];
 		$config['SMTPPort'] = empty($config['SMTPPort']) ? 465 : $config['SMTPPort'];
 
-		$config['capcha'] = empty($config['capcha']) ? 0 : 1;
+		$config['capcha'] = empty($config['capcha']) ? 0 : $config['capcha'];
+
+	 	//print_r($config);
 
 		$this->config = $config;
 
@@ -120,7 +128,7 @@ class Baseform {
     		break;
 
     		case 'validation':
-    			$out = $this->set_json_encode($this->validation());
+    			$out = $this->set_json_encode($this->check_validation());
     		break;
 
 			default:
@@ -132,19 +140,8 @@ class Baseform {
 
 	function set_capcha() {
 		include('backend/lib/kcaptcha/kcaptcha.php');
-
 		$captcha = new KCAPTCHA();
 		$_SESSION['captcha_keystring'] = $captcha->getKeyString();
-	}
-
-	private function validation() {
-		return $this->set_token();
-	}
-
-	private function set_token() {
-		$bf_token = md5(uniqid());
-		$_SESSION['bf-token'] = $bf_token;
-		return array('token' => $bf_token);
 	}
 
 	private function set_form_data() {
@@ -164,30 +161,21 @@ class Baseform {
 		$this->field = $field;
 		$this->config = $config;
 
-		$error = $this->check_error();
+		$error_check_spam = $this->check_spam();
 
-		if(empty($error)) {
+		if(empty($error_check_spam)) {
 			if(empty($config['disable_mail_send'])) {
-				if(!empty($config['to'])) {
-					$body = $this->set_report_form();
-
-					if($this->set_mail($body)) {
+					if($this->set_mail()) {
 						$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
 					} else {
 						$out = $this->set_form_data_status(0, $this->lexicon['email_send']);
 					}
-
-				} else {
-					$out = $this->set_form_data_status(0, $this->lexicon['not_email']);
-				}
 			} else {
 				$out = $this->set_form_data_status(1, $this->lexicon['success_email_send']);
 			}
-
 			events::after_success_send_form($field, $config);
-
  		} else {
- 			$out = $error;
+ 			$out = $error_check_spam;
  		}
 
 		return $out;
@@ -199,6 +187,7 @@ class Baseform {
 
 	private function set_base_form() {
 		$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array();
+		$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array();
 		return $this->twig->render($this->tmp_form_popup, $attributes);
 	}
 
@@ -206,29 +195,221 @@ class Baseform {
 		return array('status' => $status, 'value' => $value);
 	}
 
-	private function check_error() {
-		$err = '';
+	private function check_validation() {
 
-		$capcha = $this->config['capcha'];
+		$configs = $this->get_validation_configs();
+		$out = array();
 
-		if($capcha > 0) {
-			$err = $this->check_capcha();
+		if(!empty($configs)) {
+			foreach ($configs as $name => $type) {
+				foreach ($type as $type_element) {
+
+					$type_element = explode('[', $type_element);
+					$type_element_name = $type_element[0];
+
+					$type_element_param = '';
+					if(!empty($type_element[1])) {
+						$type_element_param = str_replace(']', '', $type_element[1]);
+					}
+
+					if(preg_match('~^error_message~', 	$type_element_name)) {
+
+					} else {
+						$err = $this->set_validation($name, array($type_element_name, $type_element_param));
+						if(!empty($err)) {
+							$out[$name][$type_element_name] = $err;
+						}
+					}
+				}
+			}
 		}
 
-		if(empty($err)) {
-			$err = $this->check_spam();
+		if($this->config['capcha'] > 0) {
+			$out['capcha'] = $this->set_validation('capcha', array('capcha', ''));
 		}
 
-		return $err;
+		$email_to_send = $this->config['email_to_send'];
+		if(empty($email_to_send)) {
+			$out['email_to_send'] = $this->lexicon['err_isset_email'];
+		}
+
+		$out['token'] = $this->set_token();
+
+		return $out;
 	}
 
-	private function check_capcha() {
-		$out = '';
+	private function set_validation($name = '', $type = '') {
 
-		$_SESSION['captcha_keystring'] = isset($_SESSION['captcha_keystring']) ? $_SESSION['captcha_keystring'] : '';
+		list($type_name, 	$type_param) = $type;
 
-		if(strcmp($_SESSION['captcha_keystring'], $this->field['capcha']) !== 0){
-			$out = $this->set_form_data_status(0, $this->lexicon['capcha']);
+		$fields = isset($_POST['fields']) ? $_POST['fields'] : array();
+		//print_r($name);
+		$field_value = '';
+
+		foreach ($fields as $field) {
+			$field['name'] = str_replace('[]', '', $field['name']);
+			if(strcmp($name, $field['name']) == 0) {
+				if(isset($field['value'])) {
+					$field_value = trim($field['value']);
+				}
+			}
+		}
+
+ 		$out = array();
+
+		switch ($type_name) {
+			case 'min': //Makes the element require a given minimum.
+			break;
+			case 'max': //Makes the element require a given maximum.
+			break;
+			case 'range': //Makes the element require a given value range.
+			break;
+			case 'regexp':
+			break;
+			case 'email': //Makes the element require a valid email
+				if(!empty($field_value)) {
+					if (!filter_var($field_value, FILTER_VALIDATE_EMAIL)) {
+						$out = $this->lexicon['valid_email'];
+					}
+				}
+			break;
+			case 'url': //Makes the element require a valid url
+				if(!empty($field_value)) {
+					if (!filter_var($field_value, FILTER_VALIDATE_URL)) {
+						$out = $this->lexicon['valid_url'];
+					}
+				}
+			break;
+			case 'ip': //Makes the element require a valid url
+				if(!empty($field_value)) {
+					if (!filter_var($field_value, FILTER_VALIDATE_IP)) {
+						$out = $this->lexicon['valid_ip'];
+					}
+				}
+			break;
+			case 'number': //Makes the element require a decimal number.
+				if(!empty($field_value)) {
+					if (!filter_var($field_value, FILTER_VALIDATE_FLOAT)) {
+						$out = $this->lexicon['valid_number'];
+					}
+				}
+			break;
+			case 'digits': //Makes the element require digits only.
+				if(!empty($field_value)) {
+					if (!filter_var($field_value, FILTER_VALIDATE_INT)) {
+						$out = $this->lexicon['valid_digits'];
+					}
+				}
+			break;
+			case 'letter':
+				if(!empty($field_value)) {
+					if(
+					!preg_match('~^\p{L}+$~u', $field_value)
+					) {
+						$out = $this->lexicon['valid_word'];
+					}
+				}
+			break;
+			case 'words':
+				if(!empty($field_value)) {
+					if(!preg_match('~^[\p{L} \-]+$~iu', $field_value)) {
+						$out = $this->lexicon['valid_words'];
+					}
+				}
+			break;
+			case 'file':
+
+				if(!empty($field_value)) {
+					$type_params = explode(',', $type_param);
+
+					if(!empty($type_params)) {
+							$e = 0;
+
+							foreach ($type_params as $value) {
+								if(!empty($value)) {
+									$value = str_replace('.', '\.', $value);
+									if(preg_match('~'.$value.'$~i', $field_value)) {
+										$e = $e + 1;
+									}
+								}
+							}
+							if(empty($e)) {
+								$out = $this->twig_string->render(
+									$this->lexicon['valid_file'],
+									array('file' => $type_param)
+								);
+							}
+					}
+				}
+			break;
+			case 'minlength': //Makes the element require a given minimum length.
+				$field_count = mb_strlen($field_value, 'utf-8');
+				if($field_count < intval($type_param)) {
+					$out = $this->twig_string->render(
+						$this->lexicon['valid_minlength'],
+						array('minlength' => intval($type_param))
+					);
+
+				}
+			break;
+			case 'maxlength': //Makes the element require a given maxmimum length.
+				$field_count = mb_strlen($field_value, 'utf-8');
+				if($field_count > intval($type_param)) {
+					$out = $this->twig_string->render(
+						$this->lexicon['valid_maxlength'],
+						array('maxlength' => $type_param)
+					);
+				}
+			break;
+			case 'rangelength': //Makes the element require a given value range.
+			  $field_count = mb_strlen($field_value, 'utf-8');
+				$type_param = explode(',', $type_param);
+
+				if(count($type_param) == 2) {
+					if(
+						$field_count > intval($type_param[1]) ||
+						$field_count < intval($type_param[0])
+					) {
+						    $out = $this->twig_string->render(
+								$this->lexicon['valid_rangelength'],
+								array(
+									'maxlength' => $type_param[1],
+									'minlength' => $type_param[0]
+								)
+						);
+					}
+				}
+			break;
+			case 'capcha': //Makes the element required.
+			$_SESSION['captcha_keystring'] = isset($_SESSION['captcha_keystring']) ? $_SESSION['captcha_keystring'] : '';
+				if(
+					strcmp($_SESSION['captcha_keystring'], $field_value) !== 0
+				){
+					$out = $this->lexicon['valid_capcha'];
+				}
+			break;
+			case 'required': //Makes the element required.
+				if(empty($field_value)) {
+					$out = $this->lexicon['valid_required'];
+				}
+			break;
+			default:
+				# code...
+			break;
+		}
+		return $out;
+	}
+	private function get_validation_configs() {
+		$out = array();
+		$configs = $this->config;
+		if(!empty($configs)) {
+			foreach ($configs as $key => $value) {
+					if(preg_match('~^@~', $key)) {
+						$key = str_replace('@', '', $key);
+						preg_match_all('~([a-z_]+(\[.*?\])?)~iu', $value, $match);
+						$out[$key] = $match[1];
+					}
+			}
 		}
 		return $out;
 	}
@@ -255,7 +436,12 @@ class Baseform {
 		return $out;
 	}
 
-	protected function set_mail($body = '') {
+	private function set_token() {
+		$_SESSION['bf-token'] = $bf_token = md5(uniqid());
+		return $bf_token;
+	}
+
+	protected function set_mail() {
 
 		$mail = new PHPMailer();
 
@@ -266,11 +452,12 @@ class Baseform {
 
 		$mail->isHTML(true);
 		$mail->Subject = $this->config['subject'];
-		$mail->Body    = $body;
+
+		$body = $this->set_report_form();
+		$mail->Body = $body;
 		$mail->AltBody = strip_tags($body);
 
  		//set files
-
 		foreach ($_FILES as $name_upload_file => $files) {
 			if(isset($_FILES[$name_upload_file]["name"])) {
 				$files_count = sizeof($_FILES[$name_upload_file]["name"]);
@@ -290,12 +477,8 @@ class Baseform {
 			}
 		}
 
- 		$to = $this->config['to'];
-		if(!is_array($to)) {
-			$to = explode(',', $to);
-		}
-
-		foreach((array)$to as $email) {
+		$email_to_send = explode(',', $this->config['email_to_send']);
+		foreach($email_to_send as $email) {
 			//Recipients will know all of the addresses that have received a letter
 			$mail->addAddress($email, '');
 		}
