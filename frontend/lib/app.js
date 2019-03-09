@@ -13,4 +13,4 @@ requirejs.config({
     }
 });
 
-requirejs(['baseform']); 
+requirejs(['baseform.min']); 
