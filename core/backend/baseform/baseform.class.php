@@ -184,15 +184,18 @@ class Baseform extends Events {
  
     		//set message
 			default:  
-			
-				$fields = isset($_POST) ? $_POST : array();
-				$data = array_merge($fields, $_SERVER);
 
+				//применяем шаблонизатор к параметрам конфигурации
 				foreach ($this->config as $k => $v) {
-					$this->config[$k] = $this->twig_string->render($v, $data);
+					$this->config[$k] = $this->twig_string->render($v, $_SERVER);
+				}
+
+				$fields = isset($_POST) ? $_POST : array();
+				foreach ($this->config as $k => $v) {
+					$this->config[$k] = $this->twig_string->render($v, $fields);
 				}
  
-				$out = $this->set_json_encode($this->set_form_data()); 
+				$out = $this->set_json_encode($this->set_form_data($fields)); 
 			break;
 		}
 
@@ -204,25 +207,15 @@ class Baseform extends Events {
 		$_SESSION['captcha_keystring'] = $captcha->getKeyString();
 	}
 
-	function set_form_data() {
+	function set_form_data($fields = array()) {
 
 		$out = array();
 
- 		$fields = array();
-		foreach ($_POST as $key => $value) {
-			if(is_array($value)) {
-				$fields[$key] = implode(', ',$value);
-			} else {
-				$fields[$key] = $value;
-			}
-		}
- 
 		list($fields, $config) = $this->before_success_send_form($fields, $this->config);
 		$this->fields = $fields;
 		$this->config = $config;
  
 		//spam protection
- 
 		$error_check_spam = $this->check_spam();
 
 		if(empty($error_check_spam)) {
@@ -253,21 +246,18 @@ class Baseform extends Events {
 	}
 
 	function set_base_form() {
-		$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array(); 
-		$attributes['SERVER'] = $_SERVER;
-		$attributes['bf_config'] = $this->config;
-
-		//events
-		$attributes = $this->before_show_modal($attributes);
-
-		return $this->twig->render($this->config['tmp_popup'], $attributes);
+		$data = isset($_POST['data']) ? $_POST['data'] : array(); 
+		$data['SERVER'] = $_SERVER;
+		$data['bf_config'] = $this->config;
+		$data = array('bf' => $data);
+		
+		$data = $this->before_show_modal($data); //events
+		return $this->twig->render($this->config['tmp_popup'], $data);
 	}
 
-	function set_form_success($attributes = array()) { 
-
-		$attributes = $this->before_success_modal($attributes);
-
-		return $this->twig->render($this->config['tmp_success'], $attributes);
+	function set_form_success($data = array()) { 
+		$data = $this->before_success_modal($data); //events
+		return $this->twig->render($this->config['tmp_success'], $data);
 	}
 
 	function set_form_data_status($status = 0, $value = '') {
@@ -414,20 +404,21 @@ class Baseform extends Events {
 					if(!empty($type_params)) {
 							$e = 0;
 
-							foreach ($type_params as $value) {
-								if(!empty($value)) {
-									$value = str_replace('.', '\.', $value);
-									if(preg_match('~'.$value.'$~i', $field_value)) {
-										$e = $e + 1;
-									}
+						foreach ($type_params as $value) {
+							if(!empty($value)) {
+								$value = str_replace('.', '\.', $value);
+								if(preg_match('~'.$value.'$~i', $field_value)) {
+									$e = $e + 1;
 								}
 							}
-							if(empty($e)) {
-								$out = $this->twig_string->render(
-									$this->lexicon['valid_file'],
-									array('file' => $type_param)
-								);
-							}
+						}
+						
+						if(empty($e)) {
+							$out = $this->twig_string->render(
+								$this->lexicon['valid_file'],
+								array('file' => $type_param)
+							);
+						}
 					}
 				}
 
@@ -451,6 +442,7 @@ class Baseform extends Events {
 						}
 					}
 				}
+
 			break;
 			case 'minlength': //Makes the element require a given minimum length.
 				if(!empty($field_value)) {

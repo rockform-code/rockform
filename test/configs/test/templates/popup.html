@@ -1,8 +1,10 @@
 <div class="bf-content">
     <div class="bf-header">
-        Форма отправки сообщения!
+        Форма test
     </div>
+
     <form action="" method="post">
+      <p>{{bf.fields['last']}}</p>
         <div class="bf-row">
             <label> Имя<span>*</span>:</label>
             <input placeholder="" class="bf-form-control" name="name" placeholder="" type="text" value="" />
@@ -29,6 +31,6 @@
             <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
         </div>
 <br>
-        <a href="#" data-bf-config="order_phone">Вызов обратного звонка</a>
+        <a href="#" data-bf="order_phone">Вызов обратного звонка</a>
     </form>
 </div>

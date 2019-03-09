@@ -62,7 +62,7 @@
  <?php } ?>
 <!-- // Rockform -->
  
-    <script src="/rockform/test/frontend/template/js/dinamic.js"></script>
+    <script src="/rockform/test/frontend/js/dinamic.js"></script>
 </head>
 
 <body>
@@ -85,7 +85,7 @@
 </ol>
  </div>
 
-<a href="" data-bf='{config: "xxx"}' class="x">test</a>
+
 
 <?php
 ini_set('error_reporting', E_ALL);

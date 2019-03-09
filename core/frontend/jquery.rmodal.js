@@ -1,7 +1,7 @@
 /**
  * Rmodal
  * @author Rock'n'code
- * @version 0.1.0
+ * @version 0.2.0
  */
 
 ;
@@ -22,13 +22,15 @@
             var _ = this;
             _.options = arguments;
 
-            $(document.body).on('click', delegate, function(e) {
+            $(document).off('click', delegate).on('click', delegate, function(e) {
                 e.preventDefault();
+
+                 _.reset();
 
                 var el = $(this);
 
                 _.options = _.options.before(el, _.options) || _.options;
-                
+                //console.log(_.options.attributes);
                 $.ajax({
                     url: _.options.path,
                     data: _.options.attributes,
@@ -48,8 +50,8 @@
                         _.loader_off();
 
                         $('.bf-modal, .bf-fixed-overlay').animate({ 'opacity': "1" }, 500);
-
-                        _.options.after(el, _.options);
+                        
+                        _.options.after(el, $('.bf-modal-box'), _.options);
 
                     }
                 });
@@ -98,13 +100,13 @@
                             </div> \
                             <small class="bf-modal-after"></small> \
                         </div>',
-        before: function(d, opt) {
+        before: function(el, opt) {
             return opt;
         },
-        after: function(d, opt) {
+        after: function(el, wrap_form, opt) {
            
         },
-        reset: function(d, opt) {
+        reset: function(el, opt) {
             
         }
     };

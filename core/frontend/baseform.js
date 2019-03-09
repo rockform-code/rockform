@@ -21,24 +21,35 @@
 
         function baseform(element, settings) {
             var _ = this,
-                dataSettings;
- 
+                dataSettings,
+                element = element || '[data-bf]',
+                settings = settings || {};
+
             _.defaults = {
                 config: '',
                 path: '/rockform/init.php',
                 timer: 2000,
-                before_send_form: function() {},
-                after_send_form: function() {},
+                fields: {},
+                submit_selector: '[type="submit"], [type="image"], [type="button"]',
+                before_send_form: function(form) {},
+                after_send_form: function(form) {},
                 before_show_modal: function() {},
                 after_show_modal: function() {},
                 close_modal: function() {}
             };
 
-            dataSettings = $(element).data('bf') || {}; 
-            dataSettings = JSON.parse('{}');
-            _.options = $.extend({}, _.defaults, settings, dataSettings);
-            console.log(_.options);
-            _.init();
+            dataSettings = $(element).data('bf') || {};
+
+            if (typeof dataSettings === 'object') {
+                //dataSettings = JSON.parse('{}');
+            } else {
+                dataSettings = { 'config': dataSettings };
+            }
+
+            _.options = $.extend({}, _.defaults, dataSettings, settings);
+            // console.log(_.options);
+
+            _.init(element);
         }
 
         return baseform;
@@ -165,22 +176,22 @@
 
                 if (data.mail_to) {
 
-                    $('[type="submit"], [type="image"], [type="button"]', form).rtooltip({ 'msg': data.mail_to });
+                    $(_.options.submit_selector, form).rtooltip({ 'msg': data.mail_to });
                     return false;
                 }
 
                 if (data.filesize) {
 
-                    $('[type="submit"], [type="image"], [type="button"]', form).rtooltip({ 'msg': data.filesize });
+                    $(_.options.submit_selector, form).rtooltip({ 'msg': data.filesize });
                     return false;
                 }
 
                 $.each(data, function(name, value) {
                     err_msg = '';
 
-                    //устанавливаем токен в форму
                     if (name == 'token') {
-                        _.set_attr_form(form, data.token, 'bf-token');
+                        //устанавливаем токен в форму
+                        _.set_attr_form(form, 'bf-token', data.token);
                     } else if (name == 'filesize') {
 
                     } else {
@@ -236,114 +247,131 @@
         return validation.init(form, data);
     };
 
-    baseform.prototype.set_attr_form = function(form, value, name) {
+    baseform.prototype.set_attr_form = function(form, name, value) {
         form.prepend('<input name="' + name + '" class="bf-attr" type="hidden" value="' + value + '" />');
     };
 
-    baseform.prototype.init = function(creation) {
+    baseform.prototype.init = function(el) {
 
         var _ = this;
 
         var bf = {
 
-            init: function() {
+            init: function(el) {
 
                 _.capcha();
                 _.mask_fields();
 
-                $(document).off('submit', 'form[data-bf-config], .bf-modal form')
-                    .on('submit', 'form[data-bf-config], .bf-modal form',
-                        function(e) {
-                            e.preventDefault();
+                $(document).off('submit', 'form' + el).on('submit', 'form' + el,
+                    function(e) {
+                        e.preventDefault();
+                        var form = $(this);
 
-                            $('.bf-tooltip').rtooltip('reset');
+                        $('.bf-tooltip').rtooltip('reset');
 
-                            var form = $(this);
-                            if (typeof param == 'undefined') {
-                                param = {};
-                                param.config_popup = '';
+                        var data = form.data('bf');
+                        //console.log(data);
+
+                        _.options.timer = data.timer || _.options.timer;
+                        _.options.config = data.config || '';
+                        data.fields = data.fields || {};
+
+                        //сериализуем форму
+                        var formdata = form.formToArray();
+                        var filesize = [];
+
+                        //заменяем объект файла именем файла
+                        $.each(formdata, function(index, element) {
+                            if (element.type == 'file') {
+                                formdata[index].size = element.value.size || '';
+                                formdata[index].value = element.value.name || '';
+
+                                //вычисляем размер файлов для загрузки
+                                filesize.push(formdata[index].size);
                             }
-                            _.options.config = bf.get_config(param.config_popup, form.data("bf-config"));
-
-                            //сериализуем форму
-                            var formdata = form.formToArray();
-                            var filesize = [];
-
-                            //заменяем объект файла именем файла
-                            $.each(formdata, function(index, element) {
-                                if (element.type == 'file') {
-                                    formdata[index].size = element.value.size || '';
-                                    formdata[index].value = element.value.name || '';
-
-                                    filesize.push(formdata[index].size);
-                                }
-                            });
-
-                            //серверная валидация
-                            $.post(
-                                _.options.path, {
-                                    'fields': formdata,
-                                    'type': 'validation',
-                                    'bf-config': _.options.config,
-                                    'filesize': filesize
-                                },
-                                function(data) {
-
-                                    data = data || {};
-
-                                    _.set_attr_form(form, _.options.config, 'bf-config');
-
-                                    //вывод ошибок валидации и уведомлений
-                                    if (_.validation(form, data)) {
-
-                                        //добавляем дополнительные параметры в форму из всплывающего окна
-                                        if (typeof param.attributes != 'undefined') {
-                                            $.each(param.attributes, function(name_item, value_item) {
-                                                bf.set_attr_form(form, value_item, name_item);
-                                            });
-                                        }
-
-                                        form.ajaxSubmit({
-                                            beforeSubmit: function(arr, form, options) {
-
-                                                $(':focus', form).prop('disabled', true);
-
-                                            },
-                                            success: bf.show_response,
-                                            url: _.options.path,
-                                            type: 'post',
-                                            dataType: 'json',
-                                            error: function(jqXHR, textStatus, errorThrown) {
-                                                alert('Server: ' + textStatus);
-                                            }
-                                        });
-
-                                    }
-                                    $('.bf-attr').remove();
-                                });
                         });
 
+                        //серверная валидация
+                        $.post(
+                            _.options.path, {
+                                'fields': formdata,
+                                'type': 'validation',
+                                'bf-config': _.options.config,
+                                'filesize': filesize
+                            },
+                            function(response) {
+
+                                response = response || {};
+                                //отправка формы, если валидация прошла
+                                if (_.validation(form, response)) {
+
+                                    _.set_attr_form(form, 'bf-config', _.options.config);
+
+                                    //добавляем дополнительные параметры в форму из всплывающего окна
+                                    $.each(data.fields, function(name_item, value_item) {
+                                        _.set_attr_form(form, 'bf[fields][' + name_item + ']', value_item);
+                                    });
+
+                                    form.ajaxSubmit({
+                                        beforeSubmit: function(arr, form, options) {
+                                            //событие перед отправкой формы
+                                            _.options.before_send_form(form);
+                                            $(_.options.submit_selector, form).prop('disabled', true);
+                                        },
+                                        url: _.options.path,
+                                        type: 'post',
+                                        dataType: 'json',
+                                        success: bf.show_response,
+                                        error: function(jqXHR, textStatus, errorThrown) {
+                                            alert('Server: ' + textStatus);
+                                        }
+                                    });
+
+                                }
+                                $('.bf-attr').remove();
+                            });
+                    });
+
                 //всплывающая форма
-                $.rmodal('[data-bf-config]:not(form)', {
+                $.rmodal(el + ':not(form)', {
                     path: _.options.path,
                     before: function(el, option) {
                         //очищаем тултипы
                         $('.bf-tooltip').rtooltip('reset');
 
-                        var config = $(el).data("bf-config") || '';
+                        //получаем данные конфигурации
+                        var data = $(el).data("bf") || '';
 
-                        var data = {
-                            'attributes': bf.get_attributes(el),
-                            'bf-config': config,
+                        //если нет json
+                        if (typeof data === 'string') {
+                            var d = {};
+                            d.config = data;
+                            data = d;
+                        }
+
+                        //передаём дополнительные поля к форме отправки
+                        var custom_fields_attributes = bf.get_custom_fields_attributes(el);
+                        data.fields = data.fields || {};
+                        data.fields = $.extend({}, data.fields, custom_fields_attributes);
+
+                        var attributes = {
+                            'data': data,
+                            'bf-config': data.config,
                             'type': 'form'
                         }
-                        option.attributes = data;
-
+                        option.attributes = attributes;
+                        // console.log(attributes);
                         return option;
+                    },
+                    after: function(el, wrap_form, option) {
+                        //передаём в новую форму параметры с кнопки
+                        var data = JSON.stringify(option.attributes.data);
+                        wrap_form.find('form').attr('data-bf', data);
                     }
                 });
+
             },
-            get_attributes: function(button) {
+            get_custom_fields_attributes: function(button) {
 
                 var attributes = {};
                 var attr_el = '';
@@ -352,51 +380,49 @@
                     $.each(button[0].attributes, function(index, attr) {
                         attr_el = attr.name;
                         if (/data\-bf\-field/.test(attr_el)) {
-                            attr_el = attr_el.replace('data-bf-', '');
+                            attr_el = attr_el.replace(/data\-bf\-field(\-|_)/, '');
                             attributes[attr_el] = attr.value;
                         }
                     });
                 }
 
-                attributes['field_page_h1'] = $('h1:first').text() || ''
-                attributes['field_page_link'] = document.location.href;
+                attributes['page_h1'] = $('h1:first').text() || '';
+                attributes['page_url'] = document.location.href;
 
                 return attributes;
 
             },
-            get_config: function(config_popup, config) {
-                if (typeof config_popup == 'undefined' || config_popup.length < 1) {
-                    if (typeof config == 'undefined' || config.length < 1) {
-                        config = '';
-                    }
-                } else {
-                    config = config_popup;
-                }
-                return config;
-            },
             show_response: function(response, statusText, xhr, form) {
 
-                var focused = $('[type="submit"], [type="image"], [type="button"]', form);
+                var focused = $(_.options.submit_selector, form);
                 focused.prop('disabled', false).removeAttr("disabled");
+
 
                 if (parseInt(response.status) > 0) {
 
+                    //событие после успешной отправки формы
+                    _.options.after_send_form(form);
+
+                    //выводим окно об успешной отправке
                     $.post(
                         _.options.path, {
                             'type': 'form_success',
                             'bf-config': response['bf-config']
                         },
+
                         function(content) {
                             form.hide();
 
                             form.after(content);
 
+                            //закрываем окно всплывающее
                             setTimeout(
                                 function() {
                                     $.rmodal('reset');
                                 }, _.options.timer
                             );
 
+                            //сбрасываем состояние встроенной формы
                             setTimeout(
                                 function() {
                                     form.show();
@@ -413,64 +439,17 @@
                 }
             }
         }
-        bf.init();
+        bf.init(el);
     };
 
-    $.rockform = function(el) {
+    $.bf = function(el) {
         var _ = this,
-            opt = arguments[0] || {};
-            console.log(el);
-         new baseform(el, opt);
+            opt = arguments[1] || {};
+
+        new baseform(el, opt);
         return _;
     };
+
+    new baseform();
 
 }));
-
-        /*
-        if (methods[method]) {
-            //return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-        } else if (method.length > 0) {
-            return new baseform(_, opt);
-        } else {
-            $.error('Method "' + method + '" not find');
-        }
-        return method;
-        */
-        /*
-
- $.fn.slick = function() {
-        var _ = this,
-            opt = arguments[0],
-            args = Array.prototype.slice.call(arguments, 1),
-            l = _.length,
-            i,
-            ret;
-        for (i = 0; i < l; i++) {
-            if (typeof opt == 'object' || typeof opt == 'undefined')
-                _[i].slick = new Slick(_[i], opt);
-            else
-                ret = _[i].slick[opt].apply(_[i].slick, args);
-            if (typeof ret != 'undefined') return ret;
-        }
-        return _;
-};
-        */
-
-(function($) {
-    $(function() {
- console.log(1);
-        $.rockform('a', {
-            config: 'xxx',
-            before_send_form: function() {
-
-                alert(1);
-
-            }
-        });
- 
-        $.rockform('.x');
-
-        //$('[name="phone"]').rtooltip({ 'msg': 'Спасибо' });
-
-    });
-})(jQuery);

@@ -1,0 +1,50 @@
+<div class="page-header">
+    <h3>Проверка вызова через json и api</h3></div>
+<p>
+    <a class="btn btn-lg btn-default" data-bf="test" href="#">Обычный вызов</a>
+</p>
+<div  >
+    <p>
+        <a class="btn btn-lg btn-default" data-bf='{"config" : "test", "fields" : { "last" : "параметр last"}, "timer" : 5000 }' href="#">Вызов Json</a>
+    </p>
+    <div  class="bf-content">
+        <form data-bf='{"config" : "test", "fields" : { "last" : "параметр last"}, "timer" : 5000 }' action="" method="post">
+            <div class="bf-row">
+                <label> Телефон<span>*</span>:</label>
+                <input data-bf-mask="+7 (000) 000-00-00" placeholder="+7 (___) ___-__-__" class="bf-form-control" name="phone" type="text" value="" />
+            </div>
+            <div class="bf-row">
+                <div class="bf-info-img">
+                    <img width="100" height="50" title="Обновить картинку" data-bf-capcha src="" alt="" />
+                </div>
+                <input class="capcha bf-form-control" name="bf_capcha" placeholder="Код с картинки" type="text" value="" />
+            </div>
+            <div class="bf-row">
+                <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
+            </div>
+        </form>
+    </div>
+</div>
+<br style="width: 100%; float: none; display: inline-block; clear: both;">
+<div  >
+    <p>
+        <a class="btn btn-lg btn-default" id="go" href="#">Кастомный вызов</a>
+    </p>
+    <div   class="bf-content">
+        <form id="go1" action="" method="post">
+            <div class="bf-row">
+                <label> Телефон<span>*</span>:</label>
+                <input data-bf-mask="+7 (000) 000-00-00" placeholder="+7 (___) ___-__-__" class="bf-form-control" name="phone" type="text" value="" />
+            </div>
+            <div class="bf-row">
+                <div class="bf-info-img">
+                    <img width="100" height="50" title="Обновить картинку" data-bf-capcha src="" alt="" />
+                </div>
+                <input class="capcha bf-form-control" name="bf_capcha" placeholder="Код с картинки" type="text" value="" />
+            </div>
+            <div class="bf-row">
+                <input class="btn btn-default bf-right" name="submit" type="submit" value="Отправить" />
+            </div>
+        </form>
+    </div>
+</div>
