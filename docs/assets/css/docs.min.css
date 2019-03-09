@@ -23,3 +23,11 @@
   text-decoration: none;
   background-color: #0269c2;
 }
+
+html .bs-docs-header, html .bs-docs-masthead {
+	background:  linear-gradient(to bottom, rgb(0,128,128) 0px, rgb(0,128,100) 100%)
+}
+
+.bs-docs-header .container > p {
+    color: #fff;
+}

@@ -9,7 +9,7 @@ class Baseform {
 	private $tmp_form_success = 'form_success.html';
 
 	function __construct() {
-
+ 
 		$this->set_default_config();
 
 		Twig_Autoloader::register(true);
@@ -172,34 +172,32 @@ class Baseform {
 		$out = array();
  
  		switch ($type) {
- 			//рисует капчу
+ 		 
  			//set capcha
  			case 'capcha': 
  			return $this->set_capcha();
-
- 			//рисует всплывающую форму
+ 
  			//set popup form
 			case 'form': 
     		 	$out = $this->set_base_form();
     		break;
 
-    		//проверяет валидацию
+    		 
     		//check validation
     		case 'validation': 
     			$out = $this->set_json_encode($this->check_validation());
     		break;
 
-    		//отдаёт шаблон ответа, об успешной отправке
+    		 
     		//set form success
     		case 'form_success': 
     			$out = $this->set_form_success();
     		break;
-
-    		//отправляет сообщение
+ 
     		//set message
 			default: 
 			
-				//шаблонизация параметров
+				 
 				$fields = isset($_POST) ? $_POST : array();
 				$data = array_merge($fields, $_SERVER);
 
@@ -215,7 +213,7 @@ class Baseform {
 	}
 
 	function set_capcha() {
-		include('backend/lib/kcaptcha/kcaptcha.php');
+
 		$captcha = new KCAPTCHA();
 		$_SESSION['captcha_keystring'] = $captcha->getKeyString();
 	}
@@ -236,8 +234,7 @@ class Baseform {
 		list($field, $config) = events::before_success_send_form($field, $this->config);
 		$this->field = $field;
 		$this->config = $config;
-
-		//Проверка, что отправлено с сайта и что это ajax 
+ 
 		//spam protection
  
 		$error_check_spam = $this->check_spam();
@@ -288,7 +285,6 @@ class Baseform {
 
 	private function check_validation() {
 
-		//проверяет наличие правил валидации
 		//checks for validation rules
 		$configs = $this->get_validation_configs();
  
@@ -298,10 +294,8 @@ class Baseform {
 			foreach ($configs as $name => $type) {
 				foreach ($type as $type_element) {
 
-					//Параметры фильтра валидации
 					//Validation parameters of the filter
 					$detail_params = explode('[', $type_element); 
-					//Название типа валидации
 					//Type the name of the validation
 					$name_params = $detail_params[0]; 
  
@@ -321,7 +315,6 @@ class Baseform {
 			}
 		}
 
-		//Проверка существования почты получателя
 		//Verifying the existence of mail address
 		$disable_mail_send = $this->config['disable_mail_send'];
 		$mail_to = $this->config['mail_to'];
@@ -341,8 +334,7 @@ class Baseform {
 		$fields = isset($_POST['fields']) ? $_POST['fields'] : array();
  
 		$field_value = '';
- 		
- 		//получаем значение поля для проверки
+
  		//get the value of the field to check
 		foreach ($fields as $field) { 
 			if(strcmp($name, $field['name']) == 0) {

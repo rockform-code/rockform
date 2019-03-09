@@ -2,17 +2,22 @@
     "name": "rockncoding/rockform",
     "description": "Simple ajax contact form",
     "license": "Apache 2.0",
+    "type": "project",
     "config": {
-       "vendor-dir": "backend/lib"
+        "vendor-dir": "backend/lib"
     },
-    "authors": [
-        {
-            "name": "BaryshevRS"
-        }
-    ],
+    "repositories": [{
+        "type": "vcs",
+        "url": "https://github.com/rockncoding/JSON.git"
+    }, {
+        "type": "vcs",
+        "url": "https://github.com/rockncoding/kcaptcha.git"
+    }],
     "require": {
-        "php": ">=5.2.17",
+        "php": ">=5.2.7",
         "phpmailer/phpmailer": "^5",
-        "twig/twig": "^1"
+        "twig/twig": "^1",
+        "rockncoding/JSON": "^1",
+        "rockncoding/kcaptcha": "^2"
     }
 }

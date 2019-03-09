@@ -1,6 +1,6 @@
 /**
  * Rockform - Simple, flexible ajax webform.
- * @version 3.16.0
+ * @version 4.0.0
  */
 
 // AMD support
@@ -427,7 +427,7 @@
         var capcha = {
             init: function() {
                 capcha.update();
-                $(document).on("click", 'img[data-bf-capcha]', function() {
+                $(document).off("click", 'img[data-bf-capcha]').on("click", 'img[data-bf-capcha]', function() {
                     capcha.update();
                 });
             },
