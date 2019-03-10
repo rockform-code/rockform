@@ -34,7 +34,7 @@
                     <h3 id="system-requirements">Системные требования</h3>
                     <ul>
                             <li>Работает с PHP 5.2 и выше.</li>
-                            <li>Jquery >= 1.7+</li>
+                            <li>Jquery >= 1.9+</li>
                             <li>Браузеры: ie9+</li>
                     </ul>
                 </div>
@@ -91,12 +91,7 @@
 &lt;!-- // Rockform --&gt;
 </code></pre>    
 
-<p>Альтернативный вызов, например, если метод выше не работает.</p>
-   <pre><code>&lt;!-- Rockform --&gt;
-    &lt;link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" /&gt;
-    &lt;script data-main="/rockform/core/frontend/app" src="/rockform/core/frontend/require.min.js"&gt;&lt;/script&gt;
-&lt;!-- // Rockform --&gt;
-</code></pre>
+
   
 
                     <h3 id="built-form">Для встроенной формы</h3>
@@ -625,10 +620,17 @@
  
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="assets/js/docs.min.js"></script>
+
     <!-- Rockform -->
     <link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" />
-    <script data-main="/rockform/core/frontend/app" src="/rockform/core/frontend/require.min.js"></script>
+    <script src="/rockform/core/frontend/jquery.min.js"></script>
+    <script src="/rockform/core/frontend/jquery.mask.min.js"></script>
+    <script src="/rockform/core/frontend/jquery.form.min.js"></script>
+    <script src="/rockform/core/frontend/jquery.rtooltip.js"></script>
+    <script src="/rockform/core/frontend/jquery.rmodal.js"></script>
+    <script src="/rockform/core/frontend/baseform.js"></script>
     <!-- // Rockform -->
+
 
     <!--[if lt IE 8]> 
          <script src="/rockform/core/frontend/json2.js"></script>

@@ -37,11 +37,6 @@
     
   </style>
 
-
-<!-- Rockform -->
- 
-
-<?php if(isset($_GET['alt'])) { ?> 
  
 <!-- Rockform -->
     <link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" />
@@ -52,16 +47,7 @@
     <script src="/rockform/core/frontend/jquery.rmodal.js"></script>
     <script src="/rockform/core/frontend/baseform.js"></script>
 <!-- // Rockform -->
-
-<?php } else { ?>
- 
-    <script data-main="/rockform/core/frontend/app" src="/rockform/core/frontend/jquery.min.js"></script>
- 
-   <link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" />
-    <script data-main="/rockform/core/frontend/app" src="/rockform/core/frontend/require.min.js"></script>
- <?php } ?>
-<!-- // Rockform -->
- 
+  
     <script src="/rockform/test/frontend/js/dinamic.js"></script>
 </head>
 

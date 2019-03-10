@@ -6,7 +6,7 @@
 * @version 4.4.0
 */
 
-$debug = 0;
+$debug = 1;
 
 if($debug > 0) {
 	ini_set('error_reporting', E_ALL);

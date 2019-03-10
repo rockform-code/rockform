@@ -6,17 +6,17 @@
     "config": {
         "vendor-dir": "core/backend"
     },
+    "require": {
+        "phpmailer/phpmailer": "^5",
+        "twig/twig": "1.33",
+        "rockncoding/json": "^1.3",
+        "rockncoding/kcaptcha": "^2"
+    },
     "repositories": [{
         "type": "vcs",
-        "url": "https://github.com/rockncoding/JSON"
+        "url": "https://github.com/rockncoding/json"
     }, {
         "type": "vcs",
         "url": "https://github.com/rockncoding/kcaptcha"
-    }],
-    "require": {
-        "phpmailer/phpmailer": "^5",
-        "twig/twig": "^1",
-        "rockncoding/JSON": "^1",
-        "rockncoding/kcaptcha": "^2"
-    }
+    }]
 }

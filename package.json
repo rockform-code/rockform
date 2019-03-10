@@ -1,7 +1,7 @@
 {
   "name": "Rockform",
-  "version": "3.16.0",
-  "license": "Apache2",
+  "version": "4.5.0",
+  "license": "MIT",
   "devDependencies": {
     "es6-promise": "~3.1.2",
     "gulp": "~3.9.1",
