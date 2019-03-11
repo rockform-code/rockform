@@ -2,5 +2,3 @@
 composer.lock
 package-lock.json
 node_modules
-backend
-bower_components

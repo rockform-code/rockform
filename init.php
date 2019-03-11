@@ -1,9 +1,9 @@
 <?php
 
 /**
-* Rockform - Simple, flexible ajax webform.
-* @author Rock'n'code
-* @version 4.4.0
+ * Rockform - Simple, flexible async webform
+ * @author Rock'n'code
+ * @version 4.5.0
 */
 
 $debug = 1;

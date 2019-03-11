@@ -39,8 +39,8 @@
 
  
 <!-- Rockform -->
+    <script src=https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js></script>
     <link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" />
-    <script src="/rockform/core/frontend/jquery.min.js"></script>
     <script src="/rockform/core/frontend/jquery.mask.min.js"></script>
     <script src="/rockform/core/frontend/jquery.form.min.js"></script>
     <script src="/rockform/core/frontend/jquery.rtooltip.js"></script>
@@ -56,20 +56,17 @@
 <div class="page-header">
 <h1>Rockform тесты</h1>
 
-
-<ol>
-  
-  <li> Проверка валидации </li>
-   <li>Проверка событий</li>
-   <li>Проверка появления окна успешного выполнения</li>
-     <li>Проверка таймера</li>
-      <li>Проверка кнопки закрытия</li>
-          <li>Проверка в разных браузерах</li>
-
-              <li>Проверка в разных версиях php</li>
-              <li>Проверка конфликтов с jquery</li>
-</ol>
- </div>
+    <ol>
+        <li> Проверка валидации</li>
+        <li>Проверка событий</li>
+        <li>Проверка появления окна успешного выполнения</li>
+        <li>Проверка таймера</li>
+        <li>Проверка кнопки закрытия</li>
+        <li>Проверка в разных браузерах</li>
+        <li>Проверка в разных версиях php</li>
+        <li>Проверка конфликтов с jquery</li>
+    </ol>
+</div>
 
 
 

@@ -1,3 +1,5 @@
+[![GitHub license](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/BaryshevRS/ngrx-friends/blob/master/LICENSE)
+
 # Rockform
 
 Скрипт асинхронной обработки любых html-форм с поддержкой работы на старых хостингах.

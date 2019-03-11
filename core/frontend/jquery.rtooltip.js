@@ -1,11 +1,4 @@
-/**
- * Rtooltip
- * @author Rock'n'code
- * @version 0.2.0
- */
-
-;
-(function(factory) {
+;(function(factory) {
     'use strict';
     if (typeof define === 'function' && define.amd) {
         define(['jquery'], factory);
