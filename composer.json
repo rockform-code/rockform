@@ -1,7 +1,7 @@
 {
     "name": "rockncoding/rockform",
     "description": "Simple, flexible ajax webform",
-    "license": "",
+    "license": "MIT",
     "type": "project",
     "config": {
         "vendor-dir": "core/backend"
