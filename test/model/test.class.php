@@ -25,15 +25,15 @@ if($debug == 2) {
   define("BF_PATH_CONFIGS", BF_PATH.'configs/');
 }
 
-require_once BF_PATH.'core/backend/baseform/compatibility.php';
+require_once BF_PATH.'core/backend/polyfills.php';
 
 if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-  require_once BF_PATH.'core/backend/twig/twig/lib/Twig/Autoloader.php';
-  require_once BF_PATH.'core/backend/phpmailer/phpmailer/PHPMailerAutoload.php';
-  require_once BF_PATH.'core/backend/rockncoding/json/JSON.php';
-  require_once BF_PATH.'core/backend/rockncoding/kcaptcha/kcaptcha.php';
+  require_once BF_PATH.'core/twig/twig/lib/Twig/Autoloader.php';
+  require_once BF_PATH.'core/phpmailer/phpmailer/PHPMailerAutoload.php';
+  require_once BF_PATH.'core/rockncoding/json/JSON.php';
+  require_once BF_PATH.'core/rockncoding/kcaptcha/kcaptcha.php';
 } else {
-  require_once BF_PATH.'core/backend/autoload.php';
+  require_once BF_PATH.'core/vendors/autoload.php';
 }
 
 $config_name = '';
@@ -42,18 +42,18 @@ if(isset($_POST['bf-config'])) {
 }
 
 //set events
-require_once BF_PATH.'core/backend/baseform/events_default.class.php';
+require_once BF_PATH.'core/backend/events_default.class.php';
 
 if(empty($config_name) || !file_exists(BF_PATH_CONFIGS.$config_name.'/events.php')){
-  require_once BF_PATH.'core/backend/baseform/events.class.php';
+  require_once BF_PATH.'core/backend/events.class.php';
 } else {
   require_once BF_PATH_CONFIGS.$config_name.'/events.php';
   if(!class_exists('events')) {
-    require_once BF_PATH.'core/backend/baseform/events.class.php';
+    require_once BF_PATH.'core/backend/events.class.php';
   }
 }
 
-require_once BF_PATH.'core/backend/baseform/baseform.class.php';
+require_once BF_PATH.'core/backend/rockform.class.php';
 
     $this->baseform  = new baseform($config_name);
 

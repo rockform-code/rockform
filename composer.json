@@ -4,7 +4,7 @@
     "license": "MIT",
     "type": "project",
     "config": {
-        "vendor-dir": "core/backend"
+        "vendor-dir": "core/vendors"
     },
     "require": {
         "phpmailer/phpmailer": "^5",

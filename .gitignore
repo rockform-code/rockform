@@ -1,4 +1,5 @@
 .idea/
+core/vendors
 composer.lock
 package-lock.json
 node_modules
