@@ -27,15 +27,9 @@
 
 ```html
 <!-- Rockform -->
-    <!-- Rockform -->
     <script src=https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js></script>
     <link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet"/>
-    <script src="/rockform/core/frontend/jquery.mask.min.js"></script>
-    <script src="/rockform/core/frontend/jquery.form.min.js"></script>
-    <script src="/rockform/core/frontend/jquery.rtooltip.js"></script>
-    <script src="/rockform/core/frontend/jquery.rmodal.js"></script>
-    <script src="/rockform/core/frontend/rockform.js"></script>
-    <!-- // Rockform -->
+    <script src="/rockform/dist/rockform.min.js"></script>
 <!-- // Rockform -->
 ```
 
@@ -194,7 +188,7 @@ rockform/
 
 В форме доступны два атрибута для настроек масок:
 
-1. data-bf-mask принимает на вход выражения из таблицы ниже.
+1. `data-bf-mask` принимает на вход выражения из таблицы ниже.
 
 Доступны атрибуты маски:
 

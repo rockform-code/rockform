@@ -109,7 +109,6 @@
         };
 
         capcha.init();
-
     };
 
     baseform.prototype.mask_fields = function(creation) {

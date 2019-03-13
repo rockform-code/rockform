@@ -9,17 +9,16 @@ var concat = require('gulp-concat');
 
 gulp.task('corejs', function () {
     return gulp.src([
-        'core/frontend/jquery.mask.min.js',
-        'core/frontend/jquery.form.min.js',
+        'node_modules/jquery-mask-plugin/dist/jquery.mask.min.js',
+        'node_modules/jquery-form/dist/jquery.form.min.js',
         'core/frontend/jquery.rmodal.js',
         'core/frontend/jquery.rtooltip.js',
         'core/frontend/rockform.js'
     ])
-        .pipe(concat('core.js'))
-        .pipe(gulp.dest('dist/'))
+        .pipe(concat('rockform.js'))
         .pipe(uglify())
         .pipe(rename({suffix: ".min"}))
-        .pipe(gulp.dest('core/frontend/'));
+        .pipe(gulp.dest('dist/'));
 
 });
 
