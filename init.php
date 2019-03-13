@@ -3,7 +3,7 @@
 /**
  * Rockform - Simple, flexible async webform
  * @author Rock'n'code
- * @version 4.5.0
+ * @version 4.6.0
 */
 
 session_start();

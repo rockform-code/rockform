@@ -27,13 +27,15 @@
 
 ```html
 <!-- Rockform -->
-    <link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet" />
-    <script src="/rockform/core/frontend/jquery.min.js"></script>
+    <!-- Rockform -->
+    <script src=https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js></script>
+    <link href="/rockform/core/themes/default/main.css" type="text/css" rel="stylesheet"/>
     <script src="/rockform/core/frontend/jquery.mask.min.js"></script>
     <script src="/rockform/core/frontend/jquery.form.min.js"></script>
     <script src="/rockform/core/frontend/jquery.rtooltip.js"></script>
     <script src="/rockform/core/frontend/jquery.rmodal.js"></script>
-    <script src="/rockform/core/frontend/baseform.min.js"></script>
+    <script src="/rockform/core/frontend/rockform.js"></script>
+    <!-- // Rockform -->
 <!-- // Rockform -->
 ```
 
@@ -43,7 +45,7 @@
 атрибут с названием конфигурации `data-bf-config="Название_конфигурации"`.
 
 Можно оставить пустым, тогда конфигурация возьмётся из настроек 
-по умолчанию: */core/config/config.ini.php*. 
+по умолчанию: */core/config/config.php*. 
 
 ### Для всплывающего окна
 
@@ -92,7 +94,8 @@
 
 ### Как задать настройки
 
-Настройки хранятся в формате .ini. По умолчанию, при пустом вызове, настройки берутся из */config/config.ini.php*.
+Настройки хранятся в формате .ini. По умолчанию, при пустом вызове, 
+настройки берутся из */config/config.php*.
 
 ```
 rockform/
@@ -101,7 +104,7 @@ rockform/
         │	├── popup.html
         │	├── success.html
         │	└── report.html
-        └─── config.ini.php
+        └─── config.php
 ```
 
 Дополнительные конфигурации можно создавать в папке /configs/.

@@ -13,7 +13,7 @@ gulp.task('corejs', function () {
         'core/frontend/jquery.form.min.js',
         'core/frontend/jquery.rmodal.js',
         'core/frontend/jquery.rtooltip.js',
-        'core/frontend/baseform.js'
+        'core/frontend/rockform.js'
     ])
         .pipe(concat('core.js'))
         .pipe(gulp.dest('dist/'))
