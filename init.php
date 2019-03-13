@@ -6,21 +6,17 @@
  * @version 4.5.0
 */
 
-$debug = 1;
+session_start();
+define('BF_PATH', $_SERVER['DOCUMENT_ROOT'].'/rockform/');
+define('BF_PATH_CONFIGS', BF_PATH.'configs/');
 
-if($debug > 0) {
-	ini_set('error_reporting', E_ALL);
-	ini_set ('display_errors', 1);
+if (file_exists(BF_PATH . 'env.php')) {
+    require_once BF_PATH . 'env.php';
 }
 
-session_start();
-
-define("BF_PATH", $_SERVER['DOCUMENT_ROOT'].'/rockform/');
-
-if($debug == 2) {
-	define("BF_PATH_CONFIGS", BF_PATH.'test/configs/');
-} else {
-	define("BF_PATH_CONFIGS", BF_PATH.'configs/');
+if(defined('BF_DEBUG_PHP_ERRORS') && BF_DEBUG_PHP_ERRORS > 0) {
+	ini_set('error_reporting', E_ALL);
+	ini_set ('display_errors', 1);
 }
 
 require_once BF_PATH.'core/backend/polyfills.php';
@@ -53,5 +49,5 @@ if(empty($config_name) || !file_exists(BF_PATH_CONFIGS.$config_name.'/events.php
 
 require_once BF_PATH.'core/backend/rockform.class.php';
 
-$baseform = new baseform($config_name);
-echo $baseform->init();
+$rockform = new Rockform($config_name);
+echo $rockform->init();

@@ -1,6 +1,6 @@
 <?php
 
-class Baseform extends Events {
+class Rockform extends Events {
 
 	protected $config, $lexicon, $fields, $valid;
 
@@ -32,9 +32,19 @@ class Baseform extends Events {
 		$this->valid = array();
 
 		//set default config
-		$params = $this->get_config(BF_PATH.'core/config/config.ini.php');
+		$params = $this->get_config(BF_PATH.'core/config/config.php');
 		$config = isset($params['config']) ? $params['config'] : array();
-		$this->valid = $params['validation'];
+		$this->valid = isset($params['validation']) ? $params['validation'] : array();
+
+		// for debug
+		if(defined('BF_DEBUG_CONFIG')) {
+           $debug_config = unserialize(BF_DEBUG_CONFIG);
+           if(is_array($debug_config)) {
+               foreach ($debug_config as $k => $value) {
+                   $config[$k] = $value;
+               }
+           }
+        }
 
 		$config['name'] = $config_name;
  
