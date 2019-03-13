@@ -31,7 +31,7 @@ if (version_compare(PHP_VERSION, '5.3.0', '<')) {
 	require_once BF_PATH.'core/vendors/rockncoding/json/JSON.php';
 	require_once BF_PATH.'core/vendors/rockncoding/kcaptcha/kcaptcha.php';
 } else {
- 	require_once BF_PATH.'core/backend/autoload.php';
+ 	require_once BF_PATH.'core/vendors/autoload.php';
 }
 
 $config_name = '';

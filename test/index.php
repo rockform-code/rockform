@@ -45,7 +45,7 @@
     <script src="/rockform/core/frontend/jquery.form.min.js"></script>
     <script src="/rockform/core/frontend/jquery.rtooltip.js"></script>
     <script src="/rockform/core/frontend/jquery.rmodal.js"></script>
-    <script src="/rockform/core/frontend/baseform.js"></script>
+    <script src="/rockform/core/frontend/rockform.js"></script>
 <!-- // Rockform -->
   
     <script src="/rockform/test/frontend/js/dinamic.js"></script>

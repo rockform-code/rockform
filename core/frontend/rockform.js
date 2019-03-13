@@ -364,8 +364,6 @@
                             }
                         });
 
-                        //console.log(_.options.config);
-
                         //серверная валидация
                         $.post(
                             _.options.path, {
@@ -386,6 +384,7 @@
                                     $.each(_.options.fields, function(name_item, value_item) {
                                         _.set_attr_form(form, 'bf[fields][' + name_item + ']', value_item);
                                     });
+
 
                                     form.ajaxSubmit({
                                         beforeSubmit: function(arr, form, options) {
