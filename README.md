@@ -132,7 +132,7 @@ rockform/
 | mail_smtp_password      |                                       |                                       | SMTP пароль                                                                                           |
 | mail_smtp_secure        | ssl                                   | ssl                                   | Включение шифрования TLS, также доступен `ssl`                                                        |
 | mail_smtp_port          | 465                                   | 465                                   | TCP порт                                                                                              |
-| exicon                  | default                               |                                       | Название файла локализации в папке /core/lexicon/.                                                    |
+| lexicon                  | default                               |                                       | Название файла локализации в папке /core/lexicon/.                                                    |
 | charset                 | utf-8                                 |                                       | Кодировка                                                                                             |
 
 
